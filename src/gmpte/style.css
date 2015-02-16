@@ -1,3 +1,7 @@
 .root {
-  fx-background-color: #000000;
+  fx-background-color: red;
+}
+
+.holiday-form {
+    fx-background-color: red;
 }
