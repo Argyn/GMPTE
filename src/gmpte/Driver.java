@@ -16,4 +16,8 @@ public class Driver {
     public Driver(int driverID) {
         this.driverID = driverID;
     }
+    
+    public int getDriverID() {
+        return driverID;
+    }
 }
