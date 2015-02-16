@@ -14,6 +14,6 @@ public class HolidayController {
     public HolidayRequestResponse holidayRequest(HolidayRequest request) {
         // logic goes here
         return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
-        
+        // your logic starts here
     }
 }
