@@ -12,8 +12,7 @@ package gmpte;
 public class HolidayController {
     
     public HolidayRequestResponse holidayRequest(HolidayRequest request) {
-        // logic goes here
-        return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
-        // your logic starts here
+        
+        return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED);
     }
 }
