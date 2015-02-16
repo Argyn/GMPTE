@@ -6,18 +6,36 @@
 
 package gmpte;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  *
  * @author argyn
  */
 public class DateHelper {
-    public static Date getDatePickerDate(LocalDate localDate) {
-        Instant instant = Instant.from(localDate.atStartOfDay(ZoneId.systemDefault()));
-        return Date.from(instant);
+    
+    public static boolean isValidDateString(String stringDate) {
+        DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+        
+        // try to convert it to Date, if successfull
+        try {
+            // means dateString corresponds to an actual Date
+            Date date = format.parse(stringDate);
+            return true;
+        } catch(ParseException exception) {
+            return false;
+        }   
+    }
+    public static Date getDateFromString(String stringDate) 
+                                                        throws ParseException {
+        DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+        
+        Date date = format.parse(stringDate);
+
+        return date;
     }
 }

@@ -6,6 +6,8 @@
 
 package gmpte;
 
+import java.text.ParseException;
+import java.util.Date;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,7 +15,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.DatePicker;
+import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
@@ -30,8 +32,8 @@ import javafx.stage.Stage;
  * @author argyn
  */
 public class GMPTE extends Application {
-    public DatePicker startDatePicker;
-    public DatePicker endDatePicker;
+    public TextField startDatePicker;
+    public TextField endDatePicker;
     public HolidayController holidayController;
     
     @Override
@@ -70,7 +72,7 @@ public class GMPTE extends Application {
         startDateTitle.getStyleClass().add("start-date-label");
         grid.add(startDateTitle, 0, 1);
         
-        startDatePicker = new DatePicker();
+        startDatePicker = new TextField();
         grid.add(startDatePicker, 1, 1);
         
         // Adding end-date
@@ -78,7 +80,7 @@ public class GMPTE extends Application {
         endDateTitle.getStyleClass().add("end-date-label");
         grid.add(endDateTitle, 0, 2);
         
-        endDatePicker = new DatePicker();
+        endDatePicker = new TextField();
         grid.add(endDatePicker, 1, 2);
         
         grid.getStyleClass().add("holiday-form");
@@ -134,17 +136,39 @@ public class GMPTE extends Application {
     }
     
     public EventHandler<ActionEvent> getSubmitButtonHandler() {
-        return (ActionEvent event) -> {
-            Driver driver = new Driver(1);
-            
-            HolidayRequest holidayRequest = new HolidayRequest(driver,
-                    DateHelper.getDatePickerDate(startDatePicker.getValue()),
-                    DateHelper.getDatePickerDate(endDatePicker.getValue()));
-            
-            // Call controller with request
-            processHolidayResponse(
-                    holidayController.holidayRequest(holidayRequest)
-            );
+        return new EventHandler<ActionEvent>() {
+
+            public void handle(ActionEvent event) {
+                Driver driver = new Driver(1);
+                
+                Date startDate = null;
+                Date endDate = null;
+                
+                try {
+                   startDate = DateHelper.getDateFromString(startDatePicker.getText()); 
+                } catch(ParseException exception) {
+                    
+                    // Report error message
+                }
+                
+                try {
+                    endDate = DateHelper.getDateFromString(endDatePicker.getText());
+                } catch(ParseException exception) {
+                    // Report error message
+                }
+                
+                if(startDate!=null && endDate!=null) {
+                    // create holiday request
+                    HolidayRequest holidayRequest = new HolidayRequest(driver,
+                            startDate,
+                            endDate);
+
+                    // Call controller with request
+                    processHolidayResponse(
+                            holidayController.holidayRequest(holidayRequest)
+                    );
+                }
+            }
         };
     }
     
