@@ -1,0 +1,50 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+  -fx-background-color: linear-gradient(#b50839  0%, #bb1947 25%, #c12752 75%, #c12d57 100%);
+  -fx-font-family: Helvetica, sans-serif;
+}
+
+.login-content-vbox {
+  /*-fx-background-image: url('background.png');*/
+  -fx-background-color: linear-gradient(#f0f0f0  0%, #f4f4f4 25%, #f7f7f7 50%, #ffffff 100%);
+
+  -fx-background-radius: 10px 10px 0px 0px;
+}
+
+.login-top-hbox {
+  -fx-background-color: #000000;
+}
+
+.login-button {
+  -fx-border-radius: 5px;
+  -fx-background-color:
+        linear-gradient(#c12d57 0%, #c12752 25%, #bb1947 75%, #b50839 100%);
+  -fx-text-fill: #ffffff;
+  -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.login-label {
+  -fx-font-size: 15px;
+  -fx-font-family: Helvetica, sans-serif;
+
+}
+.login-label-driver-id {
+  -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.dropshadow {
+  -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.greater-manchester-label {
+  -fx-font-size: 25px;
+  -fx-text-fill: #ffffff;
+  -fx-font-weight: bold;
+}
+
+.textfield-error {
+  -fx-border-color: #ff0000;
+}

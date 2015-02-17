@@ -18,9 +18,10 @@ import java.util.Locale;
  */
 public class DateHelper {
     
-    public static boolean isValidDateString(String stringDate) {
-        DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
-        
+    public static boolean isValidDateString(String stringDate, String dateFormat) {
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+        // making more strict
+        format.setLenient(false);
         // try to convert it to Date, if successfull
         try {
             // means dateString corresponds to an actual Date
