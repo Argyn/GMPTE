@@ -17,8 +17,8 @@ import java.util.Date;
 public class HolidayController {
     
     public HolidayRequestResponse holidayRequest(HolidayRequest request) {
-        
-        boolean isGranted = true;
+       
+      /*  boolean isGranted = true;
         int holidayCount = 0;
 
         Driver theDriver = request.getDriver();
@@ -60,7 +60,7 @@ public class HolidayController {
         }
  
         
-        
+        60167
         
         if(isGranted){
             for(Date date = startDate; date.compareTo(endDate) > 0; startDate++){
@@ -72,7 +72,9 @@ public class HolidayController {
             return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
         } else{
             return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED);
-       }
+       } */
+               
+    return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
         
     }
 }
