@@ -6,8 +6,9 @@
 
 package gmpte.login;
 
-import gmpte.DateHelper;
-import gmpte.GMPTEConstants;
+import gmpte.Driver;
+import gmpte.databaseinterface.DriverInfo;
+import gmpte.databaseinterface.database;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
@@ -16,7 +17,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-
 /**
  * FXML Controller class
  *
@@ -42,9 +42,16 @@ public class LoginController implements Initializable {
             public void handle(ActionEvent event) {
                 System.out.println("Sign in button pressed");
                 System.out.println("Driver ID:"+driverIDTextField.getText());
-                
+                database.openBusDatabase();
+                if(DriverInfo.findDriver(driverIDTextField.getText())==0) {
+                    // not driver found
+                    driverIDTextField.getStyleClass().add("textfield-error");
+                } else {
+                    driverIDTextField.getStyleClass().removeAll("textfield-error");
+                    // Launch
+                    ///Driver driver = new Driver();
+                }
             }
         });
-        
     }    
 }
