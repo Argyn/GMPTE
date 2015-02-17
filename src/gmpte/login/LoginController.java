@@ -28,9 +28,6 @@ public class LoginController implements Initializable {
     public TextField driverIDTextField;
     
     @FXML
-    public TextField driverDateOfBirthTextField;
-    
-    @FXML
     public Button signInButton;
 
     /**
@@ -45,12 +42,7 @@ public class LoginController implements Initializable {
             public void handle(ActionEvent event) {
                 System.out.println("Sign in button pressed");
                 System.out.println("Driver ID:"+driverIDTextField.getText());
-                System.out.println("Driver birth date:"+driverDateOfBirthTextField.getText());
-                if(!DateHelper.isValidDateString(driverDateOfBirthTextField.getText(), 
-                                                    GMPTEConstants.DATE_FORMAT)) {
-                    driverDateOfBirthTextField.getStyleClass().add("textfield-error");
-                    System.out.println("Wrong date");
-                }
+                
             }
         });
         

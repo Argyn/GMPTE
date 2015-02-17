@@ -16,7 +16,7 @@
         <URL value="@login.css" />
     </stylesheets>
    <children>
-      <VBox alignment="TOP_CENTER" layoutX="108.0" layoutY="106.0" maxWidth="1.7976931348623157E308" styleClass="login-content-vbox" stylesheets="@login.css">
+      <VBox alignment="TOP_CENTER" layoutX="108.0" layoutY="106.0" maxWidth="1.7976931348623157E308" styleClass="login-content-vbox">
          <children>
             <GridPane vgap="10.0">
               <columnConstraints>
@@ -41,14 +41,14 @@
                            <font>
                               <Font size="14.0" />
                            </font>
-                           <opaqueInsets>
+                          <!-- <opaqueInsets>
                               <Insets top="10.0" />
-                           </opaqueInsets>
+                           </opaqueInsets> !-->
                            <effect>
                               <DropShadow />
                            </effect>
                            <cursor>
-                              <Cursor fx:constant="HAND" />
+                             <!-- <cursor fx:constant="HAND" />!-->
                            </cursor>
                         </Button>
                      </children>
@@ -71,7 +71,7 @@
             <Image url="@logo2.png" />
          </image>
       </ImageView>
-      <Label layoutX="127.0" layoutY="14.0" prefHeight="37.0" prefWidth="238.0" text="Greater Manchester">
+      <Label layoutX="127.0" layoutY="14.0" prefHeight="37.0" prefWidth="291.0" text="Greater Manchester">
          <styleClass>
             <String fx:value="greater-manchester-label" />
             <String fx:value="dropshadow" />
