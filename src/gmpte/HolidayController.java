@@ -17,16 +17,20 @@ import java.util.Date;
 public class HolidayController {
     
     public HolidayRequestResponse holidayRequest(HolidayRequest request) {
-       
-      /*  boolean isGranted = true;
+       /*
+        boolean isGranted = true;
         int holidayCount = 0;
 
         Driver theDriver = request.getDriver();
         Date startDate = request.getStartDate();
         Date endDate = request.getEndDate();
         
+        int driverNumber = theDriver.getDriverID();
+        
         database.openBusDatabase();
         
+        
+        //the driver number should be a string
         int driverID = DriverInfo.findDriver(driverNumber);
         String driverName = DriverInfo.getName(driverID);
         int holidaysTaken = DriverInfo.getHolidaysTaken(driverID);
@@ -46,7 +50,7 @@ public class HolidayController {
 
         for(Date date = startDate; date.compareTo(endDate) > 0; startDate++){
             int count = 0; 
-            if(DriverInfo,isAvailable(driverID, date)){
+            if(DriverInfo.isAvailable(driverID, date)){
                 for(int j = 0; j < driverIDs.length; j++){
                     if(driverIDs[j] != driverID){
                         if(!DriverInfo.isAvailable(driverIDs[j], date))
@@ -60,7 +64,7 @@ public class HolidayController {
         }
  
         
-        60167
+       
         
         if(isGranted){
             for(Date date = startDate; date.compareTo(endDate) > 0; startDate++){
