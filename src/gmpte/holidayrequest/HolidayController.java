@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package gmpte;
+package gmpte.holidayrequest;
 
+import gmpte.holidayrequest.HolidayRequest;
 import gmpte.databaseinterface.DriverInfo;
 import gmpte.databaseinterface.database;
 import java.util.Date;

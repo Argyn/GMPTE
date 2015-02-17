@@ -3,13 +3,13 @@
  */
 
 .mainFxmlClass {
-  -fx-background-color: linear-gradient(#b50839  0%, #bb1947 25%, #c12752 75%, #c12d57 100%);
+  -fx-background-color: linear-gradient(#414141, #000000);
   -fx-font-family: Helvetica, sans-serif;
 }
 
 .login-content-vbox {
   /*-fx-background-image: url('background.png');*/
-  -fx-background-color: linear-gradient(#f0f0f0  0%, #f4f4f4 25%, #f7f7f7 50%, #ffffff 100%);
+  -fx-background-color: linear-gradient(#FFFFFF, #EEEEEE);
 
   -fx-background-radius: 10px 10px 0px 0px;
 }
@@ -24,10 +24,11 @@
         linear-gradient(#c12d57 0%, #c12752 25%, #bb1947 75%, #b50839 100%);
   -fx-text-fill: #ffffff;
   -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+  -fx-font-size: 15px;
 }
 
 .login-label {
-  -fx-font-size: 15px;
+  -fx-font-size: 20px;
   -fx-font-family: Helvetica, sans-serif;
 
 }
@@ -47,4 +48,36 @@
 
 .textfield-error {
   -fx-border-color: #ff0000;
+}
+
+.driver-id-textfield {
+    -fx-font-size: 20px;
+    -fx-font-family: Helvetica;
+}
+
+.wrong-credentials-message {
+    -fx-font-size: 20px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.wrong-credentials-hbox {
+    -fx-border-radius: 10px;
+    -fx-background-color: linear-gradient(#EC6E6E, #EC5353);
+}
+
+.submit-button {
+    -fx-border-radius: 5px;
+    -fx-background-color:
+        linear-gradient(#414141, #000000);
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+    -fx-font-size: 18px;
+}
+
+.large-textfield {
+    -fx-font-size: 24px;
+}
+
+.large-label {
+    -fx-font-size: 24px;
 }
