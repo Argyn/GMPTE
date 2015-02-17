@@ -18,7 +18,7 @@ public class HolidayController {
     
     public HolidayRequestResponse holidayRequest(HolidayRequest request) {
         
-        /*boolean isGranted = true;
+        boolean isGranted = true;
         int holidayCount = 0;
 
         Driver driverNumber = request.getDriver();
@@ -32,7 +32,8 @@ public class HolidayController {
         int holidaysTaken = DriverInfo.getHolidaysTaken(driverID);
         
         for(Date date = startDate; date.compareTo(endDate) > 0; startDate++){
-            holidayCount++;
+            if(DriverInfo,isAvailable(driverID, date))
+                holidayCount++;
         }
         
         if(holidaysTaken + holidayCount > 25)
@@ -42,20 +43,25 @@ public class HolidayController {
         
         int[] driverIDs = DriverInfo.getDrivers();
         
-        /* checking how many people in a given day
-           incomplete
-        for(int i = 0; i < holidayCount; i++){
-            for(int j = 0; j < driverIDs.length; j++){
-                if(driverIDs[j] != driverID){
-                    DriverInfo.isAvailable(driverIDs[j], )
+
+        for(Date date = startDate; date.compareTo(endDate) > 0; startDate++){
+            int count = 0; 
+            if(DriverInfo,isAvailable(driverID, date)){
+                for(int j = 0; j < driverIDs.length; j++){
+                    if(driverIDs[j] != driverID){
+                        if(!DriverInfo.isAvailable(driverIDs[j], date))
+                            count++;
+                    }
                 }
+                if(count >= 10)
+                    isGranted = false;
             }
         }
+ 
         
-        */
         
         
-        /*if(isGranted){
+        if(isGranted){
             for(Date date = startDate; date.compareTo(endDate) > 0; startDate++){
                 DriverInfo.setAvailable(driverID, false, date);
             }
@@ -65,9 +71,7 @@ public class HolidayController {
             return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
         } else{
             return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED);
-        }*/
-        return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
-        
+        }
         
     }
 }
