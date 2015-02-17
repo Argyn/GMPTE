@@ -6,7 +6,8 @@
 
 package gmpte;
 
-import DriverInfo;
+import gmpte.databaseinterface.DriverInfo;
+import gmpte.databaseinterface.database;
 import java.util.Date;
 
 /**
