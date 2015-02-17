@@ -31,9 +31,10 @@ public class DateHelper {
             return false;
         }   
     }
-    public static Date getDateFromString(String stringDate) 
+    public static Date getDateFromString(String stringDate, String dateFormat) 
                                                         throws ParseException {
-        DateFormat format = new SimpleDateFormat("dd/mm/yyyy", Locale.ENGLISH);
+        SimpleDateFormat format = new SimpleDateFormat(dateFormat);
+        format.setLenient(false);
         
         Date date = format.parse(stringDate);
 

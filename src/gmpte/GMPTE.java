@@ -145,14 +145,14 @@ public class GMPTE extends Application {
                 Date endDate = null;
                 
                 try {
-                   startDate = DateHelper.getDateFromString(startDatePicker.getText()); 
+                   startDate = DateHelper.getDateFromString(startDatePicker.getText(),GMPTEConstants.DATE_FORMAT); 
                 } catch(ParseException exception) {
                     
                     // Report error message
                 }
                 
                 try {
-                    endDate = DateHelper.getDateFromString(endDatePicker.getText());
+                    endDate = DateHelper.getDateFromString(endDatePicker.getText(),GMPTEConstants.DATE_FORMAT);
                 } catch(ParseException exception) {
                     // Report error message
                 }

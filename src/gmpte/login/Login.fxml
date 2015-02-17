@@ -55,6 +55,9 @@
                            <effect>
                               <DropShadow />
                            </effect>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                      </children>
                   </HBox>
