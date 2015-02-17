@@ -21,7 +21,7 @@ public class HolidayController {
         boolean isGranted = true;
         int holidayCount = 0;
 
-        Driver driverNumber = request.getDriver();
+        Driver theDriver = request.getDriver();
         Date startDate = request.getStartDate();
         Date endDate = request.getEndDate();
         
@@ -55,6 +55,7 @@ public class HolidayController {
                 }
                 if(count >= 10)
                     isGranted = false;
+                
             }
         }
  
@@ -71,7 +72,7 @@ public class HolidayController {
             return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
         } else{
             return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED);
-        }
+       }
         
     }
 }
