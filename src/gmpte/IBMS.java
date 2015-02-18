@@ -10,7 +10,6 @@ import gmpte.databaseinterface.database;
 import gmpte.holidayrequest.HolidayController;
 import gmpte.holidayrequest.HolidayRequestController;
 import gmpte.login.LoginController;
-import java.net.URL;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -83,7 +82,7 @@ public class IBMS extends Application implements MainControllerInterface {
         holidayRequestController.setHolidayController(holidayController);
         
         Scene scene = new Scene(root);
-        
+        scene.getStylesheets().add("/resources/calendarstyle.css");
         stage.setScene(scene);
         stage.show();
     }

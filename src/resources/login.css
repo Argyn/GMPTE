@@ -81,3 +81,17 @@
 .large-label {
     -fx-font-size: 24px;
 }
+
+.request-result-text {
+    -fx-text-fill: #ffffff;
+}
+
+.error-hbox {
+    -fx-border-radius: 10px;
+    -fx-background-color: linear-gradient(#EC6E6E, #EC5353);
+}
+
+.success-hbox {
+    -fx-border-radius: 10px;
+    -fx-background-color: linear-gradient(#07E834, #00A321);
+}

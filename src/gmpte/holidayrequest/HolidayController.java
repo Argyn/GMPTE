@@ -75,7 +75,7 @@ public class HolidayController {
             return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED);
        } */
                
-    return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
+    return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED);
         
     }
 }
