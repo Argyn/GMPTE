@@ -53,6 +53,7 @@ public class InitialiseTest {
       }while (currentDate.compareTo(afterEndDate) != 0);
   }
   
+  /*
   private static void setRestingDays(int[] driverIDs){
     
     int count = 1;
@@ -97,6 +98,9 @@ public class InitialiseTest {
     
   }
   
+  
+  */
+  
   private static void setDateLessThanReq(int[] driverIDs, Date date){
   
     for(int i = 0; i < 10; i++){
@@ -136,7 +140,7 @@ public class InitialiseTest {
         currentCal.add(Calendar.DATE, 1);
         currentDate = currentCal.getTime();   
             
-      } while (holidayCount == 25);
+      } while (holidayCount == 24);
       
     }
   
@@ -154,20 +158,22 @@ public class InitialiseTest {
     String endString = "30-Jun-2015";
     String exceededString1 = "2-Apr-2015";
     String exceededString2 = "10-Mar-2015";
- 
+    String exceedString = "12-Apr-2015";
+            
 	try {
  
 		startDate = formatter.parse(startString);
         endDate = formatter.parse(endString);
         exceededDate1 = formatter.parse(exceededString1);
         exceededDate2 = formatter.parse(exceededString2);
+        exceedDate = formatter.parse(exceedString);
         
 	} catch (ParseException e) {
 		e.printStackTrace();
 	}
     
     setDriversAvailable(driverIDs);
-    setRestingDays(driverIDs);
+    //setRestingDays(driverIDs);
     
     setDateLessThanReq(driverIDs, exceededDate1);
     setDateLessThanReq(driverIDs, exceededDate2);
