@@ -48,6 +48,7 @@ public class HolidayController {
         currentDate = currentCal.getTime();   
             
       } while (currentDate.compareTo(afterEndDate) != 0);
+      holidayCount -= ((holidayCount / 7) * 2);
       return holidayCount;
     }
 
@@ -79,7 +80,8 @@ public class HolidayController {
       currentDate = currentCal.getTime();   
 
       }while (currentDate.compareTo(afterEndDate) != 0);
-          
+      
+      holidaysTaken -= ((holidaysTaken / 7) * 2);
       DriverInfo.setHolidaysTaken(driverID, holidaysTaken);
 
 	}

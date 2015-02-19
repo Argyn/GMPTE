@@ -35,8 +35,6 @@ public class InitialiseTest {
       int holidaysTaken = DriverInfo.getHolidaysTaken(driverIDs[index]);
       holidaysTaken++;
       
-      System.out.println("Hol:" + holidaysTaken);
-      
       DriverInfo.setHolidaysTaken(driverIDs[index], holidaysTaken);
       
     }
@@ -72,6 +70,7 @@ public class InitialiseTest {
     Date exceededDate1 = null;
     Date exceededDate2 = null;
     Date exceedDate = null;
+    Date sundayDate = null;
     
     database.openBusDatabase();
     int[] driverIDs = DriverInfo.getDrivers();
@@ -80,11 +79,13 @@ public class InitialiseTest {
     String exceededString1 = "2-Apr-2015";
     String exceededString2 = "10-Mar-2015";
     String exceedString = "12-Apr-2015";
+    String sundayString = "1-Mar-2015";
             
 	try {
         exceededDate1 = formatter.parse(exceededString1);
         exceededDate2 = formatter.parse(exceededString2);
         exceedDate = formatter.parse(exceedString);
+        sundayDate = formatter.parse(sundayString);
         
 	} catch (ParseException e) {
 		e.printStackTrace();
@@ -92,9 +93,11 @@ public class InitialiseTest {
     
     setDateLessThanReq(driverIDs, exceededDate1);
     setDateLessThanReq(driverIDs, exceededDate2);
+    setDateLessThanReq(driverIDs, sundayDate);
     
     setHolidayLimitExceeded(testDriver1, exceedDate);
     setHolidayLimitExceeded(testDriver2, exceedDate);
+    
 
     
   }
