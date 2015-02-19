@@ -154,6 +154,7 @@ public class HolidayController {
         Date endDate = request.getEndDate();
         
         int holidaysTaken = DriverInfo.getHolidaysTaken(driverID);
+        
 
         holidayCount = numberOfRequestedHolidays(startDate, endDate, driverID);
 
