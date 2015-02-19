@@ -82,6 +82,10 @@
     -fx-font-size: 24px;
 }
 
+.medium-label {
+    -fx-font-size: 18px;
+}
+
 .request-result-text {
     -fx-text-fill: #ffffff;
 }

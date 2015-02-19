@@ -21,4 +21,11 @@ public class GMPTEConstants {
   
   public static final String ERROR_DURING_REQUEST = 
                   "Error occured, try again.";
+  
+  public static final String ERROR_START_DATE_MUST_PRECEDE_END_DATE =
+                  "Start date must precede end date.";
+  
+  public static int NUMBER_OF_HOLIDAYS_PER_YEAR = 25;
+  
+  public static final String WELCOME_DRIVER_TEXT = "Welcome, {driver-name}";
 }

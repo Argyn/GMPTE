@@ -8,6 +8,7 @@ package gmpte.holidayrequest;
 
 import eu.schudt.javafx.controls.calendar.DatePicker;
 import gmpte.DateHelper;
+import gmpte.Driver;
 import gmpte.GMPTEConstants;
 import gmpte.login.LoginCredentials;
 import java.net.URL;
@@ -46,9 +47,6 @@ public class HolidayRequestController implements Initializable {
   public TextField endDateTextField;
 
   @FXML
-  public ComboBox userMenuComboBox;
-
-  @FXML
   public HBox resultMessageHBox;
   
   @FXML
@@ -57,11 +55,22 @@ public class HolidayRequestController implements Initializable {
   @FXML
   public GridPane holidayForm;
   
+  @FXML
+  public Label holidaysTakenThisYearLabel;
+  
+  @FXML
+  public Label numberOfHolidaysLeftLabel;
+  
+  @FXML
+  public Label welcomeDriverText;
+  
+  
   public DatePicker startDatePicker;
   
   public DatePicker endDatePicker;
   
   public HolidayController holidayController;
+  
   /**
    * Initialises the controller class.
    */
@@ -70,6 +79,7 @@ public class HolidayRequestController implements Initializable {
   public void initialize(URL url, ResourceBundle rb) {
       // initializing date pickers
       startDatePicker = getStartDatePicker();
+      
       endDatePicker = getEndDatePicker();
      
       
@@ -78,14 +88,15 @@ public class HolidayRequestController implements Initializable {
       
       startDateTextField.setVisible(false);
       endDateTextField.setVisible(false);
-      
-      
-      // set prompt text for combo box
-      userMenuComboBox.setPromptText(LoginCredentials.getInstance()
-                                          .getDriver().getName());
 
       // add log out button
       submitButton.setOnAction(getSubmitButtonHandler());
+      
+      // populate info table
+      populateInfoTable();
+      
+      // put welcome driver text
+      putWelcomeDriverText();
   }    
 
   public EventHandler<ActionEvent> getSubmitButtonHandler() {
@@ -95,18 +106,25 @@ public class HolidayRequestController implements Initializable {
         if(LoginCredentials.getInstance().isAuthenticated()
            && startDatePicker.getSelectedDate()!=null 
            && endDatePicker.getSelectedDate()!=null) {
-            // create request
-            HolidayRequest request = 
-                    new HolidayRequest(
-                            LoginCredentials.getInstance().getDriver(),
-                            startDatePicker.getSelectedDate(),
-                            endDatePicker.getSelectedDate()
-                    );
-            // pass request
-            HolidayRequestResponse response = 
-                                    holidayController.holidayRequest(request);
+            if(startDatePicker.getSelectedDate().before(endDatePicker.getSelectedDate())) {
+              // if start date is before end date. then process request
+              // create request
+              HolidayRequest request = 
+                      new HolidayRequest(
+                              LoginCredentials.getInstance().getDriver(),
+                              startDatePicker.getSelectedDate(),
+                              endDatePicker.getSelectedDate()
+                      );
+              // pass request
+              HolidayRequestResponse response = 
+                                      holidayController.holidayRequest(request);
 
-            processHolidayRequestResult(response);
+              processHolidayRequestResult(response);
+            } else {
+              // pop error box
+              popErrorBox(GMPTEConstants.ERROR_START_DATE_MUST_PRECEDE_END_DATE);
+            }
+            
         } // if
       } // handle 
     };
@@ -119,23 +137,18 @@ public class HolidayRequestController implements Initializable {
   public void processHolidayRequestResult(HolidayRequestResponse response) {
     switch(response.getResponse()) {
       case GRANTED:
-        resultMessageHBox.getStyleClass().removeAll("error-hbox");
-        resultMessageHBox.getStyleClass().add("success-hbox");
-        resultMessageText.setText(GMPTEConstants.HOLIDAY_REQUEST_APPROVED);
-        
+        // pop success box with message granted
+        popSuccessBox(GMPTEConstants.HOLIDAY_REQUEST_APPROVED);
         break;
       case NOT_GRANTED:
-        resultMessageHBox.getStyleClass().removeAll("success-hbox");
-        resultMessageHBox.getStyleClass().add("error-hbox");
-        resultMessageText.setText(GMPTEConstants.HOLIDAY_REQUEST_DECLINED);
+        // pop error box with message not granted
+        popErrorBox(GMPTEConstants.HOLIDAY_REQUEST_DECLINED);
         break;
       default:
-        resultMessageHBox.getStyleClass().add("error-hbox");
-        resultMessageText.setText(GMPTEConstants.ERROR_DURING_REQUEST);
+        popErrorBox(GMPTEConstants.ERROR_DURING_REQUEST);
         break;
     }
     
-    resultMessageHBox.setVisible(true);
   }
   
   public DatePicker getStartDatePicker() {
@@ -158,5 +171,38 @@ public class HolidayRequestController implements Initializable {
     datePicker.setDateFormat(format);
     return datePicker;
   }
+   
+  public void popErrorBox(String message) {
+    resultMessageHBox.getStyleClass().removeAll("success-hbox");
+    resultMessageHBox.getStyleClass().add("error-hbox");
+    resultMessageText.setText(message);
+    resultMessageHBox.setVisible(true);
+  }
+  
+  public void popSuccessBox(String message) {
+    resultMessageHBox.getStyleClass().removeAll("error-hbox");
+    resultMessageHBox.getStyleClass().add("success-hbox");
+    resultMessageText.setText(message);
+    resultMessageHBox.setVisible(true);
+  }
+  
+  public void populateInfoTable() {
+    Driver driver = LoginCredentials.getInstance().getDriver();
+    numberOfHolidaysLeftLabel.setText(
+        Integer.toString(
+            GMPTEConstants.NUMBER_OF_HOLIDAYS_PER_YEAR-driver.getHolidaysTaken()
+        ));
+    holidaysTakenThisYearLabel.setText(
+                            Integer.toString(driver.getHolidaysTaken())
+                              );
+  }
+  
+  public void putWelcomeDriverText() {
+    String driverName = LoginCredentials.getInstance().getDriver().getName();
+    String welcomeText = GMPTEConstants.WELCOME_DRIVER_TEXT
+                          .replaceAll("\\{driver-name\\}", driverName);
+    welcomeDriverText.setText(welcomeText);
+    System.out.println(welcomeText);
     
+  }
 }
