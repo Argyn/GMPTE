@@ -207,6 +207,6 @@ public class HolidayRequestController implements Initializable {
   }
   
   public String getDeclinedMessage(String template, String reason) {
-    return template.replaceAll("\\{reason}\\", reason);
+    return template.replaceAll("\\{reason\\}", reason);
   }
 }
