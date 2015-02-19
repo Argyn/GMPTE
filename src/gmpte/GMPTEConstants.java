@@ -32,4 +32,10 @@ public class GMPTEConstants {
   public static final String REQUEST_EXCEEDS_25_DAYS = "Request exceeds 25 days";
   
   public static final String REQUEST_MORE_THAN_REQ_PEOP = "There are already 10 people on holidays";
+  
+  public static final String IBMS_SYSTEM = "IBMS System";
+  
+  public static final String LOGIN_WINDOW_TITLE = "Authorization";
+  
+  public static final String HOLIDAY_REQUEST_WINDOW_TITLE = "Holidays Request";
 }

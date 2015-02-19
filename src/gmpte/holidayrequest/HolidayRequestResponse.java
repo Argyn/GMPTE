@@ -6,6 +6,9 @@
 
 package gmpte.holidayrequest;
 
+import java.util.ArrayList;
+import java.util.Date;
+
 /**
  *
  * @author argyn
@@ -16,8 +19,11 @@ public class HolidayRequestResponse {
     
     private String reason;
     
+    private ArrayList<Date> datesWhenMoreThan10PeopleAreOnHolidays;
+    
     public HolidayRequestResponse(ResponseType response) {
         this.response = response;
+        datesWhenMoreThan10PeopleAreOnHolidays = new ArrayList<Date>();
     }
     
     public HolidayRequestResponse(ResponseType response, String reason) {
@@ -37,6 +43,13 @@ public class HolidayRequestResponse {
         GRANTED, NOT_GRANTED
     }
     
+    public void addDateWhenMoreThanTen(Date date) {
+      datesWhenMoreThan10PeopleAreOnHolidays.add(date);
+    }
+    
+    public ArrayList<Date> getDatesWhenTenDriversAreOnHolidays() {
+      return datesWhenMoreThan10PeopleAreOnHolidays;
+    }
     
     
 }

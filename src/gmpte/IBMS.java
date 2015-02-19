@@ -55,6 +55,10 @@ public class IBMS extends Application implements MainControllerInterface {
         Scene scene = new Scene(root);
         
         stage.setScene(scene);
+        
+        // set window title
+        setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.LOGIN_WINDOW_TITLE);
+        
         stage.show();
     }
 
@@ -84,7 +88,15 @@ public class IBMS extends Application implements MainControllerInterface {
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/resources/calendarstyle.css");
         stage.setScene(scene);
+        
+        // set window title
+        setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.HOLIDAY_REQUEST_WINDOW_TITLE);
+        
         stage.show();
+    }
+    
+    public void setWindowTitle(Stage stage, String title) {
+      stage.setTitle(title);
     }
     
 }

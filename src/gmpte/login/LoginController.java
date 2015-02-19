@@ -47,36 +47,36 @@ public class LoginController implements Initializable {
     
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        
-        // Sign In Button Pressed
-        submitButton.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-              // log in
-              submitLogIn();
-            }
-        });
-        
-        // allow submit by pressing the enter key
-        addSubmitOnEnterListener();
+
+      // Sign In Button Pressed
+      submitButton.setOnAction(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent event) {
+          // log in
+          submitLogIn();
+        }
+      });
+
+      // allow submit by pressing the enter key
+      addSubmitOnEnterListener();
     }
     
     
     
     public Driver initializeDriver(int driverID, int driverNumber) {
-        Driver driver = null;
-        
-        if(DriverInfo.findDriver(Integer.toString(driverNumber))!=0) {
-            // driver has been found
-            driver = new Driver(driverID, driverNumber);
-            driver.setName(DriverInfo.getName(driverID));
-            driver.setHolidaysTaken(DriverInfo.getHolidaysTaken(driverID));
-            driver.setHoursThisWeek(DriverInfo.getHoursThisWeek(driverID));
-            driver.setHoursThisYear(DriverInfo.getHoursThisYear(driverID));
-            driver.setAvailable(DriverInfo.isAvailable(driverID));
-        }
-        
-        return driver;
+      Driver driver = null;
+
+      if(DriverInfo.findDriver(Integer.toString(driverNumber))!=0) {
+        // driver has been found
+        driver = new Driver(driverID, driverNumber);
+        driver.setName(DriverInfo.getName(driverID));
+        driver.setHolidaysTaken(DriverInfo.getHolidaysTaken(driverID));
+        driver.setHoursThisWeek(DriverInfo.getHoursThisWeek(driverID));
+        driver.setHoursThisYear(DriverInfo.getHoursThisYear(driverID));
+        driver.setAvailable(DriverInfo.isAvailable(driverID));
+      }
+
+      return driver;
     }
     
     public void saveDriverCredentials(int driverID, int driverNumber) {
@@ -104,22 +104,22 @@ public class LoginController implements Initializable {
     }
     
     public void submitLogIn() {
-      int driverNumber = Integer.parseInt(driverIDTextField.getText());
-                int driverID;
-                if((driverID = DriverInfo.findDriver(Integer.toString(driverNumber)))==0) {
-                    // no driver found
-                    driverIDTextField.getStyleClass().add("textfield-error");
-                    wrongCredentialsBox.setVisible(true);
-                } else {
-                    // Launch
-                    saveDriverCredentials(driverID, driverNumber);
-                    
-                    try {
-                        mainController.onSuccessfullLogin();
-                    } catch (Exception ex) {
-                        Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+    int driverNumber = Integer.parseInt(driverIDTextField.getText());
+      int driverID;
+      if((driverID = DriverInfo.findDriver(Integer.toString(driverNumber)))==0) {
+        // no driver found
+        driverIDTextField.getStyleClass().add("textfield-error");
+        wrongCredentialsBox.setVisible(true);
+      } else {
+        // Launch
+        saveDriverCredentials(driverID, driverNumber);
+
+        try {
+          mainController.onSuccessfullLogin();
+        } catch (Exception ex) {
+          Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+      }
     }
     
     
