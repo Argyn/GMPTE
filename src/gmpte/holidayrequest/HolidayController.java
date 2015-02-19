@@ -156,6 +156,7 @@ public class HolidayController {
         database.openBusDatabase();
         
         int holidaysTaken = DriverInfo.getHolidaysTaken(driverID);
+        
 
         holidayCount = numberOfRequestedHolidays(startDate, endDate, driverID);
 
