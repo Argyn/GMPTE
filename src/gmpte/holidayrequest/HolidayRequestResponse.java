@@ -19,11 +19,11 @@ public class HolidayRequestResponse {
     
     private String reason;
     
-    private ArrayList<Date> datesWhenMoreThan10PeopleAreOnHolidays;
+    private ArrayList<Date> takenDates;
     
     public HolidayRequestResponse(ResponseType response) {
         this.response = response;
-        datesWhenMoreThan10PeopleAreOnHolidays = new ArrayList<Date>();
+        takenDates = new ArrayList<Date>();
     }
     
     public HolidayRequestResponse(ResponseType response, String reason) {
@@ -39,17 +39,24 @@ public class HolidayRequestResponse {
       return reason;
     }
     
+    public void setReason(String reason) {
+      this.reason = reason;
+    }
+    
     public enum ResponseType {
         GRANTED, NOT_GRANTED
     }
     
     public void addDateWhenMoreThanTen(Date date) {
-      datesWhenMoreThan10PeopleAreOnHolidays.add(date);
+      takenDates.add(date);
     }
     
     public ArrayList<Date> getDatesWhenTenDriversAreOnHolidays() {
-      return datesWhenMoreThan10PeopleAreOnHolidays;
+      return takenDates;
     }
     
+    public void setDatesWhenTenMorePeopleOnHolidays(ArrayList<Date> takenDates) {
+      this.takenDates = takenDates;
+    }
     
 }

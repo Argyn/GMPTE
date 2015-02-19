@@ -6,19 +6,22 @@
 
 package gmpte.holidayrequest;
 
-import gmpte.holidayrequest.HolidayRequest;
-import gmpte.databaseinterface.DriverInfo;
-import gmpte.databaseinterface.database;
 import gmpte.Driver;
 import gmpte.GMPTEConstants;
-import java.util.Date;
+import gmpte.databaseinterface.DriverInfo;
+import gmpte.databaseinterface.database;
+import gmpte.holidayrequest.HolidayRequest;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  *
  * @author argyn
  */
 public class HolidayController {
+  
+    private static ArrayList<Date> wrongDatesArray;
 
 	/*
      * This method counts the number of days the
@@ -53,6 +56,57 @@ public class HolidayController {
       return holidayCount;
     }
 
+	/*
+     * This method checks if there are enough drivers
+     * within the range that the driver requested holiday
+     * returns false if there aren't enough drivers
+	 */
+	public static boolean ifMoreThanRequired(Date startDate, Date endDate,
+                                             int driverID){
+
+      int[] driverIDs = DriverInfo.getDrivers();
+      int count;
+      boolean ifSunday = false;
+
+      Date currentDate = startDate;
+      Date afterEndDate = endDate;
+
+      Calendar currentCal = Calendar.getInstance();
+      currentCal.setTime(afterEndDate);
+      currentCal.add(Calendar.DATE, 1);
+      afterEndDate = currentCal.getTime(); 
+
+      do{
+        count = 0;
+        
+        currentCal.setTime(currentDate);
+        if(currentCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+          ifSunday = true;
+        
+        if(DriverInfo.isAvailable(driverID, currentDate)){
+          for(int j = 0; j < driverIDs.length; j++){
+              if(!DriverInfo.isAvailable(driverIDs[j], currentDate))
+                count++;
+          }
+        }
+        
+        if(!ifSunday && count >= 10){
+          wrongDatesArray.add(currentDate);
+          return true;
+        }
+        else if(ifSunday && count >= (int)(driverIDs.length * 0.25)){
+          wrongDatesArray.add(currentDate); 
+          return true;
+        }
+          
+        currentCal.add(Calendar.DATE, 1);
+        currentDate = currentCal.getTime();   
+
+      } while (currentDate.compareTo(afterEndDate) != 0);
+
+      return false;
+	}	
+    
     /*
      * If the requested holidays are granted
      * this method sets those days unavailable and
@@ -90,53 +144,6 @@ public class HolidayController {
 
 	}
 
-	/*
-     * This method checks if there are enough drivers
-     * within the range that the driver requested holiday
-     * returns false if there aren't enough drivers
-	 */
-	public static boolean ifMoreThanRequired(Date startDate, Date endDate,
-                                             int driverID){
-
-      int[] driverIDs = DriverInfo.getDrivers();
-      int count;
-      boolean ifSunday = false;
-
-      Date currentDate = startDate;
-      Date afterEndDate = endDate;
-
-      Calendar currentCal = Calendar.getInstance();
-      currentCal.setTime(afterEndDate);
-      currentCal.add(Calendar.DATE, 1);
-      afterEndDate = currentCal.getTime(); 
-
-      do{
-        count = 0;
-        
-        currentCal.setTime(currentDate);
-        if(currentCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-          ifSunday = true;
-        
-        if(DriverInfo.isAvailable(driverID, currentDate)){
-          for(int j = 0; j < driverIDs.length; j++){
-              if(!DriverInfo.isAvailable(driverIDs[j], currentDate))
-                count++;
-          }
-        }
-        
-        if(!ifSunday && count >= 10)
-          return true;
-        else if(ifSunday && count >= (int)(driverIDs.length * 0.25))
-           return true;
-          
-        currentCal.add(Calendar.DATE, 1);
-        currentDate = currentCal.getTime();   
-
-      } while (currentDate.compareTo(afterEndDate) != 0);
-
-      return false;
-	}	
-
     /*
     * This method decides whether the driver can
 	* request holidays within the given range
@@ -147,17 +154,22 @@ public class HolidayController {
                                                    boolean holidayLimitExceeded,
                                                    int holidaysTaken,
                                                    int holidayCount){
-		
+      
       if(!moreThanReqPeople && !holidayLimitExceeded){
-        
         setDatesUnavailable(startDate, endDate, driverID, holidaysTaken, holidayCount);
         return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
-      
-      } else if(!moreThanReqPeople && holidayLimitExceeded)
-        return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED, GMPTEConstants.REQUEST_EXCEEDS_25_DAYS);
-      else
-        return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED, GMPTEConstants.REQUEST_MORE_THAN_REQ_PEOP);
-    
+      } else if(!moreThanReqPeople && holidayLimitExceeded) {
+        HolidayRequestResponse response = new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED);
+        response.setReason(GMPTEConstants.REQUEST_EXCEEDS_25_DAYS);
+        return response;
+      } else {
+        HolidayRequestResponse response = 
+                  new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED);
+        response.setReason(GMPTEConstants.REQUEST_MORE_THAN_REQ_PEOP);
+
+        response.setDatesWhenTenMorePeopleOnHolidays(wrongDatesArray);
+        return response;
+      }
   
 	}
     
