@@ -10,6 +10,7 @@ import eu.schudt.javafx.controls.calendar.DatePicker;
 import gmpte.DateHelper;
 import gmpte.Driver;
 import gmpte.GMPTEConstants;
+import gmpte.databaseinterface.DriverInfo;
 import gmpte.login.LoginCredentials;
 import java.net.URL;
 import java.text.DateFormat;
@@ -28,6 +29,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 
@@ -97,6 +99,14 @@ public class HolidayRequestController implements Initializable {
       
       // put welcome driver text
       putWelcomeDriverText();
+      
+      startDatePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+        @Override
+        public void handle(MouseEvent t) {
+          hideMessageBox();
+        }
+      });
   }    
 
   public EventHandler<ActionEvent> getSubmitButtonHandler() {
@@ -139,16 +149,20 @@ public class HolidayRequestController implements Initializable {
       case GRANTED:
         // pop success box with message granted
         popSuccessBox(GMPTEConstants.HOLIDAY_REQUEST_APPROVED);
+        Driver driver = LoginCredentials.getInstance().getDriver();
+        driver.setHolidaysTaken(DriverInfo.getHolidaysTaken(driver.getDriverID()));
+        // update info bar
+        updateNumberOfHolidaysTaken();
         break;
       case NOT_GRANTED:
         // pop error box with message not granted
         popErrorBox(getDeclinedMessage(GMPTEConstants.HOLIDAY_REQUEST_DECLINED, response.getReason()));
+        
         break;
       default:
         popErrorBox(GMPTEConstants.ERROR_DURING_REQUEST);
         break;
     }
-    
   }
   
   public DatePicker getStartDatePicker() {
@@ -186,6 +200,9 @@ public class HolidayRequestController implements Initializable {
     resultMessageHBox.setVisible(true);
   }
   
+  public void hideMessageBox() {
+    resultMessageHBox.setVisible(false);
+  }
   public void populateInfoTable() {
     Driver driver = LoginCredentials.getInstance().getDriver();
     numberOfHolidaysLeftLabel.setText(
@@ -209,4 +226,17 @@ public class HolidayRequestController implements Initializable {
   public String getDeclinedMessage(String template, String reason) {
     return template.replaceAll("\\{reason\\}", reason);
   }
+  
+  public void updateNumberOfHolidaysTaken() {
+    Driver driver = LoginCredentials.getInstance().getDriver();
+    int numberOfHolidaysTaken = driver.getHolidaysTaken();
+    holidaysTakenThisYearLabel.setText(Integer.toString(driver.getHolidaysTaken()));
+    // update number of holidays left
+    numberOfHolidaysLeftLabel.setText(
+            Integer.toString(
+                    GMPTEConstants.NUMBER_OF_HOLIDAYS_PER_YEAR-numberOfHolidaysTaken
+            ));
+    
+  }
+  
 }

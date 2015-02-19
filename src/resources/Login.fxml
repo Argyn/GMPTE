@@ -38,7 +38,7 @@
                     </TextField>
                   <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
-                        <Button fx:id="submitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="52.0" prefWidth="88.0" styleClass="login-button" text="Sign in">
+                        <Button fx:id="submitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="52.0" prefWidth="136.0" styleClass="submit-button" text="Sign in">
                            <font>
                               <Font size="14.0" />
                            </font>
