@@ -95,8 +95,8 @@ public class InitialiseTest {
     setDateLessThanReq(driverIDs, exceededDate2);
     setDateLessThanReq(driverIDs, sundayDate);
     
-   // setHolidayLimitExceeded(testDriver1, exceedDate);
-   // setHolidayLimitExceeded(testDriver2, exceedDate);
+    setHolidayLimitExceeded(testDriver1, exceedDate);
+    setHolidayLimitExceeded(testDriver2, exceedDate);
     
 
     

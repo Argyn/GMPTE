@@ -77,6 +77,7 @@ public class HolidayController {
       afterEndDate = currentCal.getTime(); 
 
       do{
+        ifSunday = false;
         count = 0;
         
         currentCal.setTime(currentDate);
@@ -98,12 +99,12 @@ public class HolidayController {
           wrongDatesArray.add(currentDate); 
           return true;
         }
-          
+         
+        
         currentCal.add(Calendar.DATE, 1);
         currentDate = currentCal.getTime();   
 
       } while (currentDate.compareTo(afterEndDate) != 0);
-
       return false;
 	}	
     
