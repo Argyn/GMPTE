@@ -41,7 +41,6 @@ public class HolidayController {
       do{
         if(DriverInfo.isAvailable(driverID, currentDate)){
           holidayCount++;
-          System.out.println(holidayCount);
         }
 
         currentCal.setTime(currentDate);
@@ -95,6 +94,7 @@ public class HolidayController {
 
       int[] driverIDs = DriverInfo.getDrivers();
       int count;
+      boolean ifSunday = false;
 
       Date currentDate = startDate;
       Date afterEndDate = endDate;
@@ -105,7 +105,12 @@ public class HolidayController {
       afterEndDate = currentCal.getTime(); 
 
       do{
-        count = 0; 
+        count = 0;
+        
+        currentCal.setTime(currentDate);
+        if(currentCal.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+          ifSunday = true;
+        
         if(DriverInfo.isAvailable(driverID, currentDate)){
           for(int j = 0; j < driverIDs.length; j++){
               if(!DriverInfo.isAvailable(driverIDs[j], currentDate))
@@ -113,14 +118,11 @@ public class HolidayController {
           }
         }
         
-        if(count >= 10) {
-          System.out.println("More than 10 people took holidays");
-          System.out.println("Count:"+count);
+        if(!ifSunday && count >= 10)
           return true;
-        }
-        
-
-        currentCal.setTime(currentDate);
+        else if(ifSunday && count >= (int)(driverIDs.length * 0.25))
+           return true;
+          
         currentCal.add(Calendar.DATE, 1);
         currentDate = currentCal.getTime();   
 
