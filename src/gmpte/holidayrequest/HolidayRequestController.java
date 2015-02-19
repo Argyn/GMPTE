@@ -142,7 +142,7 @@ public class HolidayRequestController implements Initializable {
         break;
       case NOT_GRANTED:
         // pop error box with message not granted
-        popErrorBox(GMPTEConstants.HOLIDAY_REQUEST_DECLINED);
+        popErrorBox(getDeclinedMessage(GMPTEConstants.HOLIDAY_REQUEST_DECLINED, response.getReason()));
         break;
       default:
         popErrorBox(GMPTEConstants.ERROR_DURING_REQUEST);
@@ -204,5 +204,9 @@ public class HolidayRequestController implements Initializable {
     welcomeDriverText.setText(welcomeText);
     System.out.println(welcomeText);
     
+  }
+  
+  public String getDeclinedMessage(String template, String reason) {
+    return template.replaceAll("\\{reason}\\", reason);
   }
 }
