@@ -39,8 +39,10 @@ public class HolidayController {
       afterEndDate = currentCal.getTime(); 
 
       do{
-        if(DriverInfo.isAvailable(driverID, currentDate))
+        if(DriverInfo.isAvailable(driverID, currentDate)){
           holidayCount++;
+          System.out.println(holidayCount);
+        }
 
         currentCal.setTime(currentDate);
         currentCal.add(Calendar.DATE, 1);
@@ -106,22 +108,25 @@ public class HolidayController {
         count = 0; 
         if(DriverInfo.isAvailable(driverID, currentDate)){
           for(int j = 0; j < driverIDs.length; j++){
-            if(driverIDs[j] != driverID){
               if(!DriverInfo.isAvailable(driverIDs[j], currentDate))
                 count++;
-            }
           }
         }
-        if(count <= 10)
-        return false;
+        
+        if(count >= 10) {
+          System.out.println("More than 10 people took holidays");
+          System.out.println("Count:"+count);
+          return true;
+        }
+        
 
         currentCal.setTime(currentDate);
         currentCal.add(Calendar.DATE, 1);
         currentDate = currentCal.getTime();   
 
-      }while (currentDate.compareTo(afterEndDate) != 0);
+      } while (currentDate.compareTo(afterEndDate) != 0);
 
-      return true;
+      return false;
 	}	
 
     /*
@@ -134,7 +139,7 @@ public class HolidayController {
                                                    boolean holidayLimitExceeded,
                                                    int holidaysTaken){
 		
-      if(moreThanReqPeople && holidayLimitExceeded){
+      if(!moreThanReqPeople && !holidayLimitExceeded){
         
         setDatesUnavailable(startDate, endDate, driverID, holidaysTaken);
         return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
@@ -142,15 +147,15 @@ public class HolidayController {
       } else if(!moreThanReqPeople && holidayLimitExceeded)
         return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED, GMPTEConstants.REQUEST_EXCEEDS_25_DAYS);
       else
-       return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED, GMPTEConstants.REQUEST_MORE_THAN_REQ_PEOP);
+        return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED, GMPTEConstants.REQUEST_MORE_THAN_REQ_PEOP);
     
   
 	}
     
     public HolidayRequestResponse holidayRequest(HolidayRequest request) {
        
-        boolean holidayLimitExceeded = true;
-        boolean moreThanReqPeople = true;
+        boolean holidayLimitExceeded = false;
+        boolean moreThanReqPeople = false;
         int holidayCount;
 
         Driver theDriver = request.getDriver();
@@ -162,9 +167,11 @@ public class HolidayController {
         
 
         holidayCount = numberOfRequestedHolidays(startDate, endDate, driverID);
-
-        if(holidaysTaken + holidayCount > 25)
-          holidayLimitExceeded = false;
+        
+        
+        if((holidaysTaken + holidayCount) >= 25){
+          holidayLimitExceeded = true;
+        }
 
         moreThanReqPeople = ifMoreThanRequired(startDate, endDate, driverID);
 
