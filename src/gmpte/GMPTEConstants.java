@@ -28,4 +28,6 @@ public class GMPTEConstants {
   public static int NUMBER_OF_HOLIDAYS_PER_YEAR = 25;
   
   public static final String WELCOME_DRIVER_TEXT = "Welcome, {driver-name}";
+  
+  public static final String REQUEST_EXCEEDS_25_DAYS = "Request exceeds 25 days";
 }
