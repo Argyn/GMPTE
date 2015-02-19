@@ -20,6 +20,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 /**
  * FXML Controller class
@@ -50,28 +52,13 @@ public class LoginController implements Initializable {
         submitButton.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-                System.out.println("Sign in button pressed");
-                System.out.println("Driver ID:"+driverIDTextField.getText());
-                
-                
-                int driverNumber = Integer.parseInt(driverIDTextField.getText());
-                int driverID;
-                if((driverID = DriverInfo.findDriver(Integer.toString(driverNumber)))==0) {
-                    // no driver found
-                    driverIDTextField.getStyleClass().add("textfield-error");
-                    wrongCredentialsBox.setVisible(true);
-                } else {
-                    // Launch
-                    saveDriverCredentials(driverID, driverNumber);
-                    
-                    try {
-                        mainController.onSuccessfullLogin();
-                    } catch (Exception ex) {
-                        Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                }
+              // log in
+              submitLogIn();
             }
         });
+        
+        // allow submit by pressing the enter key
+        addSubmitOnEnterListener();
     }
     
     
@@ -100,6 +87,39 @@ public class LoginController implements Initializable {
     
     public void setMainController(MainControllerInterface mainController) {
         this.mainController = mainController;
+    }
+    
+    public void addSubmitOnEnterListener() {
+      driverIDTextField.setOnKeyPressed(new EventHandler<KeyEvent>() {
+
+        @Override
+        public void handle(KeyEvent t) {
+          if(t.getCode().equals(KeyCode.ENTER)) {
+            // submit login
+            submitLogIn();
+          }
+        }
+        
+      });
+    }
+    
+    public void submitLogIn() {
+      int driverNumber = Integer.parseInt(driverIDTextField.getText());
+                int driverID;
+                if((driverID = DriverInfo.findDriver(Integer.toString(driverNumber)))==0) {
+                    // no driver found
+                    driverIDTextField.getStyleClass().add("textfield-error");
+                    wrongCredentialsBox.setVisible(true);
+                } else {
+                    // Launch
+                    saveDriverCredentials(driverID, driverNumber);
+                    
+                    try {
+                        mainController.onSuccessfullLogin();
+                    } catch (Exception ex) {
+                        Logger.getLogger(LoginController.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
     }
     
     
