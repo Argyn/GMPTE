@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package gmpte.holidayrequest;
 
+import gmpte.holidayrequest.*;
+import gmpte.holidayrequest.RejectionReasons.RejectionReason;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -15,38 +16,44 @@ import java.util.Date;
  */
 public class HolidayRequestResponse {
     
+    public enum ResponseType {
+        GRANTED, NOT_GRANTED
+    }
+    
     private ResponseType response;
     
     private String reason;
     
     private ArrayList<Date> takenDates;
     
+    private RejectionReason reasonCode;
+    
+    // construct with null response
+    public HolidayRequestResponse() {
+      this.response = null;
+      takenDates = new ArrayList<Date>();
+    }
     public HolidayRequestResponse(ResponseType response) {
+        super();
         this.response = response;
-        takenDates = new ArrayList<Date>();
     }
     
-    public HolidayRequestResponse(ResponseType response, String reason) {
-        this.response = response;
-        this.reason = reason;
+    /*
+      Sets response (GRANTED or NOT_GRANTED)
+    */
+    public void setResponse(ResponseType response) {
+      this.response = response;
     }
-    
+    /*
+      Returns response
+    */
     public ResponseType getResponse() {
         return response;
     }
-    
-    public String getReason() {
-      return reason;
-    }
-    
-    public void setReason(String reason) {
-      this.reason = reason;
-    }
-    
-    public enum ResponseType {
-        GRANTED, NOT_GRANTED
-    }
-    
+   
+    /*
+      Adds date to the array list of dates when 10 or more people have holidays
+    */
     public void addDateWhenMoreThanTen(Date date) {
       takenDates.add(date);
     }
@@ -55,8 +62,22 @@ public class HolidayRequestResponse {
       return takenDates;
     }
     
-    public void setDatesWhenTenMorePeopleOnHolidays(ArrayList<Date> takenDates) {
-      this.takenDates = takenDates;
+    public void setDatesWhenTenMorePeopleOnHolidays(ArrayList<Date> dates) {
+      takenDates = dates;
+    }
+    
+    /*
+      Set reason code
+    */
+    public void setReasonCode(RejectionReason reasonCode) {
+      this.reasonCode = reasonCode; 
+    }
+    
+    /*
+      Return the reason code
+    */
+    public RejectionReason getReasonCode() {
+      return this.reasonCode;
     }
     
 }

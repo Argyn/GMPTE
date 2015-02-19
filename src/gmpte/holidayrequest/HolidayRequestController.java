@@ -7,16 +7,20 @@
 package gmpte.holidayrequest;
 
 import eu.schudt.javafx.controls.calendar.DatePicker;
-import gmpte.DateHelper;
 import gmpte.Driver;
 import gmpte.GMPTEConstants;
+import gmpte.MainControllerInterface;
 import gmpte.databaseinterface.DriverInfo;
+import gmpte.holidayrequest.RejectionReasons.RejectionReason;
+import static gmpte.holidayrequest.RejectionReasons.RejectionReason.MORE_THAN_TEN_PEOPLE_HAVE_HOLIDAYS;
 import gmpte.login.LoginCredentials;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -26,7 +30,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
@@ -66,12 +69,16 @@ public class HolidayRequestController implements Initializable {
   @FXML
   public Label welcomeDriverText;
   
+  @FXML
+  public Button logOutButton;
   
   public DatePicker startDatePicker;
   
   public DatePicker endDatePicker;
   
   public HolidayController holidayController;
+  
+  public MainControllerInterface mainController;
   
   /**
    * Initialises the controller class.
@@ -100,11 +107,25 @@ public class HolidayRequestController implements Initializable {
       // put welcome driver text
       putWelcomeDriverText();
       
+      // hide message box when date picker get changed
       startDatePicker.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
         @Override
         public void handle(MouseEvent t) {
           hideMessageBox();
+        }
+      });
+      
+      // handle log out button
+      logOutButton.setOnAction(new EventHandler<ActionEvent>() {
+
+        @Override
+        public void handle(ActionEvent t) {
+          try {
+            logOut();
+          } catch (Exception ex) {
+            Logger.getLogger(HolidayRequestController.class.getName()).log(Level.SEVERE, null, ex);
+          }
         }
       });
   }    
@@ -116,30 +137,58 @@ public class HolidayRequestController implements Initializable {
         if(LoginCredentials.getInstance().isAuthenticated()
            && startDatePicker.getSelectedDate()!=null 
            && endDatePicker.getSelectedDate()!=null) {
-            if(startDatePicker.getSelectedDate().before(endDatePicker.getSelectedDate())) {
+            if(validDatesSupplied(startDatePicker.getSelectedDate(), endDatePicker.getSelectedDate())) {
               // if start date is before end date. then process request
               // create request
               HolidayRequest request = 
-                      new HolidayRequest(
-                              LoginCredentials.getInstance().getDriver(),
-                              startDatePicker.getSelectedDate(),
-                              endDatePicker.getSelectedDate()
-                      );
+                new HolidayRequest(
+                        LoginCredentials.getInstance().getDriver(),
+                        startDatePicker.getSelectedDate(),
+                        endDatePicker.getSelectedDate()
+                );
               // pass request
               HolidayRequestResponse response = 
-                                      holidayController.holidayRequest(request);
+                                holidayController.holidayRequest(request);
 
               processHolidayRequestResult(response);
-            } else {
-              // pop error box
-              popErrorBox(GMPTEConstants.ERROR_START_DATE_MUST_PRECEDE_END_DATE);
             }
-            
         } // if
       } // handle 
     };
   }
-
+  
+  public boolean validDatesSupplied(Date startDate, Date endDate) {
+    
+    Date currentDate = new Date();
+    DateFormat format = new SimpleDateFormat(GMPTEConstants.DATE_FORMAT);
+    try {
+      currentDate = format.parse(format.format(currentDate));
+    } catch (ParseException ex) {
+      Logger.getLogger(HolidayRequestController.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(currentDate);
+    calendar.add(Calendar.DATE, 1);
+    Date tomorrow = calendar.getTime();
+    
+    if(startDate.after(endDate)) {
+      popErrorBox(GMPTEConstants.ERROR_START_DATE_MUST_PRECEDE_END_DATE);
+      return false;
+    } else if(startDate.compareTo(endDate)==0) {
+      popErrorBox(GMPTEConstants.CANNOT_REQUEST_HOLIDAYS_FOR_LESS_THAN_DAY);
+      return false;
+    } else if(startDate.compareTo(currentDate)==0) {
+      popErrorBox(GMPTEConstants.START_DATE_SHOULD_START_AT_LEAST_FROM_TMRW);
+      return false;
+    } else if(startDate.before(currentDate)) {
+      popErrorBox(GMPTEConstants.CANNOT_TAKE_HOLIDAYS_IN_THE_PAST);
+      return false;
+    }
+    
+    return true;
+  }
+  
   public void setHolidayController(HolidayController controller) {
     this.holidayController = controller;
   }
@@ -156,8 +205,7 @@ public class HolidayRequestController implements Initializable {
         break;
       case NOT_GRANTED:
         // pop error box with message not granted
-        popErrorBox(getDeclinedMessage(GMPTEConstants.HOLIDAY_REQUEST_DECLINED, response.getReason()));
-        
+        handleRejectedRequest(response);
         break;
       default:
         popErrorBox(GMPTEConstants.ERROR_DURING_REQUEST);
@@ -203,6 +251,7 @@ public class HolidayRequestController implements Initializable {
   public void hideMessageBox() {
     resultMessageHBox.setVisible(false);
   }
+  
   public void populateInfoTable() {
     Driver driver = LoginCredentials.getInstance().getDriver();
     numberOfHolidaysLeftLabel.setText(
@@ -236,7 +285,35 @@ public class HolidayRequestController implements Initializable {
             Integer.toString(
                     GMPTEConstants.NUMBER_OF_HOLIDAYS_PER_YEAR-numberOfHolidaysTaken
             ));
-    
+  }
+  
+  
+  public void setMainController(MainControllerInterface controller) {
+    mainController = controller;
+  }
+  
+  public void logOut() throws Exception {
+    mainController.onLogOut();
+  }
+ 
+  public void handleRejectedRequest(HolidayRequestResponse response) {
+    RejectionReason reasonCode = response.getReasonCode();
+    switch(reasonCode) {
+      case MORE_THAN_TEN_PEOPLE_HAVE_HOLIDAYS:
+        String dates = "";
+        DateFormat format = new SimpleDateFormat(GMPTEConstants.DATE_FORMAT);
+        for(Iterator<Date> it=response.getDatesWhenTenDriversAreOnHolidays().iterator(); it.hasNext();) {
+          Date date = it.next();
+          dates += "\n"+format.format(date);
+        }
+        System.out.println("Dates:"+dates);
+        
+        popErrorBox(GMPTEConstants.REQUEST_MORE_THAN_REQ_PEOP+dates);
+        break;
+      case NUMBER_OF_HOLIDAYS_ALLOWED_EXCEEDED:
+        popErrorBox(GMPTEConstants.REQUEST_EXCEEDS_25_DAYS);
+        break;
+    }
   }
   
 }

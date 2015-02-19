@@ -10,6 +10,8 @@ import gmpte.databaseinterface.database;
 import gmpte.holidayrequest.HolidayController;
 import gmpte.holidayrequest.HolidayRequestController;
 import gmpte.login.LoginController;
+import gmpte.login.LoginCredentials;
+import java.io.IOException;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,82 +23,98 @@ import javafx.stage.Stage;
  * @author mbgm2rm2
  */
 public class IBMS extends Application implements MainControllerInterface {
-    public Stage stage;
-    
-    private HolidayController holidayController;
-    
-    private LoginController loginController;
-    
-    private HolidayRequestController holidayRequestController;
-    
-    @Override
-    public void start(Stage primaryStage) throws Exception {
-        
-        holidayController = new HolidayController();
-        
-        // open database connection
-        database.openBusDatabase();
-        
-        stage = primaryStage;
-        
-        // Load login page first
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource(
-              "/resources/Login.fxml"
-            )
-        );
-        
-        Parent root = (Parent)loader.load();
+  public Stage stage;
 
-        loginController = 
-            loader.<LoginController>getController();
-        loginController.setMainController(this);
-        
-        Scene scene = new Scene(root);
-        
-        stage.setScene(scene);
-        
-        // set window title
-        setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.LOGIN_WINDOW_TITLE);
-        
-        stage.show();
-    }
+  private HolidayController holidayController;
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String[] args) {
-        launch(args);
-    }
+  private LoginController loginController;
 
-    @Override
-    public void onSuccessfullLogin() throws Exception {
-        // Load login page first
-        FXMLLoader loader = new FXMLLoader(
-            getClass().getResource(
-              "/resources/HolidayRequest.fxml"
-            )
-        );
-        
-        Parent root = (Parent)loader.load();
-
-        holidayRequestController = 
-            loader.<HolidayRequestController>getController();
-        
-        holidayRequestController.setHolidayController(holidayController);
-        
-        Scene scene = new Scene(root);
-        scene.getStylesheets().add("/resources/calendarstyle.css");
-        stage.setScene(scene);
-        
-        // set window title
-        setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.HOLIDAY_REQUEST_WINDOW_TITLE);
-        
-        stage.show();
-    }
+  private HolidayRequestController holidayRequestController;
+  
+  
+  @Override
+  public void start(Stage primaryStage) throws Exception {
     
-    public void setWindowTitle(Stage stage, String title) {
-      stage.setTitle(title);
-    }
+    holidayController = new HolidayController();
+
+    // open database connection
+    database.openBusDatabase();
+
+    stage = primaryStage;
+  
+    // show login page
+    showLoginPage();
+  }
+  
+  public void showLoginPage() throws IOException {
+    // Load login page first
+    FXMLLoader loader = new FXMLLoader(
+        getClass().getResource(
+          "/resources/Login.fxml"
+        )
+    );
+
+    Parent root = (Parent)loader.load();
+
+    loginController = 
+        loader.<LoginController>getController();
+    loginController.setMainController(this);
+
+    Scene scene = new Scene(root);
+
+    stage.setScene(scene);
+
+    // set window title
+    setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.LOGIN_WINDOW_TITLE);
+
+    stage.show();
+  }
+  
+  public void showHolidayRequestPage() throws IOException {
+    // Load login page first
+    FXMLLoader loader = new FXMLLoader(
+        getClass().getResource(
+          "/resources/HolidayRequest.fxml"
+        )
+    );
+
+    Parent root = (Parent)loader.load();
+
+    holidayRequestController = 
+        loader.<HolidayRequestController>getController();
+
+    holidayRequestController.setHolidayController(holidayController);
+    holidayRequestController.setMainController(this);
+    
+    Scene scene = new Scene(root);
+    scene.getStylesheets().add("/resources/calendarstyle.css");
+    stage.setScene(scene);
+
+    // set window title
+    setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.HOLIDAY_REQUEST_WINDOW_TITLE);
+
+    stage.show();
+  }
+  /**
+   * @param args the command line arguments
+   */
+  public static void main(String[] args) {
+    launch(args);
+  }
+
+  @Override
+  public void onSuccessfullLogin() throws Exception {
+    showHolidayRequestPage();
+  }
+
+  public void setWindowTitle(Stage stage, String title) {
+    stage.setTitle(title);
+  }
+
+  @Override
+  public void onLogOut() throws IOException {
+    LoginCredentials.getInstance().setDriver(null);
+    showLoginPage();
+  }
     
 }

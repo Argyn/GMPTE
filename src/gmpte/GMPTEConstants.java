@@ -11,13 +11,14 @@ package gmpte;
  * @author argyn
  */
 public class GMPTEConstants {
+  
   public static final String DATE_FORMAT = "dd/MM/yyyy";
     
   public static final String HOLIDAY_REQUEST_APPROVED = 
-                  "Holiday Request Has Been Approved.";
+                  "Holiday Request has been sent for approval.";
   
   public static final String HOLIDAY_REQUEST_DECLINED = 
-                  "Holiday Request Has Not Been Approved, because {reason}.";
+                  "{reason}.";
   
   public static final String ERROR_DURING_REQUEST = 
                   "Error occured, try again.";
@@ -31,11 +32,17 @@ public class GMPTEConstants {
   
   public static final String REQUEST_EXCEEDS_25_DAYS = "Request exceeds 25 days";
   
-  public static final String REQUEST_MORE_THAN_REQ_PEOP = "There are already 10 people on holidays";
+  public static final String REQUEST_MORE_THAN_REQ_PEOP = "There are already 10 people on holidays. In particular, these days:";
   
   public static final String IBMS_SYSTEM = "IBMS System";
   
   public static final String LOGIN_WINDOW_TITLE = "Authorization";
   
   public static final String HOLIDAY_REQUEST_WINDOW_TITLE = "Holidays Request";
+  
+  public static final String CANNOT_REQUEST_HOLIDAYS_FOR_LESS_THAN_DAY = "Start date and end date cannot be the same day";
+  
+  public static final String CANNOT_TAKE_HOLIDAYS_IN_THE_PAST = "You cannot request holidays in the past";
+  
+  public static final String START_DATE_SHOULD_START_AT_LEAST_FROM_TMRW = "Start date must at least start from tomorrow.";
 }

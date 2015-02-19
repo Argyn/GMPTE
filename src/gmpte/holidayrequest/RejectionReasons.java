@@ -4,14 +4,15 @@
  * and open the template in the editor.
  */
 
-package gmpte;
+package gmpte.holidayrequest;
 
 /**
  *
  * @author mbgm2rm2
  */
-public interface MainControllerInterface {
-    void onSuccessfullLogin() throws Exception;
-    
-    void onLogOut() throws Exception;
+public class RejectionReasons {  
+  public enum RejectionReason {
+    NUMBER_OF_HOLIDAYS_ALLOWED_EXCEEDED,
+    MORE_THAN_TEN_PEOPLE_HAVE_HOLIDAYS
+  };
 }
