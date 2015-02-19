@@ -49,6 +49,7 @@ public class HolidayController {
             
       } while (currentDate.compareTo(afterEndDate) != 0);
       holidayCount -= ((holidayCount / 7) * 2);
+      System.out.println(holidayCount);
       return holidayCount;
     }
 
@@ -59,6 +60,7 @@ public class HolidayController {
      */
     public static void setDatesUnavailable(Date startDate,
                                            Date endDate, int driverID,
+                                           int holidayCount,
                                            int holidaysTaken){
 
       Date currentDate = startDate;
@@ -70,18 +72,20 @@ public class HolidayController {
       afterEndDate = currentCal.getTime(); 
 
       do{
+      
+        if(DriverInfo.isAvailable(driverID, currentDate)){
+          DriverInfo.setAvailable(driverID, currentDate, false);
+        }
 
-      DriverInfo.setAvailable(driverID, currentDate, false);
-
-      holidaysTaken++;
-
-      currentCal.setTime(currentDate);
-      currentCal.add(Calendar.DATE, 1);
-      currentDate = currentCal.getTime();   
+        currentCal.setTime(currentDate);
+        currentCal.add(Calendar.DATE, 1);
+        currentDate = currentCal.getTime();   
 
       }while (currentDate.compareTo(afterEndDate) != 0);
       
-      holidaysTaken -= ((holidaysTaken / 7) * 2);
+      
+      holidaysTaken += holidayCount;
+      System.out.println(holidaysTaken);
       DriverInfo.setHolidaysTaken(driverID, holidaysTaken);
 
 	}
@@ -141,11 +145,12 @@ public class HolidayController {
                                                    Date endDate,                                                       int driverID,
                                                    boolean moreThanReqPeople,
                                                    boolean holidayLimitExceeded,
-                                                   int holidaysTaken){
+                                                   int holidaysTaken,
+                                                   int holidayCount){
 		
       if(!moreThanReqPeople && !holidayLimitExceeded){
         
-        setDatesUnavailable(startDate, endDate, driverID, holidaysTaken);
+        setDatesUnavailable(startDate, endDate, driverID, holidaysTaken, holidayCount);
         return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
       
       } else if(!moreThanReqPeople && holidayLimitExceeded)
@@ -180,7 +185,7 @@ public class HolidayController {
         moreThanReqPeople = ifMoreThanRequired(startDate, endDate, driverID);
 
         return ifGranted(startDate, endDate, driverID,
-        								 moreThanReqPeople, holidayLimitExceeded,
-        								 holidaysTaken);
+                         moreThanReqPeople, holidayLimitExceeded,
+                         holidaysTaken, holidayCount);
     }
 }
