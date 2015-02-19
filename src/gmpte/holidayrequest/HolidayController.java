@@ -10,6 +10,7 @@ import gmpte.holidayrequest.HolidayRequest;
 import gmpte.databaseinterface.DriverInfo;
 import gmpte.databaseinterface.database;
 import gmpte.Driver;
+import gmpte.GMPTEConstants;
 import java.util.Date;
 import java.util.Calendar;
 
@@ -138,8 +139,12 @@ public class HolidayController {
         setDatesUnavailable(startDate, endDate, driverID, holidaysTaken);
         return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.GRANTED);
       
-      } else
-      return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED);
+      } else if(!moreThanReqPeople && holidayLimitExceeded)
+        return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED, GMPTEConstants.REQUEST_EXCEEDS_25_DAYS);
+      else
+       return new HolidayRequestResponse(HolidayRequestResponse.ResponseType.NOT_GRANTED, GMPTEConstants.REQUEST_MORE_THAN_REQ_PEOP);
+    
+  
 	}
     
     public HolidayRequestResponse holidayRequest(HolidayRequest request) {

@@ -30,4 +30,6 @@ public class GMPTEConstants {
   public static final String WELCOME_DRIVER_TEXT = "Welcome, {driver-name}";
   
   public static final String REQUEST_EXCEEDS_25_DAYS = "Request exceeds 25 days";
+  
+  public static final String REQUEST_MORE_THAN_REQ_PEOP = "There are already 10 people on holidays";
 }
