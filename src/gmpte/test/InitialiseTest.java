@@ -40,6 +40,21 @@ public class InitialiseTest {
     }
   }
   
+    private static void setDateLessThanReqSunday(int[] driverIDs, Date date){
+  
+    for(int i = 0; i < (int)(driverIDs.length * 0.25); i++){
+    
+      int index = (int)(Math.random() * driverIDs.length);
+      DriverInfo.setAvailable(driverIDs[index], date, false);
+      
+      int holidaysTaken = DriverInfo.getHolidaysTaken(driverIDs[index]);
+      holidaysTaken++;
+      
+      DriverInfo.setHolidaysTaken(driverIDs[index], holidaysTaken);
+      
+    }
+  }
+  
   public static void setHolidayLimitExceeded(int driverID, Date startDate){
 
       int holidayCount = 0;
@@ -71,6 +86,7 @@ public class InitialiseTest {
     Date exceededDate2 = null;
     Date exceedDate = null;
     Date sundayDate = null;
+    Date sundayDate2 = null;
     
     database.openBusDatabase();
     int[] driverIDs = DriverInfo.getDrivers();
@@ -80,25 +96,29 @@ public class InitialiseTest {
     String exceededString2 = "10-Mar-2015";
     String exceedString = "12-Apr-2015";
     String sundayString = "1-Mar-2015";
+    String sundayString2 = "7-Jun-2015";
             
 	try {
         exceededDate1 = formatter.parse(exceededString1);
         exceededDate2 = formatter.parse(exceededString2);
         exceedDate = formatter.parse(exceedString);
         sundayDate = formatter.parse(sundayString);
+        sundayDate2 = formatter.parse(sundayString2);
         
 	} catch (ParseException e) {
 		e.printStackTrace();
 	}
     
-    setDateLessThanReq(driverIDs, exceededDate1);
-    setDateLessThanReq(driverIDs, exceededDate2);
-    setDateLessThanReq(driverIDs, sundayDate);
-    
-    setHolidayLimitExceeded(testDriver1, exceedDate);
-    setHolidayLimitExceeded(testDriver2, exceedDate);
-    
+    //setDateLessThanReq(driverIDs, exceededDate1);
+    //setDateLessThanReq(driverIDs, exceededDate2);
+    //setDateLessThanReq(driverIDs, sundayDate);
+    //setDateLessThanReqSunday(driverIDs, sundayDate2);
 
+    //setHolidayLimitExceeded(testDriver1, exceedDate);
+    //setHolidayLimitExceeded(testDriver2, exceedDate);
+    
+    int theThing =(int) (driverIDs.length * 0.25);
+    System.out.println(theThing);
     
   }
 }
