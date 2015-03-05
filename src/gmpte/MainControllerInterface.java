@@ -6,6 +6,8 @@
 
 package gmpte;
 
+import java.io.IOException;
+
 /**
  *
  * @author mbgm2rm2
@@ -14,4 +16,14 @@ public interface MainControllerInterface {
     void onSuccessfullLogin() throws Exception;
     
     void onLogOut() throws Exception;
+    
+    void showHolidayRequestPage();
+    
+    void showLoginPage();
+    
+    void showControllerInterface();
+    
+    void showMainPage();
+    
+    void showDriverInterface();
 }

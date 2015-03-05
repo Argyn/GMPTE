@@ -67,10 +67,10 @@ public class HolidayRequestController implements Initializable {
   public Label numberOfHolidaysLeftLabel;
   
   @FXML
-  public Label welcomeDriverText;
+  public Label driverName;
   
   @FXML
-  public Button logOutButton;
+  public Button backButton;
   
   public DatePicker startDatePicker;
   
@@ -104,7 +104,7 @@ public class HolidayRequestController implements Initializable {
       // populate info table
       populateInfoTable();
       
-      // put welcome driver text
+      // display driver's name
       putWelcomeDriverText();
       
       // hide message box when date picker get changed
@@ -117,7 +117,7 @@ public class HolidayRequestController implements Initializable {
       });
       
       // handle log out button
-      logOutButton.setOnAction(new EventHandler<ActionEvent>() {
+      backButton.setOnAction(new EventHandler<ActionEvent>() {
 
         @Override
         public void handle(ActionEvent t) {
@@ -264,12 +264,8 @@ public class HolidayRequestController implements Initializable {
   }
   
   public void putWelcomeDriverText() {
-    String driverName = LoginCredentials.getInstance().getDriver().getName();
-    String welcomeText = GMPTEConstants.WELCOME_DRIVER_TEXT
-                          .replaceAll("\\{driver-name\\}", driverName);
-    welcomeDriverText.setText(welcomeText);
-    System.out.println(welcomeText);
-    
+    String driverNameText = LoginCredentials.getInstance().getDriver().getName();
+    driverName.setText(driverNameText);
   }
   
   public String getDeclinedMessage(String template, String reason) {

@@ -40,9 +40,19 @@ public class GMPTEConstants {
   
   public static final String HOLIDAY_REQUEST_WINDOW_TITLE = "Holidays Request";
   
+  public static final String CONTROLLER_INTERFACE_WINDOW = "Controller Interface";
+  
+  public static final String DRIVER_INTERFACE_WINDOW = "Driver User Panel";
+  
   public static final String CANNOT_REQUEST_HOLIDAYS_FOR_LESS_THAN_DAY = "Start date and end date cannot be the same day";
   
   public static final String CANNOT_TAKE_HOLIDAYS_IN_THE_PAST = "You cannot request holidays in the past";
   
   public static final String START_DATE_SHOULD_START_AT_LEAST_FROM_TMRW = "Start date must at least start from tomorrow.";
+  
+  public static final double STAGE_MIN_WIDTH = 500.0;
+  public static final double STAGE_MIN_HEIGHT = 600.0;
+  
+  public static final String MAIN_MENU_ITEM_STYLE = "main-menu-item";
+  public static final String MAIN_MENU_ITEM_ON_HOVER_STYLE = "main-menu-item-hover";
 }

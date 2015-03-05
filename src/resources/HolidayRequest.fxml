@@ -11,16 +11,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="950.0" prefWidth="1250.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.holidayrequest.HolidayRequestController">
+<AnchorPane id="AnchorPane" prefHeight="910.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.holidayrequest.HolidayRequestController">
    <children>
-      <VBox alignment="TOP_CENTER" layoutX="148.0" layoutY="106.0" minHeight="-Infinity" minWidth="-Infinity" prefWidth="653.0" styleClass="login-content-vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="106.0">
+      <VBox alignment="TOP_CENTER" layoutX="200.0" layoutY="222.0" prefHeight="583.0" prefWidth="616.0" styleClass="content-vbox" AnchorPane.bottomAnchor="105.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="184.0" AnchorPane.topAnchor="222.0">
          <children>
-            <HBox alignment="CENTER" prefHeight="57.0" prefWidth="694.0" styleClass="large-label">
-               <children>
-                  <Label fx:id="welcomeDriverText" text="Welcome, {driver-name}" />
-               </children>
-            </HBox>
-            <GridPane fx:id="infoTable" prefHeight="60.0" prefWidth="499.0">
+            <GridPane fx:id="infoTable" prefHeight="51.0" prefWidth="571.0" vgap="20.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -37,7 +32,7 @@
                   <Label fx:id="holidaysTakenThisYearLabel" styleClass="medium-label" text="Label" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                </children>
             </GridPane>
-            <GridPane fx:id="holidayForm" minWidth="633.0" prefHeight="358.0" prefWidth="633.0" vgap="20.0">
+            <GridPane fx:id="holidayForm" prefHeight="358.0" vgap="20.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="289.0" minWidth="10.0" prefWidth="143.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="495.0" minWidth="10.0" prefWidth="327.0" />
@@ -53,8 +48,11 @@
                         <TextField fx:id="endDateTextField" prefHeight="72.0" prefWidth="367.0" promptText="dd/mm/yyyy" styleClass="large-textfield" />
                      </children>
                   </HBox>
-                  <TextField fx:id="startDateTextField" prefHeight="62.0" prefWidth="359.0" promptText="dd/mm/yyyy" styleClass="large-textfield" GridPane.columnIndex="1" />
-                  <Label prefHeight="29.0" prefWidth="138.0" text="Start Date">
+                  <TextField fx:id="startDateTextField" prefHeight="62.0" prefWidth="359.0" promptText="dd/mm/yyyy" styleClass="large-textfield" GridPane.columnIndex="1">
+                     <GridPane.margin>
+                        <Insets />
+                     </GridPane.margin></TextField>
+                  <Label prefHeight="41.0" prefWidth="195.0" text="Start Date">
                      <styleClass>
                         <String fx:value="large-label" />
                         <String fx:value="dropshadow" />
@@ -79,7 +77,7 @@
                   <Insets top="40.0" />
                </VBox.margin>
                <padding>
-                  <Insets bottom="20.0" left="80.0" right="80.0" top="20.0" />
+                  <Insets bottom="20.0" left="10.0" right="10.0" top="20.0" />
                </padding>
             </GridPane>
             <HBox fx:id="resultMessageHBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="success-hbox" visible="false">
@@ -95,29 +93,46 @@
             </HBox>
          </children>
          <padding>
-            <Insets bottom="150.0" left="40.0" right="40.0" />
+            <Insets bottom="150.0" left="40.0" top="20.0" />
          </padding>
       </VBox>
-      <ImageView fitHeight="82.0" fitWidth="92.0" layoutX="14.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" styleClass="login-top-hbox">
+      <ImageView fitHeight="82.0" fitWidth="92.0" layoutX="7.0" layoutY="77.0" pickOnBounds="true" preserveRatio="true" styleClass="login-top-hbox">
          <image>
             <Image url="@logo2.png" />
          </image>
       </ImageView>
-      <Label layoutX="127.0" layoutY="14.0" prefHeight="37.0" prefWidth="291.0" text="Greater Manchester">
+      <Label layoutX="127.0" layoutY="77.0" prefHeight="37.0" prefWidth="291.0" text="Greater Manchester">
          <styleClass>
             <String fx:value="greater-manchester-label" />
             <String fx:value="dropshadow" />
          </styleClass>
       </Label>
-      <Label layoutX="127.0" layoutY="52.0" styleClass="greater-manchester-label" text="Public Transport Executive" />
-      <Button fx:id="logOutButton" layoutX="1035.0" layoutY="14.0" mnemonicParsing="false" prefHeight="37.0" prefWidth="99.0" styleClass="login-button" text="Log Out" />
+      <Label layoutX="127.0" layoutY="118.0" styleClass="greater-manchester-label" text="Public Transport Executive" />
+      <HBox alignment="CENTER_LEFT" prefHeight="52.0" prefWidth="1000.0" styleClass="top-horizontal-menu">
+         <children>
+            <HBox prefHeight="52.0">
+               <children>
+                  <Button fx:id="backButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="119.0" styleClass="top-menu-button" text=" &lt; Back" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="60.0" prefWidth="815.0">
+               <children>
+                  <Label fx:id="driverName" styleClass="top-menu-driver-label" text="DRIVER" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="56.0">
+               <children>
+                  <Button fx:id="logOutButton1" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="118.0" styleClass="top-menu-button" text="Log Out">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
    </children>
-   <padding>
-      <Insets left="20.0" right="20.0" />
-   </padding>
-   <stylesheets>
-      <URL value="@../login/login.css" />
-      <URL value="@login.css" />
-      <URL value="@calendarstyle.css" />
+    <stylesheets>
+      <URL value="@main.css" />
    </stylesheets>
 </AnchorPane>
