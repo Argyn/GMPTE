@@ -14,7 +14,9 @@ import gmpte.Driver;
  */
 public class RosterController {
   
-  public RosterGenerationResponse generateRoster() {
+  public RosterGenerationResponse generateRoster() 
+  {
+    Driver[] driverList = new Driver[5]
     return new RosterGenerationResponse();
   }
   
@@ -25,5 +27,17 @@ public class RosterController {
   public Roster getRostersForAllDrivers() {
     return new Roster();
   }
+  
+  public Driver[] getAvailableDrivers(Driver[] driverList, D)
+  {
+    Driver[] availableDrivers = new Driver[driverList.length];
+    int noOfAvailableDrivers = 0;
+    for (int index = 0; index < driverList.length; index++)
+    {
+      //if (driver is available on date && driver has worked less than 50 hours && driver has worked less than 10 hours in a day && there is enough time left for a driver to do another route)
+      
+    }
+    return availableDrivers;
+  } // getAvailableDrivers
   
 }
