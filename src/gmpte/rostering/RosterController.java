@@ -14,7 +14,7 @@ import gmpte.Driver;
  */
 public class RosterController {
   
-  public RosterGenerationResponse generateController() {
+  public RosterGenerationResponse generateRoster() {
     return new RosterGenerationResponse();
   }
   

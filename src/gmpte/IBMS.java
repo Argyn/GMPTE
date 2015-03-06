@@ -6,7 +6,6 @@
 
 package gmpte;
 
-import com.guigarage.flatterfx.FlatterFX;
 import gmpte.databaseinterface.database;
 import gmpte.holidayrequest.HolidayController;
 import gmpte.holidayrequest.HolidayRequestController;
