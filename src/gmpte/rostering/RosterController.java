@@ -16,7 +16,7 @@ public class RosterController {
   
   public RosterGenerationResponse generateRoster() 
   {
-    Driver[] driverList = new Driver[5]
+    Driver[] driverList = new Driver[5];
     return new RosterGenerationResponse();
   }
   

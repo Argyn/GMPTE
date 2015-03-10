@@ -10,6 +10,13 @@ package gmpte.rostering;
  *
  * @author mbgm2rm2
  */
-public class Roster {
-  
+
+import gmpte.Driver;
+
+public class Roster 
+{
+  private Driver driverId;
+  private Bus busId;
+  private Service serviceID;
+  private int dayId;
 }
