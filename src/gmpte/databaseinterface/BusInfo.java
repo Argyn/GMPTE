@@ -24,6 +24,17 @@ public class BusInfo
   }
 
   /**
+   * Get the identification number of a Bus
+   * @param bus
+   * @return 
+   */
+  public static String getNumber(int bus)
+  {
+    if (bus == 0) throw new InvalidQueryException("Nonexistent bus");
+    return database.busDatabase.get_string("bus", bus, "number");
+  } // getNumber
+  
+  /**
    * Find the ID of the bus with a given fleet number
    * @param number the five-digit fleet  number traditionally used to identify
    * a bus

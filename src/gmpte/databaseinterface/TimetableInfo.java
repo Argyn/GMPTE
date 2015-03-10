@@ -39,6 +39,17 @@ public class TimetableInfo
   }
 
   /**
+   * get a timetable id for a given service ID
+   * @param serviceId
+   * @return 
+   */
+  public static int getDailyTimetableId(int serviceId)
+  {
+    if (serviceId == 0) throw new InvalidQueryException("Nonexistent service");
+    return database.busDatabase.find_id("service", "service_id", serviceId);
+  }
+  
+  /**
    * Get the timing points on a given route
    */
   public static int[] getTimingPoints(int route)

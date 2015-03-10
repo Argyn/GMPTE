@@ -7,6 +7,11 @@
 package gmpte.rostering;
 
 import gmpte.Driver;
+import gmpte.Bus;
+import gmpte.Service;
+import gmpte.databaseinterface.DriverInfo;
+import gmpte.databaseinterface.BusInfo;
+import gmpte.databaseinterface.TimetableInfo;
 
 /**
  *
@@ -14,18 +19,45 @@ import gmpte.Driver;
  */
 public class RosterController {
   
-  public RosterGenerationResponse generateRoster() 
+  private Roster roster;
+  
+  public int generateRoster() 
   {
-    Driver[] driverList = new Driver[5];
-    return new RosterGenerationResponse();
+    int numberOfDrivers = 1; /*DriverInfo.getNumberOfDrivers()*/
+    int[] driverId = DriverInfo.getDrivers();   
+    Driver[] driverList = new Driver[numberOfDrivers];
+    for (int index = 0; index < numberOfDrivers; index++)
+    {
+      driverList[index] = new Driver(driverId[index], Integer.parseInt(DriverInfo.getNumber(driverId[index])));
+    } // for
+    
+    int numberOfBuses = 1; /*BusInfo.getNumberOfBuses()*/
+    int[] busId = BusInfo.getBuses();
+    Bus[] busList = new Bus[numberOfBuses];
+    for (int index = 0; index < numberOfBuses; index++)
+    {
+      busList[index] = new Bus(busId[index]);
+    } // for
+    
+    int numberOfServices = 1; /*TimetableInfo.getNumberOfServices()*/
+    // need a getService method to return an int like of all service Ids
+    /*int[] serviceId = TimetableInfo.getServices(); 
+    Service[] serviceList = new Service[numberOfServices];
+    for (int index = 0; index < numberOfServices; index++)
+    {
+      serviceList[index] = new serviceId(busId[index]);
+    } // for */
+    
+    
+    return 1;
   }
   
-  public Roster getRosterForDriver(Driver driver) {
-    return new Roster();
+  public Roster[] getRosterForDriver(Driver driver) 
+  {
   }
   
-  public Roster getRostersForAllDrivers() {
-    return new Roster();
+  public Roster[] getRostersForAllDrivers() 
+  {
   }
   
   public Driver[] getAvailableDrivers(Driver[] driverList, D)
