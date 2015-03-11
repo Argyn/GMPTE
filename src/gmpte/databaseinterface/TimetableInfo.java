@@ -46,7 +46,8 @@ public class TimetableInfo
   public static int getDailyTimetableId(int serviceId)
   {
     if (serviceId == 0) throw new InvalidQueryException("Nonexistent service");
-    return database.busDatabase.find_id("service", "service_id", serviceId);
+    System.out.println("ID is " + serviceId);
+    return database.busDatabase.find_id("service", serviceId, "daily_timetable");
   }
   
   /**

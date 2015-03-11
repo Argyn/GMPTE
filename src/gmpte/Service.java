@@ -12,6 +12,7 @@ package gmpte;
  */
 
 import gmpte.databaseinterface.TimetableInfo;
+import gmpte.databaseinterface.database;
 
 public class Service 
 {
@@ -20,6 +21,8 @@ public class Service
   
   public Service(int id)
   {
+    // open database connection
+    database.openBusDatabase();
     serviceId = id;
     dailyTimetableId = TimetableInfo.getDailyTimetableId(id);
   } // Service

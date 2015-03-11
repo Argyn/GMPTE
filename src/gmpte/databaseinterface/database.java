@@ -164,6 +164,14 @@ public class database
     if (move_first()) return (Integer)get_field(id_field);
     else return 0;
   }
+  
+  public int find_id(String table, int id, String field_name)
+  {
+    select(field_name, table, table + "_id = " + id, "");
+    if (move_first())
+      return (int)get_field(field_name);
+    else return 0;
+  }
 
   public int[] select_ids(String id_field, String source, String order)
   {
