@@ -49,6 +49,29 @@ public class TimetableInfo
     return database.busDatabase.find_id("service", serviceId, "daily_timetable");
   }
   
+  public boolean checkServiceClashes(int serviceOneId, int ServiceTwoId)
+  {
+    // just removing the cases where some route times start before and end after
+    // midnight by just adding the time past midnight to the hours in the day
+    int[] serviceOneTimes = getRouteTimes(serviceOneId);
+    if (serviceOneTimes[serviceOneTimes.length - 1] < serviceOneTimes[0])
+      serviceOneTimes[serviceOneTimes.length - 1] = 1440 + serviceOneTimes[serviceOneTimes.length - 1];
+    int[] serviceTwoTimes = getRouteTimes(ServiceTwoId);  
+    if (serviceTwoTimes[serviceTwoTimes.length - 1] < serviceTwoTimes[0])
+      serviceTwoTimes[serviceTwoTimes.length - 1] = 1440 + serviceTwoTimes[serviceTwoTimes.length - 1];
+
+    if (serviceTwoTimes[serviceTwoTimes.length - 1] > serviceOneTimes[0] &&
+        serviceTwoTimes[serviceTwoTimes.length - 1] < serviceOneTimes[serviceOneTimes.length - 1])
+      return false;
+    if (serviceTwoTimes[0] > serviceOneTimes[0] &&
+        serviceTwoTimes[0] < serviceOneTimes[serviceOneTimes.length - 1])
+      return false;
+    if (serviceTwoTimes[0] < serviceOneTimes[0] &&
+        serviceTwoTimes[serviceTwoTimes.length - 1] > serviceOneTimes[serviceOneTimes.length - 1])
+      return false;
+    return true;
+  }
+  
   public static int getRouteId(int dailyTimetableId)
   {
     if (dailyTimetableId == 0) throw new InvalidQueryException("Nonexistent timetable");
