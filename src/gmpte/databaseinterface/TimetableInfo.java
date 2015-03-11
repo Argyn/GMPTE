@@ -46,8 +46,28 @@ public class TimetableInfo
   public static int getDailyTimetableId(int serviceId)
   {
     if (serviceId == 0) throw new InvalidQueryException("Nonexistent service");
-    System.out.println("ID is " + serviceId);
     return database.busDatabase.find_id("service", serviceId, "daily_timetable");
+  }
+  
+  public static int getRouteId(int dailyTimetableId)
+  {
+    if (dailyTimetableId == 0) throw new InvalidQueryException("Nonexistent timetable");
+    return database.busDatabase.find_id("daily_timetable", dailyTimetableId, "route");
+  }
+  
+  public static int getRouteLength(int serviceId)
+  {
+    if (serviceId == 0) throw new InvalidQueryException("Nonexistent service");
+    int[] timingPoints = getRouteTimes(serviceId);
+    for (int index = 0; index < timingPoints.length; index++)
+      System.out.println(timingPoints[index]);
+    return timingPoints[timingPoints.length - 1] - timingPoints[0];
+  }
+  
+  public static int[] getRouteTimes(int serviceId)
+  {
+    if (serviceId == 0) throw new InvalidQueryException("Nonexistent service");
+    return database.busDatabase.select_ids("time", "timetable_line", "service", serviceId, "");
   }
   
   /**
