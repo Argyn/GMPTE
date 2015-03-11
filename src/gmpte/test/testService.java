@@ -14,7 +14,7 @@ public class testService
 {
   public static void main(String args[])
   {
-    Service testService = new Service(6177);
+    Service testService = new Service(6290);
     System.out.println("service Id = " + testService.getServiceId());
     System.out.println("dailyTimetableId = " + testService.getDailyTimetableId());
     System.out.println("route = " + testService.getRoute());

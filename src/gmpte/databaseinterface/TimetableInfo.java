@@ -61,6 +61,8 @@ public class TimetableInfo
     int[] timingPoints = getRouteTimes(serviceId);
     for (int index = 0; index < timingPoints.length; index++)
       System.out.println(timingPoints[index]);
+    if (timingPoints[timingPoints.length - 1] < timingPoints[0])
+      return (1440 - timingPoints[0]) + timingPoints[timingPoints.length - 1];
     return timingPoints[timingPoints.length - 1] - timingPoints[0];
   }
   
