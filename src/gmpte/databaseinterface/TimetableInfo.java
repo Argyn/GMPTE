@@ -49,7 +49,8 @@ public class TimetableInfo
     return database.busDatabase.find_id("service", serviceId, "daily_timetable");
   }
   
-  public boolean checkServiceClashes(int serviceOneId, int ServiceTwoId)
+  // returns TRUE if there is a clash and false if there isn't
+  public static boolean checkServiceClashes(int serviceOneId, int ServiceTwoId)
   {
     // just removing the cases where some route times start before and end after
     // midnight by just adding the time past midnight to the hours in the day
@@ -62,14 +63,14 @@ public class TimetableInfo
 
     if (serviceTwoTimes[serviceTwoTimes.length - 1] > serviceOneTimes[0] &&
         serviceTwoTimes[serviceTwoTimes.length - 1] < serviceOneTimes[serviceOneTimes.length - 1])
-      return false;
+      return true;
     if (serviceTwoTimes[0] > serviceOneTimes[0] &&
         serviceTwoTimes[0] < serviceOneTimes[serviceOneTimes.length - 1])
-      return false;
+      return true;
     if (serviceTwoTimes[0] < serviceOneTimes[0] &&
         serviceTwoTimes[serviceTwoTimes.length - 1] > serviceOneTimes[serviceOneTimes.length - 1])
-      return false;
-    return true;
+      return true;
+    return false;
   }
   
   public static int getRouteId(int dailyTimetableId)
@@ -82,11 +83,45 @@ public class TimetableInfo
   {
     if (serviceId == 0) throw new InvalidQueryException("Nonexistent service");
     int[] timingPoints = getRouteTimes(serviceId);
-    for (int index = 0; index < timingPoints.length; index++)
-      System.out.println(timingPoints[index]);
     if (timingPoints[timingPoints.length - 1] < timingPoints[0])
       return (1440 - timingPoints[0]) + timingPoints[timingPoints.length - 1];
     return timingPoints[timingPoints.length - 1] - timingPoints[0];
+  }
+  
+  public static int getNewLength(int routeId)
+  {
+    if (routeId == 0) throw new InvalidQueryException("Nonexistent route");
+    int serviceId = findCompleteService(routeId);
+    return getRouteLength(serviceId);
+  }
+  
+  // finds a service that actually has timing points that match the start and end
+  // points of a route
+  public static int findCompleteService(int routeId)
+  {
+    if (routeId == 0) throw new InvalidQueryException("Nonexistent route"); 
+    int[] services = getServices(routeId);
+    int[] routeTimes;
+    int[] routePath = getRoutePath(routeId);    
+    for (int index = 0; index < services.length; index++)
+    {
+      routeTimes = getServiceTimingPoints(services[index]);
+      if ((routePath[0] == routeTimes[0]) && (routePath[routePath.length - 1] == routeTimes[routeTimes.length - 1]))
+        return services[index];
+    } // for
+    return 0;
+  }
+  
+  public static int[] getServiceTimingPoints(int serviceId)
+  {
+    if (serviceId == 0) throw new InvalidQueryException("Nonexistent service");
+    return database.busDatabase.select_ids("timing_point", "timetable_line", "service", serviceId, "");
+  }
+  
+  public static int[] getRoutePath(int routeId)
+  {
+    if (routeId == 0) throw new InvalidQueryException("Nonexistent route"); 
+    return database.busDatabase.select_ids("Distinct bus_stop", "path", "route", routeId, "sequence");
   }
   
   public static int[] getRouteTimes(int serviceId)
@@ -116,6 +151,16 @@ public class TimetableInfo
     return database.busDatabase.record_count("*", source, "daily_timetable.route", route, "daily_timetable.kind", kind.ordinal());
   }
 
+  /**
+   * Get all the services in a route.
+   */
+  public static int[] getServices(int routeId)
+  {
+    if (routeId == 0) throw new InvalidQueryException("Nonexistent route");
+    String source = database.join("service", "daily_timetable", "daily_timetable");
+    return database.busDatabase.select_ids("service_id", source, "daily_timetable.route", routeId, "");
+  }
+  
   /**
    * Get all the services in a route for the given timetable kind.
    */

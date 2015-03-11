@@ -28,7 +28,7 @@ public class Service
     serviceId = id;
     dailyTimetableId = TimetableInfo.getDailyTimetableId(id);
     routeId = TimetableInfo.getRouteId(dailyTimetableId);
-    serviceLength = TimetableInfo.getRouteLength(id);
+    serviceLength = TimetableInfo.getNewLength(routeId);
   } // Service
   
   public int getServiceId()
