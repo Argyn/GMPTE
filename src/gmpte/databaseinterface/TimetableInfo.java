@@ -1,6 +1,7 @@
 package gmpte.databaseinterface;
 import java.util.*;
 import static java.util.Calendar.*;
+import gmpte.Service;
 
 /**
  * A class providing information about timetables. This is given in a low-level
@@ -48,27 +49,112 @@ public class TimetableInfo
     if (serviceId == 0) throw new InvalidQueryException("Nonexistent service");
     return database.busDatabase.find_id("service", serviceId, "daily_timetable");
   }
-  
-  // returns TRUE if there is a clash and false if there isn't
-  public static boolean checkServiceClashes(int serviceOneId, int ServiceTwoId)
+
+    // returns TRUE if there is a clash and false if there isn't
+  public static boolean checkServiceClashes(Service serviceOne, Service serviceTwo)
   {
+    // get service Ids
+    int serviceOneId = serviceOne.getServiceId();
+    int serviceTwoId = serviceTwo.getServiceId();
+    // get route Ids
+    int serviceOneRoute = serviceOne.getRoute();
+    int serviceTwoRoute = serviceTwo.getRoute();
+    // get route paths
+    int[] routePathOne = getRoutePath(serviceOneRoute);    
+    int[] routePathTwo = getRoutePath(serviceTwoRoute);    
+    // get a list of complete services for each route
+    int[] completeServicesOne = findCompleteServices(serviceOneRoute);
+    int[] completeServicesTwo = findCompleteServices(serviceTwoRoute);
+    // get the paths of the timing points of the input services
+    int[] timingPointsOne = getServiceTimingPoints(serviceOneId);
+    int[] timingPointsTwo = getServiceTimingPoints(serviceTwoId);
+    
+    int serviceOneStart = 0;
+    int serviceOneEnd = 0;
+    int serviceTwoStart = 0;
+    int serviceTwoEnd = 0;
+    
+    boolean foundMatchingTime = false;
+    int serviceIndex = 0;
+    int serviceTimePoint = 0;
+    int completeServiceTimePoint = 0;
+    for (serviceIndex = 0; serviceIndex < completeServicesOne.length; serviceIndex++)
+    {
+      int[] timingPoints = getServiceTimingPoints(completeServicesOne[serviceIndex]);
+      for (serviceTimePoint = 0; serviceTimePoint < timingPointsOne.length; serviceTimePoint++)    
+      {
+        for (completeServiceTimePoint = 0; completeServiceTimePoint < timingPoints.length; completeServiceTimePoint++)    
+        {
+          if (timingPointsOne[serviceTimePoint] == timingPoints[completeServiceTimePoint])
+          {
+            foundMatchingTime = true;
+            break;
+          }
+        }
+        if (foundMatchingTime)
+          break;        
+      }
+      if (foundMatchingTime)
+        break;
+    }
+    if (foundMatchingTime)
+    {
+      int[] serviceTimes = getRouteTimes(serviceOneId);
+      int[] completeServiceTimes = getRouteTimes(completeServicesOne[serviceIndex]);
+      int timeDifference = completeServiceTimes[completeServiceTimePoint] - completeServiceTimes[0];
+      serviceOneStart = serviceTimes[serviceTimePoint] - timeDifference;
+      serviceOneEnd = serviceOneStart + serviceOne.getServiceLength();
+    }
+    
+    
+    // Find second start and end times
+    foundMatchingTime = false;
+    serviceIndex = 0;
+    serviceTimePoint = 0;
+    completeServiceTimePoint = 0;
+    for (serviceIndex = 0; serviceIndex < completeServicesTwo.length; serviceIndex++)
+    {
+      int[] timingPoints = getServiceTimingPoints(completeServicesTwo[serviceIndex]);
+      for (serviceTimePoint = 0; serviceTimePoint < timingPointsTwo.length; serviceTimePoint++)    
+      {
+        for (completeServiceTimePoint = 0; completeServiceTimePoint < timingPoints.length; completeServiceTimePoint++)    
+        {
+          if (timingPointsTwo[serviceTimePoint] == timingPoints[completeServiceTimePoint])
+          {
+            foundMatchingTime = true;
+            break;
+          }
+        }
+        if (foundMatchingTime)
+          break;        
+      }
+      if (foundMatchingTime)
+        break;
+    }
+    if (foundMatchingTime)
+    {
+      int[] serviceTimes = getRouteTimes(serviceTwoId);
+      int[] completeServiceTimes = getRouteTimes(completeServicesTwo[serviceIndex]);
+      int timeDifference = completeServiceTimes[completeServiceTimePoint] - completeServiceTimes[0];
+      serviceTwoStart = serviceTimes[serviceTimePoint] - timeDifference;
+      serviceTwoEnd = serviceOneStart + serviceOne.getServiceLength();
+    }
+    
+    
     // just removing the cases where some route times start before and end after
     // midnight by just adding the time past midnight to the hours in the day
-    int[] serviceOneTimes = getRouteTimes(serviceOneId);
+    /*int[] serviceOneTimes = getRouteTimes(serviceOneId);
     if (serviceOneTimes[serviceOneTimes.length - 1] < serviceOneTimes[0])
       serviceOneTimes[serviceOneTimes.length - 1] = 1440 + serviceOneTimes[serviceOneTimes.length - 1];
     int[] serviceTwoTimes = getRouteTimes(ServiceTwoId);  
     if (serviceTwoTimes[serviceTwoTimes.length - 1] < serviceTwoTimes[0])
-      serviceTwoTimes[serviceTwoTimes.length - 1] = 1440 + serviceTwoTimes[serviceTwoTimes.length - 1];
+      serviceTwoTimes[serviceTwoTimes.length - 1] = 1440 + serviceTwoTimes[serviceTwoTimes.length - 1]; */
 
-    if (serviceTwoTimes[serviceTwoTimes.length - 1] > serviceOneTimes[0] &&
-        serviceTwoTimes[serviceTwoTimes.length - 1] < serviceOneTimes[serviceOneTimes.length - 1])
+    if (serviceTwoEnd > serviceOneStart && serviceTwoEnd < serviceOneEnd)
       return true;
-    if (serviceTwoTimes[0] > serviceOneTimes[0] &&
-        serviceTwoTimes[0] < serviceOneTimes[serviceOneTimes.length - 1])
+    if (serviceTwoStart > serviceOneStart && serviceTwoStart < serviceOneEnd)
       return true;
-    if (serviceTwoTimes[0] < serviceOneTimes[0] &&
-        serviceTwoTimes[serviceTwoTimes.length - 1] > serviceOneTimes[serviceOneTimes.length - 1])
+    if (serviceTwoStart < serviceOneStart && serviceTwoEnd > serviceOneEnd)
       return true;
     return false;
   }
@@ -110,6 +196,31 @@ public class TimetableInfo
         return services[index];
     } // for
     return 0;
+  }
+  
+    // finds a service that actually has timing points that match the start and end
+  // points of a route
+  public static int[] findCompleteServices(int routeId)
+  {
+    if (routeId == 0) throw new InvalidQueryException("Nonexistent route"); 
+    int[] services = getServices(routeId);
+    int[] completeServices = new int[services.length];
+    int serviceCount = 0;
+    int[] routeTimes;
+    int[] routePath = getRoutePath(routeId);    
+    for (int index = 0; index < services.length; index++)
+    {
+      routeTimes = getServiceTimingPoints(services[index]);
+      if ((routePath[0] == routeTimes[0]) && (routePath[routePath.length - 1] == routeTimes[routeTimes.length - 1]))
+      {
+        completeServices[serviceCount] = services[index];
+        serviceCount++;
+      } // if
+    } // for
+    int[] shortenedCompleteServices = new int[serviceCount];
+    for (int index = 0; index <= serviceCount; index++)
+      shortenedCompleteServices[index] = completeServices[index];
+    return shortenedCompleteServices;
   }
   
   public static int[] getServiceTimingPoints(int serviceId)

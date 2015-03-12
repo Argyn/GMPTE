@@ -23,15 +23,15 @@ public class testService
     System.out.println("route = " + testServiceOne.getRoute());
     System.out.println("length = " + testServiceOne.getServiceLength());
     
-    /*System.out.println("\nNormal service");
+    System.out.println("\nNormal service");
     Service testServiceTwo = new Service(6178);
     System.out.println("service Id = " + testServiceTwo.getServiceId());
     System.out.println("dailyTimetableId = " + testServiceTwo.getDailyTimetableId());
     System.out.println("route = " + testServiceTwo.getRoute());
-    System.out.println("length = " + testServiceTwo.getServiceLength()); */
+    System.out.println("length = " + testServiceTwo.getServiceLength()); 
     
     database.openBusDatabase();
-    boolean clashCheck = TimetableInfo.checkServiceClashes(6178, 6177);
+    boolean clashCheck = TimetableInfo.checkServiceClashes(testServiceOne, testServiceTwo);
     System.out.println("clashCheck = " + clashCheck);
       
     /*System.out.println("\nMidnight service");
