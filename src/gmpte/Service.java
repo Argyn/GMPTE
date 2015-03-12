@@ -12,16 +12,23 @@ package gmpte;
  */
 
 import gmpte.databaseinterface.TimetableInfo;
+import gmpte.databaseinterface.database;
 
 public class Service 
 {
   private final int serviceId;
   private final int dailyTimetableId;
+  private final int routeId;
+  private final int serviceLength;
   
   public Service(int id)
   {
+    // open database connection
+    database.openBusDatabase();
     serviceId = id;
     dailyTimetableId = TimetableInfo.getDailyTimetableId(id);
+    routeId = TimetableInfo.getRouteId(dailyTimetableId);
+    serviceLength = TimetableInfo.getNewLength(routeId);
   } // Service
   
   public int getServiceId()
@@ -34,4 +41,14 @@ public class Service
   {
     return dailyTimetableId;
   } // getDailyTimetableId
+  
+  public int getRoute()
+  {
+    return routeId;
+  } // getServiceTime
+  
+  public int getServiceLength()
+  {
+    return serviceLength;
+  } // getServiceTime
 }

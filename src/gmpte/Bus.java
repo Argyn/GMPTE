@@ -6,6 +6,7 @@
 
 package gmpte;
 import gmpte.databaseinterface.BusInfo;
+import gmpte.databaseinterface.database;
 
 
 /**
@@ -16,12 +17,13 @@ public class Bus
 {
   private final int busID;   
   private final String busNumber;   
-  private boolean available;  
   
   public Bus(int id)
   {
+    // open database connection
+    database.openBusDatabase();
     busID = id;
-    busNumber = BusInfo.getNumber(id);
+    busNumber = BusInfo.busNumber(id);
   } // Bus
   
   public int getBusId()
