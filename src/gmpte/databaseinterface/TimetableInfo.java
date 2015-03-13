@@ -137,9 +137,12 @@ public class TimetableInfo
       int[] completeServiceTimes = getRouteTimes(completeServicesTwo[serviceIndex]);
       int timeDifference = completeServiceTimes[completeServiceTimePoint] - completeServiceTimes[0];
       serviceTwoStart = serviceTimes[serviceTimePoint] - timeDifference;
-      serviceTwoEnd = serviceOneStart + serviceOne.getServiceLength();
+      System.out.println(serviceTwo.getServiceLength());
+      serviceTwoEnd = serviceTwoStart + serviceTwo.getServiceLength();
     }
-    
+    System.out.println("one start " + serviceOneStart + "one end " + serviceOneEnd);
+    System.out.println("one start " + serviceTwoStart + "one end " + serviceTwoEnd);
+
     
     // just removing the cases where some route times start before and end after
     // midnight by just adding the time past midnight to the hours in the day
@@ -218,8 +221,10 @@ public class TimetableInfo
       } // if
     } // for
     int[] shortenedCompleteServices = new int[serviceCount];
-    for (int index = 0; index <= serviceCount; index++)
+    for (int index = 0; index < serviceCount; index++)
+    {
       shortenedCompleteServices[index] = completeServices[index];
+    }
     return shortenedCompleteServices;
   }
   
@@ -346,5 +351,28 @@ public class TimetableInfo
       default:                return timetableKind.weekday;
     }
   }
-
+  
+  public static int[] getRosterBus(int driverId)
+  {
+    if (driverId == 0) throw new InvalidQueryException("Nonexistent driver");
+    return database.busDatabase.select_ids("bus", "roster", "driver", driverId, "");
+  } // getRosterBus
+  
+  public static int[] getRosterService(int driverId)
+  {
+    if (driverId == 0) throw new InvalidQueryException("Nonexistent driver");
+    return database.busDatabase.select_ids("service", "roster", "driver", driverId, "");
+  } // getRosterService
+  
+  public static int[] getRosterDay(int driverId)
+  {
+    if (driverId == 0) throw new InvalidQueryException("Nonexistent driver");
+    return database.busDatabase.select_ids("day", "roster", "driver", driverId, "");
+  } // getRosterDay
+  
+  public static int[] getTimeWorked(int driverId)
+  {
+    if (driverId == 0) throw new InvalidQueryException("Nonexistent driver");
+    return database.busDatabase.select_ids("timeWorked", "roster", "driver", driverId, "");
+  } // getRosterDay
 }

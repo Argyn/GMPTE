@@ -16,8 +16,9 @@ public class testService
 {
   public static void main(String args[]) 
   {
+    database.openBusDatabase();
     System.out.println("Normal service");
-    Service testServiceOne = new Service(6529);
+    Service testServiceOne = new Service(6177);
     System.out.println("service Id = " + testServiceOne.getServiceId());
     System.out.println("dailyTimetableId = " + testServiceOne.getDailyTimetableId());
     System.out.println("route = " + testServiceOne.getRoute());
@@ -30,11 +31,10 @@ public class testService
     System.out.println("route = " + testServiceTwo.getRoute());
     System.out.println("length = " + testServiceTwo.getServiceLength()); 
     
-    database.openBusDatabase();
     boolean clashCheck = TimetableInfo.checkServiceClashes(testServiceOne, testServiceTwo);
-    System.out.println("clashCheck = " + clashCheck);
+    System.out.println("\n\n\nclashCheck = " + clashCheck + "\n\n\n");
       
-    /*System.out.println("\nMidnight service");
+    System.out.println("\nMidnight service");
     Service testServiceThree = new Service(6237);
     System.out.println("service Id = " + testServiceThree.getServiceId());
     System.out.println("dailyTimetableId = " + testServiceThree.getDailyTimetableId());
@@ -42,17 +42,20 @@ public class testService
     System.out.println("length = " + testServiceThree.getServiceLength()); 
     
     System.out.println("\nMidnight service");
-    Service testServiceFour = new Service(6237);
+    Service testServiceFour = new Service(6460);
     System.out.println("service Id = " + testServiceFour.getServiceId());
     System.out.println("dailyTimetableId = " + testServiceFour.getDailyTimetableId());
     System.out.println("route = " + testServiceFour.getRoute());
     System.out.println("length = " + testServiceFour.getServiceLength()); 
     
     System.out.println("\nNormal service");
-    Service testServiceFive = new Service(6381);
+    Service testServiceFive = new Service(6237);
     System.out.println("service Id = " + testServiceFive.getServiceId());
     System.out.println("dailyTimetableId = " + testServiceFive.getDailyTimetableId());
     System.out.println("route = " + testServiceFive.getRoute());
-    System.out.println("length = " + testServiceFive.getServiceLength()); */
+    System.out.println("length = " + testServiceFive.getServiceLength()); 
+    
+    clashCheck = TimetableInfo.checkServiceClashes(testServiceFour, testServiceFive);
+    System.out.println("\n\n\nclashCheck = " + clashCheck + "\n\n\n");
   }
 }

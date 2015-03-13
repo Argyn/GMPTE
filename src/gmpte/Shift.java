@@ -16,14 +16,17 @@ public class Shift
   private int shiftStart;
   private int shiftEnd;
   // waiting time
-  private int duration;
+  private int waitingTime;
   
-  public Shift(Service[] services, boolean[] serviceAvailability)
+  public Shift(Service[] services, boolean[] serviceTaken)
   {
+    for (int index = 0; index < services.length; index++)
+      if (!serviceTaken[index]);
+        
     // assign first available service to shift
     // thats start becomes the shift start
     // if service has no clash with any previous service
     // allocate service and set its availability to 0;
-    
+ 
   }
 }

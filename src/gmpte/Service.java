@@ -23,12 +23,16 @@ public class Service
   
   public Service(int id)
   {
-    // open database connection
-    database.openBusDatabase();
     serviceId = id;
     dailyTimetableId = TimetableInfo.getDailyTimetableId(id);
     routeId = TimetableInfo.getRouteId(dailyTimetableId);
-    serviceLength = TimetableInfo.getNewLength(routeId);
+    int[] serviceTimingPoints = TimetableInfo.getServiceTimingPoints(id);
+    int[] routePath = TimetableInfo.getRoutePath(routeId);
+    if (serviceTimingPoints[0] == routePath[0] &&
+      serviceTimingPoints[serviceTimingPoints.length - 1] == routePath[routePath.length - 1])
+      serviceLength = TimetableInfo.getRouteLength(id);
+    else
+      serviceLength = TimetableInfo.getNewLength(routeId);
   } // Service
   
   public int getServiceId()
