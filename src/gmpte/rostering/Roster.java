@@ -5,7 +5,6 @@
  */
 
 package gmpte.rostering;
-import gmpte.databaseinterface.DriverInfo;
 /**
  *
  * @author mbgm2rm2
@@ -21,6 +20,7 @@ public class Roster
   private Bus bus;
   private Service service;
   private int day;
+  private int serviceTime;
   
   public Roster(Driver newDriver, Bus newBus, Service newService, int weekDay)
   {
@@ -28,6 +28,7 @@ public class Roster
     bus = newBus;
     service = newService;
     day = weekDay;
+    serviceTime = service.getServiceLength();
   } // Roster
   
   public Driver getDriver()
@@ -49,6 +50,16 @@ public class Roster
   {
     return day;
   } // getDay
+  
+  public int getServiceTime()
+  {
+    return serviceTime;
+  }  
+  
+  public void storeRoster()
+  {
+    
+  }
 }
 
 /*

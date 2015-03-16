@@ -1,7 +1,11 @@
 package gmpte.databaseinterface;
 import java.util.*;
 import static java.util.Calendar.*;
+import gmpte.Bus;
+import gmpte.Driver;
 import gmpte.Service;
+import gmpte.rostering.Roster;
+
 
 /**
  * A class providing information about timetables. This is given in a low-level
@@ -177,6 +181,12 @@ public class TimetableInfo
     return timingPoints[timingPoints.length - 1] - timingPoints[0];
   }
   
+  public static void storeNewRoster(Roster roster)
+  {
+    if (roster == null) throw new InvalidQueryException("Roster is null");
+      database.busDatabase.new_record("roster", new Object[][]{{"driver", roster.getDriver().getDriverID()}, {"bus", roster.getBus().getBusId()}, {"service", roster.getService().getServiceId()}, {"date", roster.getDay()}, {"timeWorked", roster.getServiceTime()}});
+  }
+    
   public static int getNewLength(int routeId)
   {
     if (routeId == 0) throw new InvalidQueryException("Nonexistent route");
