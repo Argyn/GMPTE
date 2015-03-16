@@ -103,7 +103,5 @@ public class Service
   public int compareTo(Service other)
   {
     return this.getStartTime() - other.getStartTime();
-  } // compareTo
-  /*
+  } //compareTo
 }
-*/
