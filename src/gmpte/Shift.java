@@ -118,5 +118,9 @@ public class Shift implements Comparable<Shift>
            + "\n---------- Strech 1 ----------\n" + firstStrech.toString()
            + "\n---------- Strech 1 ----------\n" + secondStrech.toString();
   } // toString
+
+  public void setDriverID(int driver) {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
   
 } // Shift

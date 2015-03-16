@@ -72,6 +72,8 @@ public class DriverInfo
 
   /**
    * Get the number of hours worked by a driver so far this calandar year
+   * @param driver
+   * @return 
    */
   public static int getHoursThisYear(int driver)
   {
@@ -81,6 +83,8 @@ public class DriverInfo
 
   /**
    * Set the number of hours worked by a driver so far this calandar year
+   * @param driver
+   * @param value
    */
   public static void setHoursThisYear(int driver, int value)
   {
