@@ -1,0 +1,101 @@
+/*
+ * Empty Stylesheet file.
+ */
+
+.mainFxmlClass {
+  -fx-background-color: linear-gradient(#414141, #000000);
+  -fx-font-family: Helvetica, sans-serif;
+}
+
+.login-content-vbox {
+  /*-fx-background-image: url('background.png');*/
+  -fx-background-color: linear-gradient(#FFFFFF, #EEEEEE);
+
+  -fx-background-radius: 10px 10px 0px 0px;
+}
+
+.login-top-hbox {
+  -fx-background-color: #000000;
+}
+
+.login-button {
+  -fx-border-radius: 5px;
+  -fx-background-color:
+        linear-gradient(#c12d57 0%, #c12752 25%, #bb1947 75%, #b50839 100%);
+  -fx-text-fill: #ffffff;
+  -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+  -fx-font-size: 15px;
+}
+
+.login-label {
+  -fx-font-size: 20px;
+  -fx-font-family: Helvetica, sans-serif;
+
+}
+.login-label-driver-id {
+  -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.dropshadow {
+  -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+}
+
+.greater-manchester-label {
+  -fx-font-size: 25px;
+  -fx-text-fill: #ffffff;
+  -fx-font-weight: bold;
+}
+
+.textfield-error {
+  -fx-border-color: #ff0000;
+}
+
+.driver-id-textfield {
+    -fx-font-size: 20px;
+    -fx-font-family: Helvetica;
+}
+
+.wrong-credentials-message {
+    -fx-font-size: 20px;
+    -fx-text-fill: #FFFFFF;
+}
+
+.wrong-credentials-hbox {
+    -fx-border-radius: 10px;
+    -fx-background-color: linear-gradient(#EC6E6E, #EC5353);
+}
+
+.submit-button {
+    -fx-border-radius: 5px;
+    -fx-background-color:
+        linear-gradient(#414141, #000000);
+    -fx-text-fill: #ffffff;
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 0,0,0,1 );
+    -fx-font-size: 18px;
+}
+
+.large-textfield {
+    -fx-font-size: 24px;
+}
+
+.large-label {
+    -fx-font-size: 24px;
+}
+
+.medium-label {
+    -fx-font-size: 18px;
+}
+
+.request-result-text {
+    -fx-text-fill: #ffffff;
+}
+
+.error-hbox {
+    -fx-border-radius: 10px;
+    -fx-background-color: linear-gradient(#EC6E6E, #EC5353);
+}
+
+.success-hbox {
+    -fx-border-radius: 10px;
+    -fx-background-color: linear-gradient(#07E834, #00A321);
+}

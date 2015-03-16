@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="889.0" prefWidth="1220.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.rostering.ControllerInterfaceController">
+   <children>
+      <ImageView fitHeight="82.0" fitWidth="92.0" layoutX="14.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true" styleClass="login-top-hbox">
+         <image>
+            <Image url="@logo2.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="128.0" layoutY="65.0" prefHeight="37.0" prefWidth="291.0" text="Greater Manchester">
+         <styleClass>
+            <String fx:value="greater-manchester-label" />
+            <String fx:value="dropshadow" />
+         </styleClass>
+      </Label>
+      <Label layoutX="128.0" layoutY="103.0" styleClass="greater-manchester-label" text="Public Transport Executive" />
+      <HBox alignment="CENTER_LEFT" layoutX="-3.0" styleClass="top-horizontal-menu">
+         <children>
+            <HBox prefHeight="44.0" prefWidth="509.0">
+               <children>
+                  <Button fx:id="backButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="95.0" styleClass="top-menu-button" text=" &lt; Back" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="52.0" prefWidth="748.0">
+               <children>
+                  <Button fx:id="logOutButton" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="114.0" styleClass="top-menu-button" text="Log Out">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutX="526.0" layoutY="308.0">
+         <children>
+            <VBox fx:id="generateRosterMenuItem" prefHeight="257.0" prefWidth="210.0">
+               <styleClass>
+                  <String fx:value="main-menu-item" />
+                  <String fx:value="content-vbox" />
+               </styleClass>
+               <children>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-icon-container">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@generate-roster.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-label-container">
+                     <children>
+                        <Label styleClass="main-menu-item-label" text="GENERATE ROSTER" textAlignment="CENTER" wrapText="true" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+         </children>
+      </HBox>
+      <HBox layoutX="531.0" layoutY="190.0" />
+      <Label layoutX="461.0" layoutY="223.0" styleClass="main-menu-choose-label" text="Controller Interface" />
+   </children>
+   <stylesheets>
+      <URL value="@main.css" />
+   </stylesheets>
+</AnchorPane>

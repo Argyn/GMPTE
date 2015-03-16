@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" minHeight="400.0" minWidth="300.0" prefHeight="950.0" prefWidth="1250.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.StartupController">
+   <stylesheets>
+        <URL value="@main.css" />
+    </stylesheets>
+    <children>
+      <ImageView fitHeight="82.0" fitWidth="92.0" layoutX="14.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" styleClass="login-top-hbox">
+         <image>
+            <Image url="@logo2.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="127.0" layoutY="14.0" prefHeight="37.0" prefWidth="291.0" text="Greater Manchester">
+         <styleClass>
+            <String fx:value="greater-manchester-label" />
+            <String fx:value="dropshadow" />
+         </styleClass>
+      </Label>
+      <Label layoutX="127.0" layoutY="52.0" styleClass="greater-manchester-label" text="Public Transport Executive" />
+      <Label text="Label" />
+      <HBox alignment="CENTER" layoutY="271.0" prefHeight="43.0" prefWidth="1250.0">
+         <children>
+            <Label alignment="CENTER" styleClass="main-menu-choose-label" text="Please, identify yourself." />
+         </children>
+      </HBox>
+      <HBox alignment="CENTER" layoutY="359.0" prefHeight="239.0" prefWidth="1250.0">
+         <children>
+            <VBox fx:id="driverMenuItem" prefHeight="190.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-icon-container">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@driver-icon.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="32.0" prefWidth="200.0" styleClass="main-menu-item-label-container">
+                     <children>
+                        <Label styleClass="main-menu-item-label" text="DRIVER" />
+                     </children>
+                  </HBox>
+               </children>
+               <styleClass>
+                  <String fx:value="content-vbox" />
+                  <String fx:value="main-menu-item" />
+               </styleClass>
+               <HBox.margin>
+                  <Insets right="70.0" />
+               </HBox.margin>
+            </VBox>
+            <VBox fx:id="controllerMenuItem" prefHeight="190.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-icon-container">
+                     <children>
+                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@controller.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="32.0" prefWidth="200.0" styleClass="main-menu-item-label-container">
+                     <children>
+                        <Label styleClass="main-menu-item-label" text="CONTROLLER" />
+                     </children>
+                  </HBox>
+               </children>
+               <styleClass>
+                  <String fx:value="content-vbox" />
+                  <String fx:value="main-menu-item" />
+               </styleClass>
+               <HBox.margin>
+                  <Insets left="70.0" />
+               </HBox.margin>
+            </VBox>
+         </children>
+      </HBox>
+   </children>
+   <padding>
+      <Insets left="20.0" right="20.0" />
+   </padding>
+</AnchorPane>
