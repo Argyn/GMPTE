@@ -16,10 +16,6 @@ import java.util.Date;
  */
 public class DriverInfo 
 {
-
-  public static int getNumberOfUnavailableDrivers(Date date) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
   // This class is not intended to be instantiated
   private DriverInfo() 
   { 
@@ -72,8 +68,6 @@ public class DriverInfo
 
   /**
    * Get the number of hours worked by a driver so far this calandar year
-   * @param driver
-   * @return 
    */
   public static int getHoursThisYear(int driver)
   {
@@ -83,8 +77,6 @@ public class DriverInfo
 
   /**
    * Set the number of hours worked by a driver so far this calandar year
-   * @param driver
-   * @param value
    */
   public static void setHoursThisYear(int driver, int value)
   {

@@ -8,7 +8,7 @@ package gmpte;
 
 /**
  *
- * @author mbax3jw3, mbax2mf2
+ * @author mbax3jw3
  */
 
 import gmpte.databaseinterface.TimetableInfo;
@@ -17,14 +17,11 @@ import gmpte.databaseinterface.database;
 public class Service 
 {
   private final int serviceId;
-  //private final int dailyTimetableId;
-  //private final int routeId;
-  //private final int serviceLength;
-  private final int startTime;
-  private final int endTime;
-  private boolean assigned;
+  private final int dailyTimetableId;
+  private final int routeId;
+  private final int serviceLength;
   
- /* public Service(int id)
+  public Service(int id)
   {
     serviceId = id;
     dailyTimetableId = TimetableInfo.getDailyTimetableId(id);
@@ -37,14 +34,14 @@ public class Service
     else
       serviceLength = TimetableInfo.getNewLength(routeId);
   } // Service
-  */
+  
   public int getServiceId()
   {
     return serviceId;
   } // getServiceId
   
  
- /* public int getDailyTimetableId()
+  public int getDailyTimetableId()
   {
     return dailyTimetableId;
   } // getDailyTimetableId
@@ -58,50 +55,4 @@ public class Service
   {
     return serviceLength;
   } // getServiceTime
-  */
-  public int getStartTime()
-  {
-    return startTime;
-  } // getStartTime
-
-
-  public int getEndTime()
-  {
-    return endTime;
-  } // getEndTime
-
-
-  public boolean isAssigned()
-  {
-    return assigned;
-  } // isAssigned
-
-
-  public void setAssigned(boolean assignement)
-  {
-    assigned = assignement;
-  } // setAssigned
-
-
-  Service(int service, int serviceStart, int serviceEnd)
-  {
-    serviceId = service;
-    startTime = serviceStart;
-    endTime = serviceEnd;
-    assigned = false;
-  } // Service
-
-
-  @Override
-  public String toString()
-  {
-    return "Service: " + serviceId + " | Start Time: " + startTime
-             + " | End Time: " + endTime;
-  } // toString
-
-
-  public int compareTo(Service other)
-  {
-    return this.getStartTime() - other.getStartTime();
-  } //compareTo
 }

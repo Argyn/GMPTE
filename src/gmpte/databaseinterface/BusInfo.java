@@ -10,10 +10,6 @@ import java.util.Date;
 public class BusInfo 
 {
 
-  public static int getNumberOfUnavailableBuses(Date date) {
-    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-  }
-
   // This class is not intended to be istantiated.
   private BusInfo() 
   {
