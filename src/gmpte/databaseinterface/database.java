@@ -71,7 +71,7 @@ public class database
       return false;
   }
 
-  private Boolean execute(String sql_command)
+  public Boolean execute(String sql_command)
   {
      try
      {

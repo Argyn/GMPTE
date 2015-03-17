@@ -1,11 +1,13 @@
 package gmpte.databaseinterface;
-import java.util.*;
-import static java.util.Calendar.*;
 import gmpte.Bus;
 import gmpte.Driver;
+import gmpte.Roster;
+import gmpte.Schedule;
 import gmpte.Service;
-import gmpte.rostering.Roster;
+import java.util.*;
 
+import java.util.ArrayList;
+import static java.util.Calendar.*;
 
 /**
  * A class providing information about timetables. This is given in a low-level
@@ -107,7 +109,7 @@ public class TimetableInfo
       int[] completeServiceTimes = getRouteTimes(completeServicesOne[serviceIndex]);
       int timeDifference = completeServiceTimes[completeServiceTimePoint] - completeServiceTimes[0];
       serviceOneStart = serviceTimes[serviceTimePoint] - timeDifference;
-      serviceOneEnd = serviceOneStart + serviceOne.getServiceLength();
+      serviceOneEnd = serviceOneStart + serviceOne.getServiceLengthMinutes();
     }
     
     
@@ -141,8 +143,8 @@ public class TimetableInfo
       int[] completeServiceTimes = getRouteTimes(completeServicesTwo[serviceIndex]);
       int timeDifference = completeServiceTimes[completeServiceTimePoint] - completeServiceTimes[0];
       serviceTwoStart = serviceTimes[serviceTimePoint] - timeDifference;
-      System.out.println(serviceTwo.getServiceLength());
-      serviceTwoEnd = serviceTwoStart + serviceTwo.getServiceLength();
+      System.out.println(serviceTwo.getServiceLengthMinutes());
+      serviceTwoEnd = serviceTwoStart + serviceTwo.getServiceLengthMinutes();
     }
     System.out.println("one start " + serviceOneStart + "one end " + serviceOneEnd);
     System.out.println("one start " + serviceTwoStart + "one end " + serviceTwoEnd);
@@ -184,9 +186,68 @@ public class TimetableInfo
   public static void storeNewRoster(Roster roster)
   {
     if (roster == null) throw new InvalidQueryException("Roster is null");
-      database.busDatabase.new_record("roster", new Object[][]{{"driver", roster.getDriver().getDriverID()}, {"bus", roster.getBus().getBusId()}, {"service", roster.getService().getServiceId()}, {"date", roster.getDay()}, {"timeWorked", roster.getServiceTime()}});
+      database.busDatabase.new_record("roster", new Object[][]{{"driver", roster.getDriver().getDriverID()}, {"bus", roster.getBus().getBusId()}, {"service", roster.getService().getServiceId()}, {"day", roster.getDay()}, {"timeWorked", roster.getServiceTime()}, {"date", roster.getDate()}});
   }
+  
+  public static void storeSchedule(Schedule schedule)
+  {
+    ArrayList<Roster> rosters;
+    rosters = schedule.getRosters();
+    Iterator<Roster> iterator = rosters.iterator();
+    for(; iterator.hasNext();)
+        storeNewRoster(iterator.next());
+  }
+  
+  public static Roster[] getDriverRoster(Driver driver)
+  {
+    int driverId = driver.getDriverID();
+    System.out.println(driverId);
+    int[] busIds = getDriverBuses(driverId);
+    int[] serviceIds = getDriverServices(driverId);
+    int[] days = getDriverDays(driverId);
+    int[] times = getDriverTimes(driverId);
     
+    Bus[] busAray = new Bus[busIds.length];
+    Service[] serviceArray = new Service[busIds.length];
+    Roster[] driverRoster = new Roster[busIds.length];
+    for (int index = 0; index < driverRoster.length; index++)
+    {
+      int busNumber = Integer.parseInt(BusInfo.busNumber(busIds[index]));
+      busAray[index] = new Bus(busIds[index], busNumber);
+      serviceArray[index] = new Service(serviceIds[index]);
+      driverRoster[index].setDriver(driver);
+      driverRoster[index].setBus(busAray[index]);
+      driverRoster[index].setService(serviceArray[index]);
+      driverRoster[index].setDay(days[index]);
+      driverRoster[index].setTime(times[index]);
+    }
+    return driverRoster;
+  }
+      
+  public static int[] getDriverBuses(int driverId)
+  {
+    if (driverId == 0) throw new InvalidQueryException("Nonexistent driver"); 
+    return database.busDatabase.select_ids("bus", "roster", "driver", driverId, "");
+  }
+  
+  public static int[] getDriverServices(int driverId)
+  {
+    if (driverId == 0) throw new InvalidQueryException("Nonexistent driver"); 
+    return database.busDatabase.select_ids("service", "roster", "driver", driverId, "");
+  }
+  
+  public static int[] getDriverDays(int driverId)
+  {
+    if (driverId == 0) throw new InvalidQueryException("Nonexistent driver"); 
+    return database.busDatabase.select_ids("date", "roster", "driver", driverId, "");
+  }
+  
+  public static int[] getDriverTimes(int driverId)
+  {
+    if (driverId == 0) throw new InvalidQueryException("Nonexistent driver"); 
+    return database.busDatabase.select_ids("timeWorked", "roster", "driver", driverId, "");
+  }
+  
   public static int getNewLength(int routeId)
   {
     if (routeId == 0) throw new InvalidQueryException("Nonexistent route");

@@ -6,20 +6,21 @@
 
 package gmpte;
 
+import gmpte.databaseinterface.TimetableInfo;
 /**
  *
  * @author mbax3jw3
  */
 
-import gmpte.databaseinterface.TimetableInfo;
-import gmpte.databaseinterface.database;
 
-public class Service 
+public class Service
 {
   private final int serviceId;
   private final int dailyTimetableId;
   private final int routeId;
-  private final int serviceLength;
+  private final int serviceLengthMinutes;
+  private final int serviceLengthHours;
+ 
   
   public Service(int id)
   {
@@ -30,9 +31,11 @@ public class Service
     int[] routePath = TimetableInfo.getRoutePath(routeId);
     if (serviceTimingPoints[0] == routePath[0] &&
       serviceTimingPoints[serviceTimingPoints.length - 1] == routePath[routePath.length - 1])
-      serviceLength = TimetableInfo.getRouteLength(id);
+      serviceLengthMinutes = TimetableInfo.getRouteLength(id);
     else
-      serviceLength = TimetableInfo.getNewLength(routeId);
+      serviceLengthMinutes = TimetableInfo.getNewLength(routeId);
+    
+    serviceLengthHours = (int)Math.ceil((double) serviceLengthMinutes / 60);
   } // Service
   
   public int getServiceId()
@@ -51,8 +54,17 @@ public class Service
     return routeId;
   } // getServiceTime
   
-  public int getServiceLength()
+  public int getServiceLengthMinutes()
   {
-    return serviceLength;
+    return serviceLengthMinutes;
   } // getServiceTime
+  
+  
+  public int getServiceLengthHours() {
+      return serviceLengthHours;
+  }
+  
+  public String toString() {
+      return "Service ID:"+serviceId+", DailyTimetableID: "+dailyTimetableId+", Route: "+routeId;
+  }
 }

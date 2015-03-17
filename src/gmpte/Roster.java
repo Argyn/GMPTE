@@ -4,15 +4,14 @@
  * and open the template in the editor.
  */
 
-package gmpte.rostering;
+package gmpte;
+
+import java.util.Date;
 /**
  *
  * @author mbgm2rm2
  */
 
-import gmpte.Driver;
-import gmpte.Bus;
-import gmpte.Service;
 
 public class Roster 
 {
@@ -21,14 +20,16 @@ public class Roster
   private Service service;
   private int day;
   private int serviceTime;
+  private Date date;
   
-  public Roster(Driver newDriver, Bus newBus, Service newService, int weekDay)
+  public Roster(Driver newDriver, Bus newBus, Service newService, int weekDay, Date date)
   {
     driver = newDriver;
     bus = newBus;
     service = newService;
     day = weekDay;
-    serviceTime = service.getServiceLength();
+    serviceTime = service.getServiceLengthMinutes();
+    this.date = date;
   } // Roster
   
   public Driver getDriver()
@@ -56,9 +57,50 @@ public class Roster
     return serviceTime;
   }  
   
+  public Date getDate()
+  {
+    return date;
+  }
+  
+  public void setDriver(Driver setDriver)
+  {
+    driver = setDriver;
+  }
+  
+  public void setBus(Bus setBus)
+  {
+    bus = setBus;
+  }
+  
+  public void setService(Service setService)
+  {
+    service = setService;
+  }
+  
+  public void setDay(int setDay)
+  {
+    day = setDay;
+  }
+  
+  public void setTime(int setTime)
+  {
+    serviceTime = setTime;
+  }
+  
   public void storeRoster()
   {
     
+  }
+  
+  public String toString() {
+      StringBuilder builder = new StringBuilder();
+      builder.append("Driver: "+driver);
+      builder.append("\n");
+      builder.append("Bus: "+bus);
+      builder.append("\n");
+      builder.append("Service : "+service);
+      builder.append("\n");
+      return builder.toString();
   }
 }
 
