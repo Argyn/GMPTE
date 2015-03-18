@@ -20,7 +20,9 @@ public class Service
   private final int routeId;
   private final int serviceLengthMinutes;
   private final int serviceLengthHours;
+  // start of the shift inc the time taken to get to the start point eg route 67
   private int startTime;
+  // end of the shift inc the time taken to get to the end point eg route 67
   private int endTime;
   
   public Service(int id)
@@ -28,16 +30,8 @@ public class Service
     serviceId = id;
     dailyTimetableId = TimetableInfo.getDailyTimetableId(id);
     routeId = TimetableInfo.getRouteId(dailyTimetableId);
-    int[] serviceTimingPoints = TimetableInfo.getServiceTimingPoints(id);
-    int[] routePath = TimetableInfo.getRoutePath(routeId);
     TimetableInfo.getStartEndTimes(this);
-    serviceLengthMinutes =  endTime - startTime;
-    /*if (serviceTimingPoints[0] == routePath[0] &&
-      serviceTimingPoints[serviceTimingPoints.length - 1] == routePath[routePath.length - 1])
-      serviceLengthMinutes = TimetableInfo.getRouteLength(id);
-    else
-      serviceLengthMinutes = TimetableInfo.getNewLength(routeId); */
-    
+    serviceLengthMinutes =  endTime - startTime;  
     serviceLengthHours = (int)Math.ceil((double) serviceLengthMinutes / 60);      
   } // Service
   
