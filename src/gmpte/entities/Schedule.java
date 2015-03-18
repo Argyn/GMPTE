@@ -12,6 +12,7 @@ import java.util.ArrayList;
  *
  * @author mbgm2rm2
  */
+// class that holds all of the rosters for the week in an array list.
 public class Schedule {
     private ArrayList<Roster> rosters;
     
