@@ -13,7 +13,9 @@ package gmpte;
 public class GMPTEConstants {
   
   public static final String DATE_FORMAT = "dd/MM/yyyy";
-    
+  
+  public static final String DAY_TIME_FORMAT = "HH:mm";
+  
   public static final String HOLIDAY_REQUEST_APPROVED = 
                   "Holiday Request has been sent for approval.";
   
@@ -44,6 +46,8 @@ public class GMPTEConstants {
   
   public static final String DRIVER_INTERFACE_WINDOW = "Driver User Panel";
   
+  public static final String ROSTER_VIEW_WINDOW = "ROSTER FOR THE NEXT WEEK";
+  
   public static final String CANNOT_REQUEST_HOLIDAYS_FOR_LESS_THAN_DAY = "Start date and end date cannot be the same day";
   
   public static final String CANNOT_TAKE_HOLIDAYS_IN_THE_PAST = "You cannot request holidays in the past";
@@ -57,4 +61,6 @@ public class GMPTEConstants {
   public static final String MAIN_MENU_ITEM_ON_HOVER_STYLE = "main-menu-item-hover";
   
   public static final String ROSTER_GENERATED_LABEL = "The roster for the period from {from} to {to} has been successfully generated.";
+  
+  public static final String CSS_MEDIUM_LABEL = "medium-label";
 }

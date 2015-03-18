@@ -7,6 +7,9 @@
 package gmpte.entities;
 
 import gmpte.db.TimetableInfo;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 /**
  *
  * @author mbax3jw3
@@ -25,6 +28,10 @@ public class Service
   // end of the shift inc the time taken to get to the end point eg route 67
   private int endTime;
   
+  private Date startTimeDate;
+  
+  private Date endTimeDate;
+  
   public Service(int id)
   {
     serviceId = id;
@@ -32,7 +39,26 @@ public class Service
     routeId = TimetableInfo.getRouteId(dailyTimetableId);
     TimetableInfo.getStartEndTimes(this);
     serviceLengthMinutes =  endTime - startTime;  
-    serviceLengthHours = (int)Math.ceil((double) serviceLengthMinutes / 60);      
+    serviceLengthHours = (int)Math.ceil((double) serviceLengthMinutes / 60);
+    
+    Calendar date = new GregorianCalendar();
+    // reset hour, minutes, seconds and millis
+    date.set(Calendar.HOUR_OF_DAY, 0);
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
+    
+    date.add(Calendar.MINUTE, endTime);
+    endTimeDate = date.getTime();
+    
+    date.set(Calendar.HOUR_OF_DAY, 0);
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
+    
+    date.add(Calendar.MINUTE, startTime);
+    startTimeDate = date.getTime();
+    
   } // Service
   
   public int getServiceId()
@@ -79,6 +105,14 @@ public class Service
   public void setEndTime(int endTime)
   {
     this.endTime = endTime;
+  }
+  
+  public Date getStartTimeDate() {
+    return startTimeDate;
+  }
+  
+  public Date getEndTimeDate() {
+    return endTimeDate;
   }
   
   public String toString() {

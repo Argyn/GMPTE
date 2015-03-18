@@ -26,4 +26,6 @@ public interface MainControllerInterface {
     void showMainPage();
     
     void showDriverInterface();
+    
+    void showRosterView();
 }

@@ -177,3 +177,13 @@
 .roster-generation-progress {
     -fx-progress-color: #c12752;
 }
+
+.roster-table {
+    -fx-text-size: 18px;
+}
+
+.search-options-vbox {
+    -fx-background-color:
+        linear-gradient(#e3e2e2, #f1f1f1);
+    -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 10, 1, 0.5, 3 );
+}

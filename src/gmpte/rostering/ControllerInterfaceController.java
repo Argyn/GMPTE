@@ -36,6 +36,9 @@ public class ControllerInterfaceController implements Initializable, ControllerI
   private VBox generateRosterMenuItem;
   
   @FXML
+  private VBox viewRosterMenuItem;
+  
+  @FXML
   private Button backButton;
   
   @FXML
@@ -71,6 +74,9 @@ public class ControllerInterfaceController implements Initializable, ControllerI
     
     // handle generate roster click
     onRosterGenerationItemClick();
+    
+    // handle view roster item
+    onRosterViewMenuItemClick();
   }  
 
   @Override
@@ -96,8 +102,6 @@ public class ControllerInterfaceController implements Initializable, ControllerI
       public void handle(MouseEvent event) {
         contentPane.setVisible(false);
         rosterGenerationPane.setVisible(true);
-        
-        new Thread(new RosterGenerationRunnable()).start();
         
         final Task<RosterGenerationResponse> task = new Task<RosterGenerationResponse>() {
 
@@ -154,5 +158,17 @@ public class ControllerInterfaceController implements Initializable, ControllerI
       
     });
             
+  }
+  
+  public void onRosterViewMenuItemClick() {
+    viewRosterMenuItem.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+      @Override
+      public void handle(MouseEvent t) {
+        // show roster view
+        mainController.showRosterView();
+      }
+      
+    });
   }
 }

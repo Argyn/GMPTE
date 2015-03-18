@@ -40,12 +40,15 @@ public class IBMS extends Application implements MainControllerInterface {
   
   private ControllerInterface driverInterfaceController;
   
+  private ControllerInterface rosterViewController;
+  
   private Scene mainPageScene;
   private Scene loginPageScene;
   private Scene startUpPageScene;
   private Scene holidayRequestPageScene;
   private Scene controllerInterfacePageScene;
   private Scene driverInterfacePageScene;
+  private Scene rosterViewScene;
   
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -62,8 +65,8 @@ public class IBMS extends Application implements MainControllerInterface {
     //stage.setMaxWidth((double)visualBounds.getWidth() / 1.5);
     //stage.setMaxHeight((double)visualBounds.getHeight() / 1.2);
     
-    stage.setMinWidth((double)visualBounds.getWidth() / 2);
-    stage.setMinHeight((double)visualBounds.getHeight() / 1.5);
+    stage.setMinWidth(900);
+    stage.setMinHeight(700);
      
     // load fonts
     loadFonts();
@@ -241,6 +244,41 @@ public class IBMS extends Application implements MainControllerInterface {
 
       // set window title
       setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.DRIVER_INTERFACE_WINDOW);
+
+      stage.show();
+    } catch(IOException exception) {
+      // close the programm
+      
+    }
+  }
+  
+  @Override
+  public void showRosterView() {
+    try {
+      if(rosterViewScene==null) {
+        // Load login page first
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource(
+              "/resources/RosterView.fxml"
+            )
+        );
+
+
+        Parent root = (Parent)loader.load();
+
+        rosterViewController = 
+            loader.<ControllerInterface>getController();
+
+        rosterViewController.setMainController(this);
+        
+        rosterViewScene = new Scene(root);
+      }
+      
+
+      stage.setScene(rosterViewScene);
+
+      // set window title
+      setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.ROSTER_VIEW_WINDOW);
 
       stage.show();
     } catch(IOException exception) {

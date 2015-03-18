@@ -23,8 +23,8 @@ public class MessageHelper {
     String date2 = dateFormat.format(to);
     
     String returnString = GMPTEConstants.ROSTER_GENERATED_LABEL;
-    returnString.replaceFirst("\\\\{from\\\\}", date1);
-    returnString.replaceFirst("\\\\{to\\\\}", date2);
+    returnString = returnString.replaceFirst("\\{from\\}", date1);
+    returnString = returnString.replaceFirst("\\{to\\}", date2);
     return returnString;
   }
   

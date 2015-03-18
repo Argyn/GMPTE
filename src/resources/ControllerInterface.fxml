@@ -13,13 +13,13 @@
 
 <AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.rostering.ControllerInterfaceController">
    <children>
-      <AnchorPane fx:id="rosterGenerationPane" layoutX="-4.0" layoutY="-4.0" prefHeight="704.0" prefWidth="904.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane fx:id="rosterGenerationPane" layoutX="-4.0" layoutY="-4.0" prefHeight="704.0" prefWidth="904.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="250.0">
                <children>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Label fx:id="rosterGenerationStatusText" text="Roster is being generated. Please wait...">
+                        <Label fx:id="rosterGenerationStatusText" text="Roster is being generated. Please wait..." wrapText="true">
                            <styleClass>
                               <String fx:value="large-label" />
                               <String fx:value="white-text" />
@@ -99,6 +99,34 @@
                            </children>
                         </HBox>
                      </children>
+                     <HBox.margin>
+                        <Insets right="20.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox fx:id="viewRosterMenuItem" prefHeight="257.0" prefWidth="210.0">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-icon-container">
+                           <children>
+                              <ImageView fitHeight="296.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@roster_view.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-label-container">
+                           <children>
+                              <Label styleClass="main-menu-item-label" text="VIEW ROSTER " textAlignment="CENTER" wrapText="true" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="main-menu-item" />
+                        <String fx:value="content-vbox" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
                   </VBox>
                </children>
             </HBox>

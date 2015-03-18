@@ -1,7 +1,12 @@
 package gmpte.db;
+import gmpte.entities.Roster;
+import gmpte.entities.Service;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * This class contains the code which actually does the database access.
@@ -497,6 +502,124 @@ public class database
       throw new InvalidQueryException("Unable to find database driver");
     }
   }
+  
+  public ArrayList<Roster> getGlobalRoster(String[] orderBy, String[] order) {
+    ArrayList<Roster> rosters = new ArrayList<Roster>();
+    
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT * FROM roster");
+    
+    // add order by
+    boolean needOrder = false;
+    if(orderBy.length==order.length && orderBy.length>0) {
+      for(int i=0; i<orderBy.length; i++) {
+        if(!needOrder) {
+          needOrder = true;
+          builder.append(" ORDER BY");
+        } else {
+          builder.append(",");
+        }
+        
+        builder.append(" "+orderBy[i]+" "+order[i]);
+      }
+    }
+    
+    try {
+      System.out.println(builder.toString());
+      PreparedStatement statement = connection.prepareStatement(builder.toString());
+      ResultSet result = statement.executeQuery();
+      while(result.next()) {
+        gmpte.entities.Driver driver = fetchDriver(result.getInt("driver"));
+        gmpte.entities.Bus bus = fetchBus(result.getInt("bus"));
+        gmpte.entities.Service service = new Service(result.getInt("service"));
+        int weekDay = result.getInt("day");
+        Date date = result.getDate("date");
+        
+        if(driver!=null && bus!=null && service!=null) {
+          // add the roster to the arrayList
+          rosters.add(new Roster(driver, bus, service, weekDay, date));
+        }
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return rosters;
+  }
+  
+  private gmpte.entities.Driver fetchDriver(int driverID) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT * FROM driver WHERE driver_id=?");
+    PreparedStatement statement;
+    try {
+      statement = connection.prepareStatement(builder.toString());
+      // setting the paratmeter - driverID
+      statement.setInt(1, driverID);
+      
+      // exectuing the query
+      ResultSet result = statement.executeQuery();
+      
+      if(result.next()) {
+        gmpte.entities.Driver driver = new gmpte.entities.Driver(driverID, result.getInt("number"));
+        driver.setHoursThisWeek(result.getInt("hours_this_week"));
+        driver.setHoursThisYear(result.getInt("hours_this_year"));
+        driver.setHolidaysTaken(result.getInt("holidays_taken"));
+        driver.setName(result.getString("name"));
+        return driver;
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return null;
+  }
+  
+  private gmpte.entities.Bus fetchBus(int busID) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT * FROM bus");
+    builder.append(" WHERE bus_id=?");
+    PreparedStatement statement;
+    try {
+      statement = connection.prepareStatement(builder.toString());
+      // setting the paratmeter - busID
+      statement.setInt(1, busID);
+      
+      // exectuing the query
+      ResultSet result = statement.executeQuery();
+      if(result.next()) {
+        gmpte.entities.Bus bus = new gmpte.entities.Bus(busID, result.getInt("number"));
+        return bus;
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return null;
+  }
+  
+  /*private gmpte.entities.Bus fetchService(int serviceID) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT * FROM service");
+    builder.append(" WHERE service_id=?");
+    PreparedStatement statement;
+    try {
+      statement = connection.prepareStatement(builder.toString());
+      // setting the paratmeter - serviceID
+      statement.setInt(1, serviceID);
+      
+      // exectuing the query
+      ResultSet result = statement.executeQuery();
+      if(result.next()) {
+        gmpte.entities.Bus bus = new gmpte.entities.Bus(serviceID);
+        return bus;
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return null;
+  }*/
+  
+  
   
   public ResultSet getResult() {
       return results;
