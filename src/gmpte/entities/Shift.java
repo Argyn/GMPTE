@@ -23,40 +23,46 @@ public class Shift {
     
     public int endTime;
     
+    public int totalShiftTime;
+    
     public Shift() {
         services = new ArrayList<Service>();
         shiftTime = 0;
         startTime = 0;
+        totalShiftTime = 0;
     }
     
     public boolean addService(Service service) {
         // first service
         boolean added = false;
+        if (totalShiftTime < 600)
+        {
+          if(services.size()==0 || (service.getStartTime() - endTime >=60)) {
+              services.add(service);
+              workedTime+=service.getServiceLengthMinutes();
+              totalShiftTime+=service.getServiceLengthMinutes();
+              // calculate shift time
+              startTime = service.getStartTime();
+              endTime = service.getEndTime();
+              if(startTime > endTime)
+                  endTime+=1440;
+            
+              added = true;
+          } else if(isAbleToTakeService(service)) {
+              services.add(service);
+              workedTime+=service.getServiceLengthMinutes();
+              totalShiftTime+=service.getServiceLengthMinutes();             
+              
+              int tempEndTime = service.getEndTime();
+              if(startTime > tempEndTime)
+                  tempEndTime+=1440;
+              endTime = tempEndTime;
+              
+              added = true;
+          }
         
-        if(services.size()==0 || (service.getStartTime() - endTime >=60)) {
-            services.add(service);
-            workedTime+=service.getServiceLengthMinutes();
-            // calculate shift time
-
-            startTime = service.getStartTime();
-            endTime = service.getEndTime();
-            if(startTime > endTime)
-                endTime+=1440;
-            
-            added = true;
-        } else if(isAbleToTakeService(service)) {
-            services.add(service);
-            workedTime+=service.getServiceLengthMinutes();
-            
-            int tempEndTime = service.getEndTime();
-            if(startTime > tempEndTime)
-                tempEndTime+=1440;
-            endTime = tempEndTime;
-            
-            added = true;
+          shiftTime = endTime-startTime;
         }
-        
-        shiftTime = endTime-startTime;
         
         return added;
     }
@@ -70,7 +76,7 @@ public class Shift {
         if(startTime > tempEndTime)
             tempEndTime+=1440;
         
-        return tempEndTime-startTime <=300;
+        return (tempEndTime-startTime <=300) && ((totalShiftTime + (tempEndTime - endTime)) < 600);
     }
     
     public ArrayList<Service> getAssignedServices() {
