@@ -1,4 +1,4 @@
-package gmpte.databaseinterface;
+package gmpte.db;
 import java.sql.*;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -200,6 +200,16 @@ public class database
     select(id_field, source, field1 + " = " + value_string(value1) + " And " + field2 + " = " + value_string(value2), order);
     for (int i = 0; i < count && move_next(); i = i + 1)
       results[i] = (Integer)get_field(id_field.replaceFirst("Distinct ", ""));
+    return results;
+  }
+  
+  public Date[] select_dates(String id_field, String source, String field, Object value, String order)
+  {
+    int    count    = record_count(id_field, source, field + " = " + value_string(value));
+    Date[]  results  = new Date[count];
+    select(id_field, source, field + " = " + value_string(value), order);
+    for (int i = 0; i < count && move_next(); i = i + 1)
+      results[i] = (Date)get_field(id_field.replaceFirst("Distinct ", ""));
     return results;
   }
 
@@ -486,6 +496,14 @@ public class database
     {
       throw new InvalidQueryException("Unable to find database driver");
     }
+  }
+  
+  public ResultSet getResult() {
+      return results;
+  }
+  
+  public Connection getConnection() {
+      return connection;
   }
 
 }

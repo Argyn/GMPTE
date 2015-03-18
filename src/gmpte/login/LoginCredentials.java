@@ -6,7 +6,7 @@
 
 package gmpte.login;
 
-import gmpte.Driver;
+import gmpte.entities.Driver;
 
 /**
  *

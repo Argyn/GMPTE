@@ -4,9 +4,9 @@
  * and open the template in the editor.
  */
 
-package gmpte;
+package gmpte.entities;
 
-import gmpte.databaseinterface.TimetableInfo;
+import gmpte.db.TimetableInfo;
 /**
  *
  * @author mbax3jw3
@@ -20,7 +20,8 @@ public class Service
   private final int routeId;
   private final int serviceLengthMinutes;
   private final int serviceLengthHours;
- 
+  private int startTime;
+  private int endTime;
   
   public Service(int id)
   {
@@ -29,13 +30,15 @@ public class Service
     routeId = TimetableInfo.getRouteId(dailyTimetableId);
     int[] serviceTimingPoints = TimetableInfo.getServiceTimingPoints(id);
     int[] routePath = TimetableInfo.getRoutePath(routeId);
-    if (serviceTimingPoints[0] == routePath[0] &&
+    TimetableInfo.getStartEndTimes(this);
+    serviceLengthMinutes =  endTime - startTime;
+    /*if (serviceTimingPoints[0] == routePath[0] &&
       serviceTimingPoints[serviceTimingPoints.length - 1] == routePath[routePath.length - 1])
       serviceLengthMinutes = TimetableInfo.getRouteLength(id);
     else
-      serviceLengthMinutes = TimetableInfo.getNewLength(routeId);
+      serviceLengthMinutes = TimetableInfo.getNewLength(routeId); */
     
-    serviceLengthHours = (int)Math.ceil((double) serviceLengthMinutes / 60);
+    serviceLengthHours = (int)Math.ceil((double) serviceLengthMinutes / 60);      
   } // Service
   
   public int getServiceId()
@@ -64,7 +67,42 @@ public class Service
       return serviceLengthHours;
   }
   
+  public int getStartTime()
+  {
+      return startTime;
+  }
+  
+  public int getEndTime()
+  {
+      return endTime;
+  }
+  
+  public void setStartTime(int startTime)
+  {
+    this.startTime = startTime;
+  }
+  
+  public void setEndTime(int endTime)
+  {
+    this.endTime = endTime;
+  }
+  
   public String toString() {
-      return "Service ID:"+serviceId+", DailyTimetableID: "+dailyTimetableId+", Route: "+routeId;
+      StringBuilder builder = new StringBuilder();
+      builder.append("Service ID:"+serviceId);
+      builder.append("\n");
+      builder.append("DailyTimeTableID:"+dailyTimetableId);
+      builder.append("\n");
+      builder.append("Route:"+routeId);
+      builder.append("\n");
+      builder.append("Length(min):"+serviceLengthMinutes);
+      builder.append("\n");
+      builder.append("Length(hrs):"+serviceLengthHours);
+      builder.append("\n");
+      builder.append("Start Time:"+startTime);
+      builder.append("\n");
+      builder.append("End Time:"+endTime);
+      builder.append("\n");
+      return builder.toString();
   }
 }

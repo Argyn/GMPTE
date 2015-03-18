@@ -6,10 +6,9 @@
 
 package gmpte;
 
-import gmpte.databaseinterface.database;
+import gmpte.db.database;
 import gmpte.holidayrequest.HolidayController;
 import gmpte.holidayrequest.HolidayRequestController;
-import gmpte.rostering.ControllerInterfaceController;
 import gmpte.login.LoginController;
 import gmpte.login.LoginCredentials;
 import java.io.IOException;
@@ -60,8 +59,8 @@ public class IBMS extends Application implements MainControllerInterface {
     
     Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
     
-    stage.setMaxWidth((double)visualBounds.getWidth() / 1.5);
-    stage.setMaxHeight((double)visualBounds.getHeight() / 1.2);
+    //stage.setMaxWidth((double)visualBounds.getWidth() / 1.5);
+    //stage.setMaxHeight((double)visualBounds.getHeight() / 1.2);
     
     stage.setMinWidth((double)visualBounds.getWidth() / 2);
     stage.setMinHeight((double)visualBounds.getHeight() / 1.5);
@@ -106,7 +105,9 @@ public class IBMS extends Application implements MainControllerInterface {
       stage.show();
     } catch(IOException exception) {
       // close the programm, report the error
+      System.out.println(exception.getMessage());
     }
+    
   }
   
   @Override
@@ -273,21 +274,4 @@ public class IBMS extends Application implements MainControllerInterface {
   public void loadFonts() {
     Font.loadFont(IBMS.class.getResource("/resources/OpenSans-Regular.ttf").toExternalForm(), 10);
   }
-   
-  
-  /*public Parent loadFXML(String fxmlTemplate) {
-    try {
-      FXMLLoader loader = new FXMLLoader(
-          getClass().getResource(
-            "/resources/"+fxmlTemplate
-          )
-      );
-
-      return (Parent)loader.load();
-    } catch(IOException exception) {
-      // exit the program
-   
-    }
-    return null;
-  }*/
 }

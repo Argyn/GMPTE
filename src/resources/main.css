@@ -169,3 +169,11 @@
 .top-horizontal-menu {
     -fx-background-color: #c12d57;
 }
+
+.white-text {
+    -fx-text-fill:#ffffff;
+}
+
+.roster-generation-progress {
+    -fx-progress-color: #c12752;
+}

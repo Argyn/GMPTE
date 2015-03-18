@@ -6,7 +6,7 @@
 
 package gmpte.holidayrequest;
 
-import gmpte.Driver;
+import gmpte.entities.Driver;
 import java.util.Date;
 
 /**

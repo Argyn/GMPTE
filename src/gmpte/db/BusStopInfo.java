@@ -1,4 +1,6 @@
-package gmpte.databaseinterface;
+package gmpte.db;
+
+
 import java.util.*;
 
 /**

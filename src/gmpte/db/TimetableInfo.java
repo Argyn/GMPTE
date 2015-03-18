@@ -1,13 +1,8 @@
-package gmpte.databaseinterface;
-import gmpte.Bus;
-import gmpte.Driver;
-import gmpte.Roster;
-import gmpte.Schedule;
-import gmpte.Service;
+package gmpte.db;
 import java.util.*;
-
-import java.util.ArrayList;
 import static java.util.Calendar.*;
+import gmpte.entities.*;
+import java.util.ArrayList;
 
 /**
  * A class providing information about timetables. This is given in a low-level
@@ -59,7 +54,7 @@ public class TimetableInfo
     // returns TRUE if there is a clash and false if there isn't
   public static boolean checkServiceClashes(Service serviceOne, Service serviceTwo)
   {
-    // get service Ids
+/*    // get service Ids
     int serviceOneId = serviceOne.getServiceId();
     int serviceTwoId = serviceTwo.getServiceId();
     // get route Ids
@@ -147,7 +142,7 @@ public class TimetableInfo
       serviceTwoEnd = serviceTwoStart + serviceTwo.getServiceLengthMinutes();
     }
     System.out.println("one start " + serviceOneStart + "one end " + serviceOneEnd);
-    System.out.println("one start " + serviceTwoStart + "one end " + serviceTwoEnd);
+    System.out.println("one start " + serviceTwoStart + "one end " + serviceTwoEnd); */
 
     
     // just removing the cases where some route times start before and end after
@@ -158,14 +153,24 @@ public class TimetableInfo
     int[] serviceTwoTimes = getRouteTimes(ServiceTwoId);  
     if (serviceTwoTimes[serviceTwoTimes.length - 1] < serviceTwoTimes[0])
       serviceTwoTimes[serviceTwoTimes.length - 1] = 1440 + serviceTwoTimes[serviceTwoTimes.length - 1]; */
+      
+      // just removing the cases where some route times start before and end after
+     // midnight by just adding the time past midnight to the hours in the day
+    if (serviceTwo.getEndTime() > serviceOne.getStartTime() && serviceTwo.getEndTime() < serviceOne.getEndTime())
+        return false;
+    if (serviceTwo.getStartTime() > serviceOne.getStartTime() && serviceTwo.getStartTime() < serviceOne.getEndTime())
+        return false;
+    if (serviceTwo.getStartTime() > serviceOne.getStartTime() && serviceTwo.getEndTime() > serviceOne.getEndTime())
+        return false;
+    return true;
 
-    if (serviceTwoEnd > serviceOneStart && serviceTwoEnd < serviceOneEnd)
+   /* if (serviceTwoEnd > serviceOneStart && serviceTwoEnd < serviceOneEnd)
       return true;
     if (serviceTwoStart > serviceOneStart && serviceTwoStart < serviceOneEnd)
       return true;
     if (serviceTwoStart < serviceOneStart && serviceTwoEnd > serviceOneEnd)
       return true;
-    return false;
+    return false; */
   }
   
   public static int getRouteId(int dailyTimetableId)
@@ -198,7 +203,64 @@ public class TimetableInfo
         storeNewRoster(iterator.next());
   }
   
-  public static Roster[] getDriverRoster(Driver driver)
+  public static void getStartEndTimes(Service service)
+  {
+    int[] timingPoints = getServiceTimingPoints(service.getServiceId());
+    int[] times = getRouteTimes(service.getServiceId());
+    int[] pathPoints = getRoutePath(service.getRoute());
+    
+    // if the first timing poing is equals to start point of the path(route)
+    // and end timing point is seqials to end point of the root
+    // then only set start time to corresponding first and last points
+    if (timingPoints[0] == pathPoints[0] && timingPoints[timingPoints.length - 1] == pathPoints[pathPoints.length - 1])
+    {
+      service.setStartTime(times[0]);
+      service.setEndTime(times[times.length - 1]);
+    }
+    else
+    {
+      int[] completeServices = findCompleteServices(service.getRoute());  
+      int serviceStart;
+      int serviceEnd;
+      boolean foundMatchingTime = false;
+      int serviceIndex;
+      int serviceTimePoint = 0;
+      int completeServiceTimePoint = 0;
+      int[] completeTimingPoints = null;
+      for (serviceIndex = 0; serviceIndex < completeServices.length; serviceIndex++)
+      {
+        completeTimingPoints = getServiceTimingPoints(completeServices[serviceIndex]);
+        for (serviceTimePoint = 0; serviceTimePoint < timingPoints.length; serviceTimePoint++)    
+        {
+          for (completeServiceTimePoint = 0; completeServiceTimePoint < completeTimingPoints.length; completeServiceTimePoint++)    
+          {
+            if (timingPoints[serviceTimePoint] == completeTimingPoints[completeServiceTimePoint])
+            {
+              foundMatchingTime = true;
+              break;
+            }
+          }
+          if (foundMatchingTime)
+            break;        
+        }
+        if (foundMatchingTime)
+          break;
+      }
+      if (foundMatchingTime)
+      {
+        int[] completeTimes = getRouteTimes(completeServices[serviceIndex]);
+        int timeDifference = completeTimes[completeServiceTimePoint] - completeTimes[0];
+        serviceStart = times[serviceTimePoint] - timeDifference;
+        if (completeTimes[completeTimingPoints.length - 1] < completeTimes[0])
+            completeTimes[completeTimingPoints.length - 1] += 1440;
+        serviceEnd = serviceStart + (completeTimes[completeTimingPoints.length - 1] - completeTimes[0]);
+        service.setStartTime(serviceStart);
+        service.setEndTime(serviceEnd);
+      }
+    }
+  }
+   
+  public static Schedule getDriverRoster(Driver driver)
   {
     int driverId = driver.getDriverID();
     System.out.println(driverId);
@@ -206,22 +268,26 @@ public class TimetableInfo
     int[] serviceIds = getDriverServices(driverId);
     int[] days = getDriverDays(driverId);
     int[] times = getDriverTimes(driverId);
+    Date[] dates = getDriverDates(driverId);
+    Schedule schedule = new Schedule();
     
     Bus[] busAray = new Bus[busIds.length];
     Service[] serviceArray = new Service[busIds.length];
-    Roster[] driverRoster = new Roster[busIds.length];
-    for (int index = 0; index < driverRoster.length; index++)
+    Roster driverRoster;
+    for (int index = 0; index < busIds.length; index++)
     {
       int busNumber = Integer.parseInt(BusInfo.busNumber(busIds[index]));
       busAray[index] = new Bus(busIds[index], busNumber);
       serviceArray[index] = new Service(serviceIds[index]);
-      driverRoster[index].setDriver(driver);
-      driverRoster[index].setBus(busAray[index]);
-      driverRoster[index].setService(serviceArray[index]);
-      driverRoster[index].setDay(days[index]);
-      driverRoster[index].setTime(times[index]);
+   /*   driverRoster.setDriver(driver);
+      driverRoster.setBus(busAray[index]);
+      driverRoster.setService(serviceArray[index]);
+      driverRoster.setDay(days[index]);
+      driverRoster.setTime(times[index]); */
+      driverRoster = new Roster(driver, busAray[index], serviceArray[index], days[index], times[index], dates[index]);
+      schedule.addRoster(driverRoster);
     }
-    return driverRoster;
+    return schedule;
   }
       
   public static int[] getDriverBuses(int driverId)
@@ -246,6 +312,12 @@ public class TimetableInfo
   {
     if (driverId == 0) throw new InvalidQueryException("Nonexistent driver"); 
     return database.busDatabase.select_ids("timeWorked", "roster", "driver", driverId, "");
+  }
+  
+  public static Date[] getDriverDates(int driverId)
+  {
+    if (driverId == 0) throw new InvalidQueryException("Nonexistent driver"); 
+    return database.busDatabase.select_dates("date", "roster", "driver", driverId, "");
   }
   
   public static int getNewLength(int routeId)

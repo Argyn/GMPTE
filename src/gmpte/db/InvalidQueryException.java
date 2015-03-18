@@ -1,4 +1,6 @@
-package gmpte.databaseinterface;
+package gmpte.db;
+
+
 /**
  * This exception will be thrown if you attempt to make an invalid
  * query on the database such as trying to access data with an invalid

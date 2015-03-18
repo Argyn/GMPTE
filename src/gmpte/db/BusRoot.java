@@ -1,4 +1,6 @@
-package gmpte.databaseinterface;
+package gmpte.db;
+
+
 /**
  * This class just contains the entry point to startr up the database.
  */

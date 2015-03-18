@@ -7,10 +7,10 @@
 package gmpte.holidayrequest;
 
 import eu.schudt.javafx.controls.calendar.DatePicker;
-import gmpte.Driver;
+import gmpte.entities.Driver;
 import gmpte.GMPTEConstants;
 import gmpte.MainControllerInterface;
-import gmpte.databaseinterface.DriverInfo;
+import gmpte.db.DriverInfo;
 import gmpte.holidayrequest.RejectionReasons.RejectionReason;
 import static gmpte.holidayrequest.RejectionReasons.RejectionReason.MORE_THAN_TEN_PEOPLE_HAVE_HOLIDAYS;
 import gmpte.login.LoginCredentials;

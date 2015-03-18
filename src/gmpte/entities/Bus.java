@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package gmpte;
+package gmpte.entities;
 
+import gmpte.db.BusInfo;
 
 /**
  *

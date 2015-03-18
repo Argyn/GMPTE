@@ -6,10 +6,10 @@
 
 package gmpte.login;
 
-import gmpte.Driver;
+import gmpte.entities.Driver;
 import gmpte.MainControllerInterface;
-import gmpte.databaseinterface.DriverInfo;
-import gmpte.databaseinterface.database;
+import gmpte.db.DriverInfo;
+import gmpte.db.database;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;

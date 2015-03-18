@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package gmpte;
+package gmpte.entities;
 
 import java.util.Date;
 /**
@@ -29,6 +29,16 @@ public class Roster
     service = newService;
     day = weekDay;
     serviceTime = service.getServiceLengthMinutes();
+    this.date = date;
+  } // Roster
+  
+  public Roster(Driver newDriver, Bus newBus, Service newService, int weekDay, int timeWorked, Date date)
+  {
+    driver = newDriver;
+    bus = newBus;
+    service = newService;
+    day = weekDay;
+    serviceTime = timeWorked;
     this.date = date;
   } // Roster
   

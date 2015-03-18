@@ -6,15 +6,15 @@
 
 package gmpte.rostering;
 
-import gmpte.Bus;
-import gmpte.Driver;
-import gmpte.Roster;
-import gmpte.Schedule;
-import gmpte.Service;
-import gmpte.databaseinterface.BusInfo;
-import gmpte.databaseinterface.DriverInfo;
-import gmpte.databaseinterface.TimetableInfo;
-import gmpte.databaseinterface.database;
+import gmpte.db.BusInfo;
+import gmpte.db.DriverInfo;
+import gmpte.db.TimetableInfo;
+import gmpte.db.database;
+import gmpte.entities.Bus;
+import gmpte.entities.Driver;
+import gmpte.entities.Roster;
+import gmpte.entities.Schedule;
+import gmpte.entities.Service;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
-
+import javafx.concurrent.Task;
 /**
  *
  * @author mbgm2rm2
@@ -35,6 +35,9 @@ public class RosterController {
     private ArrayList<Driver> drivers;
     private ArrayList<Bus> buses;
     private Schedule schedule;
+    private Task t;
+    private Date fromDate;
+    private Date toDate;
     
     public static final int HOURS_PER_WEEK_LIMIT = 50;
     
@@ -105,39 +108,48 @@ public class RosterController {
     }
     
     public RosterGenerationResponse generateRoster() {
+      
+        toDate = null;
+        fromDate = null;
+        
+        // all drivers now get 0 hours driven
         database.busDatabase.execute("UPDATE `driver` SET hours_this_week=0");
+        
+        // truncate roster table
+        database.busDatabase.execute("TRUNCATE TABLE `roster`");
+        
         // fetch all services
         fetchServices();
-        
+                
         // fetch all driver
         fetchDrivers();
         
         // fetch all buses
         fetchBuses();
         
+        
         // generate roster for week days
         generateWeekdaysRoster();
-        
+       
         // generate roster for saturdays
         generateSaturdayRoster();
         
         // generate roster for sundays
         generateSundayRoster();
-        
-        
+                
         // store the roster in the database
         TimetableInfo.storeSchedule(schedule);
         
-        return new RosterGenerationResponse();
+        return new RosterGenerationResponse(fromDate, toDate);
+        
     }
     
     
     public void generateDayRoster(ArrayList<Service> services, int weekDay, Date date) {
         flashDriverServices();
-        Iterator<Service> servicesIterator = weekdayServices.iterator();
+        Iterator<Service> servicesIterator = services.iterator();
         Iterator<Bus> busesIterator = buses.iterator();
         
-        // generate roster for MONDAY-FRIDAY
         for(; servicesIterator.hasNext();) {
             
             Service service = servicesIterator.next();
@@ -180,13 +192,13 @@ public class RosterController {
             int days = (Calendar.SATURDAY - weekday + 2) % 7;
             now.add(Calendar.DAY_OF_YEAR, days);
         }
-        
-        //Date date = now.getTime();
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        
+
+        // from date update
+        fromDate = now.getTime();
         weekday = now.get(Calendar.DAY_OF_WEEK);
         
         while(weekday != Calendar.SATURDAY) {
+            System.out.println(weekday);
             // generate for each day MONDAY-FRIDAY
             generateDayRoster(weekdayServices, weekday, now.getTime());
             
@@ -232,24 +244,15 @@ public class RosterController {
             // generating the roster for saturdays
             generateDayRoster(sundayServices, weekday, now.getTime());
         }
-    }
-    
-    public boolean driverCanTakeTheService(Service service, Driver driver) {
-        Iterator<Service> assignedServicesIterator = 
-                                        driver.getAssignedServices().iterator();
-        while(assignedServicesIterator.hasNext()) {
-            Service assignedService = assignedServicesIterator.next();
-            if(TimetableInfo.checkServiceClashes(assignedService, service))
-                return false;
-        }
         
-        return true;
+        // toDate update
+        toDate = now.getTime();
     }
     
     public void flashDriverServices() {
         Iterator<Driver> driverIt = drivers.iterator();
         for(; driverIt.hasNext();) {
-            driverIt.next().flashServices();
+            driverIt.next().flashShift();
         }
     }
     public Driver chooseDriver(Service service) {
@@ -263,11 +266,10 @@ public class RosterController {
             
             // first check there are no clashes of this services with other
             // services this driver has been assigned to
-            if(driverCanTakeTheService(service, driver)) {
-                if(driver.getHoursThisWeek() + service.getServiceLengthHours() <= 
-                                                             HOURS_PER_WEEK_LIMIT) {
-                    return driver;
-                }
+            if(driver.getHoursThisWeek() + service.getServiceLengthHours() <= 
+                                                         HOURS_PER_WEEK_LIMIT
+                && driver.isAbleToTakeService(service)) {
+                return driver;
             }
         }
         

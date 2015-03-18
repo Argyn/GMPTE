@@ -6,11 +6,11 @@
 
 package gmpte.holidayrequest;
 
-import gmpte.Driver;
 import gmpte.GMPTEConstants;
-import gmpte.databaseinterface.DriverInfo;
-import gmpte.databaseinterface.database;
+import gmpte.db.DriverInfo;
+import gmpte.db.database;
 import gmpte.holidayrequest.HolidayRequest;
+import gmpte.entities.Driver;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;

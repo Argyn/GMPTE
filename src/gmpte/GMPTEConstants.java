@@ -55,4 +55,6 @@ public class GMPTEConstants {
   
   public static final String MAIN_MENU_ITEM_STYLE = "main-menu-item";
   public static final String MAIN_MENU_ITEM_ON_HOVER_STYLE = "main-menu-item-hover";
+  
+  public static final String ROSTER_GENERATED_LABEL = "The roster for the period from {from} to {to} has been successfully generated.";
 }

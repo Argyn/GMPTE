@@ -4,10 +4,12 @@
  * and open the template in the editor.
  */
 
-package gmpte;
+package gmpte.entities;
 
 import java.util.ArrayList;
-import gmpte.databaseinterface.DriverInfo;
+import java.util.Iterator;
+import gmpte.db.DriverInfo;
+import gmpte.db.TimetableInfo;
 
 /**
  *
@@ -29,13 +31,15 @@ public class Driver implements Comparable<Driver> {
     
     private boolean available;
     
-    private ArrayList<Service> assignedServices;
+    private Shift shift;
     
     public Driver(int driverID, int driverNumber) {
         this.driverID = driverID;
         this.driverNumber = driverNumber;
         available = false;
-        flashServices();
+       
+        
+        flashShift();
     }
     
     public int getDriverID() {
@@ -91,21 +95,39 @@ public class Driver implements Comparable<Driver> {
         this.available = available;
     }
     
-    public void flashServices() {
-        assignedServices = new ArrayList<Service>();
+    public void flashShift() {
+        shift = new Shift();
     }
     
     public void assignToService(Service service) {
-        assignedServices.add(service);
+        //assignedServices.add(service);
+        
+        // calcaulte shift time
     }
     
-    public ArrayList<Service> getAssignedServices() {
-        return assignedServices;
+    public Shift getShift() {
+        return shift;
     }
     
     public void dbUpdateHoursThisWeek() {
         DriverInfo.setHoursThisWeek(driverID, hoursThisWeek);
     }
+    
+    public boolean isAbleToTakeService(Service service) {
+        return shift.isAbleToTakeService(service) && !doesServiceClash(service);
+    }
+    
+    private boolean doesServiceClash(Service service) {
+        Iterator<Service> assignedServicesIterator = shift.getAssignedServices().iterator();
+        while(assignedServicesIterator.hasNext()) {
+            Service assignedService = assignedServicesIterator.next();
+            if(TimetableInfo.checkServiceClashes(assignedService, service))
+                return true;
+        }
+        return false;
+    }
+    
+    
     
     @Override
     public int compareTo(Driver other) {

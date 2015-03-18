@@ -11,109 +11,77 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="950.0" prefWidth="1250.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.login.LoginController">
-    <stylesheets>
-        <URL value="@login.css" />
-    </stylesheets>
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" styleClass="mainFxmlClass" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.login.LoginController">
    <children>
-      <VBox alignment="TOP_CENTER" layoutX="148.0" layoutY="106.0" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefWidth="653.0" styleClass="login-content-vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="250.0" AnchorPane.rightAnchor="250.0" AnchorPane.topAnchor="106.0">
+      <AnchorPane layoutX="60.0" layoutY="149.0" prefHeight="515.0" prefWidth="820.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="149.0">
          <children>
-            <GridPane minWidth="-Infinity" prefHeight="275.0" prefWidth="631.0" vgap="10.0">
-              <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="289.0" minWidth="10.0" prefWidth="111.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="495.0" minWidth="10.0" prefWidth="359.0" />
-              </columnConstraints>
-              <rowConstraints>
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-              </rowConstraints>
+            <VBox layoutX="150.0" prefHeight="200.0" prefWidth="574.0" styleClass="content-vbox" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="150.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Label text="Driver ID:">
-                     <styleClass>
-                        <String fx:value="login-label" />
-                        <String fx:value="dropshadow" />
-                     </styleClass>
-                  </Label>
-                  <TextField fx:id="driverIDTextField" minHeight="-Infinity" prefHeight="36.0" prefWidth="359.0" promptText="e.g. 8726492" styleClass="driver-id-textfield" GridPane.columnIndex="1">
-                    </TextField>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <GridPane vgap="20.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
                      <children>
-                        <Button fx:id="submitButton" alignment="CENTER" mnemonicParsing="false" prefHeight="52.0" prefWidth="136.0" styleClass="submit-button" text="Sign in">
-                           <font>
-                              <Font size="14.0" />
-                           </font>
-                          <!-- <opaqueInsets>
-                              <Insets top="10.0" />
-                           </opaqueInsets> !-->
-                           <effect>
-                              <DropShadow />
-                           </effect>
-                           <cursor>
-                             <!-- <cursor fx:constant="HAND" />!-->
-                           </cursor>
-                        </Button>
-                     </children>
-                  </HBox>
-               </children>
-               <VBox.margin>
-                  <Insets top="40.0" />
-               </VBox.margin>
-               <padding>
-                  <Insets bottom="20.0" left="80.0" right="80.0" top="20.0" />
-               </padding>
-            </GridPane>
-            <VBox alignment="BOTTOM_CENTER" minHeight="-Infinity" minWidth="-Infinity" prefHeight="159.0" prefWidth="366.0">
-               <children>
-                  <HBox fx:id="wrongCredentialsBox" prefHeight="100.0" prefWidth="200.0" visible="false">
-                     <children>
-                        <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
-                           <image>
-                              <Image url="@warning.png" />
-                           </image>
-                        </ImageView>
-                        <VBox alignment="CENTER" prefHeight="150.0" prefWidth="503.0">
+                        <TextField fx:id="driverIDTextField" minHeight="-Infinity" prefHeight="36.0" prefWidth="359.0" promptText="e.g. 8726492" styleClass="driver-id-textfield" GridPane.columnIndex="1" />
+                        <Label text="Driver ID:">
+                           <styleClass>
+                              <String fx:value="login-label" />
+                              <String fx:value="dropshadow" />
+                           </styleClass>
+                        </Label>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <Label alignment="CENTER" prefHeight="48.0" prefWidth="445.0" text="Driver with provided ID has not been found in the Database" wrapText="true">
-                                 <styleClass>
-                                    <String fx:value="wrong-credentials-message" />
-                                    <String fx:value="dropshadow" />
-                                 </styleClass>
-                              </Label>
+                              <Button fx:id="submitButton" mnemonicParsing="false" styleClass="submit-button" text="Button" />
                            </children>
-                        </VBox>
+                        </HBox>
                      </children>
-                     <styleClass>
-                        <String fx:value="wrong-credentials-hbox" />
-                        <String fx:value="dropshadow" />
-                     </styleClass>
-                     <padding>
-                        <Insets bottom="5.0" left="20.0" right="20.0" top="5.0" />
-                     </padding>
                      <VBox.margin>
-                        <Insets />
+                        <Insets left="30.0" right="30.0" top="20.0" />
                      </VBox.margin>
+                  </GridPane>
+                  <HBox fx:id="wrongCredentialsBox" alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="error-hbox" visible="false">
+                     <VBox.margin>
+                        <Insets top="70.0" />
+                     </VBox.margin>
+                     <children>
+                        <Label styleClass="wrong-credentials-message" text="The provided credentials don't match our records" wrapText="true" />
+                     </children>
                   </HBox>
                </children>
             </VBox>
          </children>
-         <padding>
-            <Insets bottom="150.0" left="40.0" right="40.0" />
-         </padding>
-      </VBox>
-      <ImageView fitHeight="82.0" fitWidth="92.0" layoutX="14.0" layoutY="11.0" pickOnBounds="true" preserveRatio="true" styleClass="login-top-hbox">
-         <image>
-            <Image url="@logo2.png" />
-         </image>
-      </ImageView>
-      <Label layoutX="127.0" layoutY="14.0" prefHeight="37.0" prefWidth="291.0" text="Greater Manchester">
-         <styleClass>
-            <String fx:value="greater-manchester-label" />
-            <String fx:value="dropshadow" />
-         </styleClass>
-      </Label>
-      <Label layoutX="127.0" layoutY="52.0" styleClass="greater-manchester-label" text="Public Transport Executive" />
+      </AnchorPane>
+      <AnchorPane layoutX="10.0" layoutY="10.0" prefHeight="63.0" prefWidth="1052.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" styleClass="top-horizontal-menu" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox prefHeight="52.0">
+                     <children>
+                        <Button fx:id="backButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="119.0" styleClass="top-menu-button" text=" &lt; Back" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="60.0" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="driverName" styleClass="top-menu-driver-label" text="LOGIN DRIVER" textFill="WHITE" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="56.0">
+                     <children>
+                        <Button fx:id="logOutButton1" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="118.0" styleClass="top-menu-button" text="Log Out">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
    </children>
-   <padding>
-      <Insets left="20.0" right="20.0" />
-   </padding>
 </AnchorPane>
