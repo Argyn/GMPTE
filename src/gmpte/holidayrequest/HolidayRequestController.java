@@ -73,7 +73,6 @@ public class HolidayRequestController implements Initializable, ControllerInterf
   @FXML
   public Button backButton;
   
-  
   @FXML
   public Button logOutButton;
   
@@ -121,11 +120,11 @@ public class HolidayRequestController implements Initializable, ControllerInterf
         }
       });
       
+      // handle log out button
+      onLogOutButtonClick();
+      
       // handle back button
       onBackButtonClick();
-      
-      // handle logout button
-      onLogOutButtonClick();
   }    
 
   public EventHandler<ActionEvent> getSubmitButtonHandler() {
@@ -320,7 +319,7 @@ public class HolidayRequestController implements Initializable, ControllerInterf
     backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent t) {
-        mainController.showDriverInterface();
+        mainController.showControllerInterface();
       }
     });
   }

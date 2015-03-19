@@ -49,11 +49,11 @@ public class DriverInterfaceController implements Initializable, ControllerInter
     // handle checkRosterMenuItem
     onCheckRoster();
     
+    // handle log out button
+    onLogOutButtonClick();
+
     // handle back button
     onBackButtonClick();
-    
-    // handle log out buttin
-    onLogOutButtonClick();
   }  
 
   @Override
@@ -78,6 +78,7 @@ public class DriverInterfaceController implements Initializable, ControllerInter
       }
     });
   }
+  
 
   @Override
   public void refresh() {

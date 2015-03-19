@@ -78,6 +78,10 @@
     -fx-font-size: 24px;
 }
 
+.medium-textfield {
+    -fx-font-size: 18px;
+}
+
 .large-label {
     -fx-font-size: 24px;
 }

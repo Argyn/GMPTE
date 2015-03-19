@@ -45,7 +45,7 @@ public class LoginController implements Initializable, ControllerInterface {
 
     @FXML
     private Button logOutButton;
-
+    
     public MainControllerInterface mainController = null;
     
     /**
@@ -67,11 +67,11 @@ public class LoginController implements Initializable, ControllerInterface {
       // allow submit by pressing the enter key
       addSubmitOnEnterListener();
       
+      // handle log out button
+      onLogOutButtonClick();
+
       // handle back button
       onBackButtonClick();
-    
-      // handle log out buttin
-      onLogOutButtonClick();
     }
     
     
@@ -140,7 +140,7 @@ public class LoginController implements Initializable, ControllerInterface {
   public void refresh() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
-    
+  
   public void onBackButtonClick() {
     backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
@@ -157,7 +157,6 @@ public class LoginController implements Initializable, ControllerInterface {
       public void handle(MouseEvent t) {
         mainController.showMainPage();
       }
-
     });
   }
     

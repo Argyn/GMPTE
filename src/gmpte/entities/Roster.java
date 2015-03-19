@@ -109,3 +109,57 @@ public class Roster
       return builder.toString();
   }
 }
+
+/*
+pseudo code for the roster.... still needs a shift class which stores an array of shifts 
+derived from serivces  endTime - startTime
+
+Since we have shifts now, we can assign buses to Shifts, and drivers shifts. 
+
+public static int[] getAvailableDrivers(Date date)
+  {
+    int[] drivers = DriverInfo.getDrivers();
+    int[] availableDrivers = new int[drivers.length - DriverInfo.getNumberOfUnavailableDrivers(date)];
+    
+    int availableDriversIndex = 0;
+    for (int index = 0; index < drivers.length; index++)
+      if (DriverInfo.isAvailable(drivers[index], date))
+        availableDrivers[availableDriversIndex++] = drivers[index];
+      
+    return availableDrivers;     
+  } // getAvailableDrivers
+
+
+  public static int[] getAvailableBuses(Date date)
+  {
+    int[] buses = BusInfo.getBuses();
+    int[] availableBuses = new int[buses.length - BusInfo.getNumberOfUnavailableBuses(date)];
+    
+    int availableBusesIndex = 0;
+    for (int index = 0; index < buses.length; index++)
+      if (BusInfo.isAvailable(buses[index], date))
+        availableBuses[availableBusesIndex++] = buses[index];
+      
+    return availableBuses;
+  } // getAvailableBuses  
+
+  
+  private static void addDriversToShifts()
+  {
+    
+  } // addDriversToShifts
+
+
+  private static void addBusesToShifts()
+  {
+    
+  } // addDriversToShifts
+
+
+  public static  generateRoster()
+  {
+    
+  } // generateRoster
+
+
+*/

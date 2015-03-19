@@ -97,7 +97,6 @@ public class RosterDB {
       for(int i=0; i<values.length; i++) {
         statement.setString(i+1, values[i]);
       }
-      
       ResultSet result = statement.executeQuery();
       
       while(result.next()) {

@@ -157,6 +157,22 @@ public class Service
   }
   
   public String toString() {
+      /*StringBuilder builder = new StringBuilder();
+      builder.append("Service ID:"+serviceId);
+      builder.append("\n");
+      builder.append("DailyTimeTableID:"+dailyTimetableId);
+      builder.append("\n");
+      builder.append("Route:"+routeId);
+      builder.append("\n");
+      builder.append("Length(min):"+serviceLengthMinutes);
+      builder.append("\n");
+      builder.append("Length(hrs):"+serviceLengthHours);
+      builder.append("\n");
+      builder.append("Start Time:"+startTime);
+      builder.append("\n");
+      builder.append("End Time:"+endTime);
+      builder.append("\n");
+      return builder.toString();*/
       return Integer.toString(serviceId);
   }
 }
