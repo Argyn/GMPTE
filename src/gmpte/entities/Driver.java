@@ -33,11 +33,13 @@ public class Driver implements Comparable<Driver> {
     
     private Shift shift;
     
+    private int daysWorked;
+    
     public Driver(int driverID, int driverNumber) {
         this.driverID = driverID;
         this.driverNumber = driverNumber;
         available = false;
-       
+        daysWorked = 0;
         
         flashShift();
     }
@@ -97,6 +99,10 @@ public class Driver implements Comparable<Driver> {
     }
     
     public void flashShift() {
+        if(shift!=null && shift.getAssignedServices().size()>0) {
+          daysWorked++;
+        }
+        
         shift = new Shift();
     }
     
@@ -114,15 +120,17 @@ public class Driver implements Comparable<Driver> {
     }
     
     public boolean isAbleToTakeService(Service service) {
-        return shift.isAbleToTakeService(service) && !doesServiceClash(service);
+
+      return shift.isAbleToTakeService(service) && !doesServiceClash(service);
     }
     
     private boolean doesServiceClash(Service service) {
         Iterator<Service> assignedServicesIterator = shift.getAssignedServices().iterator();
         while(assignedServicesIterator.hasNext()) {
             Service assignedService = assignedServicesIterator.next();
-            if(TimetableInfo.checkServiceClashes(assignedService, service))
+            if(TimetableInfo.checkServiceClashes(assignedService, service)) {
                 return true;
+            }
         }
         return false;
     }

@@ -136,7 +136,6 @@ public class RosterController {
         
         // fetch all services
         fetchServices();
-        //printServices();
         
         
         // fetch all driver
@@ -314,6 +313,7 @@ public class RosterController {
             
             // first check there are no clashes of this services with other
             // services this driver has been assigned to
+            
             if(driver.getMinutesThisWeek() + service.getServiceLength() <= 
                                                          MINUTES_PER_WEEK_LIMIT
                 && driver.isAbleToTakeService(service)) {
