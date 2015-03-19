@@ -67,4 +67,9 @@ public class StartupController implements Initializable, ControllerInterface {
   public void setMainController(MainControllerInterface mainController) {
         this.mainController = mainController;
   }
+
+  @Override
+  public void refresh() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
 }

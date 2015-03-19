@@ -1,5 +1,6 @@
 package gmpte.db;
 import gmpte.entities.Roster;
+import gmpte.entities.Route;
 import gmpte.entities.Service;
 import java.sql.*;
 import java.util.ArrayList;
@@ -47,10 +48,14 @@ public class database
   {
     try
     {
-      busDatabase = new database("GMPTE", "root",
+      /*busDatabase = new database("GMPTE", "root",
               "XZU3DA4757", "jdbc:mysql://localhost:3306",
+              "com.mysql.jdbc.Driver");*/
+      busDatabase = new database("2014_comp23420_t7", "mbax2eu2",
+              "1991.sue", "jdbc:mysql://dbhost.cs.man.ac.uk:3306",
               "com.mysql.jdbc.Driver");
       busDatabase.open();
+      
     }
     catch (Exception ex)
     {
@@ -537,7 +542,7 @@ public class database
         
         if(driver!=null && bus!=null && service!=null) {
           // add the roster to the arrayList
-          rosters.add(new Roster(driver, bus, service, weekDay, date));
+          rosters.add(new Roster(driver, bus, new Route(service.getRoute()), service, weekDay, date));
         }
       }
     } catch (SQLException ex) {

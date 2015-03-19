@@ -13,8 +13,11 @@ import gmpte.db.database;
 import gmpte.entities.Bus;
 import gmpte.entities.Driver;
 import gmpte.entities.Roster;
+import gmpte.entities.Route;
 import gmpte.entities.Schedule;
 import gmpte.entities.Service;
+import gmpte.helpers.DBHelper;
+import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,6 +25,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.concurrent.Task;
 /**
  *
@@ -123,7 +128,9 @@ public class RosterController {
         
         // fetch all services
         fetchServices();
-                
+        //printServices();
+        
+        
         // fetch all driver
         fetchDrivers();
         
@@ -140,11 +147,17 @@ public class RosterController {
         // generate roster for sundays
         generateSundayRoster();
                 
-        // store the roster in the database
-        TimetableInfo.storeSchedule(schedule);
+        try {
+          // store the roster in the database
+          //TimetableInfo.storeSchedule(schedule);
+          DBHelper.insertRoster(schedule);
+        } catch (SQLException ex) {
+          Logger.getLogger(RosterController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+
         
         return new RosterGenerationResponse(fromDate, toDate);
-        
     }
     
     
@@ -156,6 +169,7 @@ public class RosterController {
         for(; servicesIterator.hasNext();) {
             
             Service service = servicesIterator.next();
+            
             // for each service
 
             /* Choosing the driver */
@@ -171,15 +185,17 @@ public class RosterController {
                 System.out.println("NO DRIVER HAS BEEN CHOOSEN");
             }
             
+            
             Bus bus = null;
             /* Choosing the bus */
             if(busesIterator.hasNext()) {
                 // there is a bus for this service
                 bus = busesIterator.next();
             }
-
+            
+            Route route = new Route(service.getRoute());
             if(bus!=null && driver!=null) {
-                Roster roster = new Roster(driver, bus, service, weekDay, date);
+                Roster roster = new Roster(driver, bus, route, service, weekDay, date);
                 schedule.addRoster(roster);
             } 
         }
@@ -296,19 +312,19 @@ public class RosterController {
         System.out.println("========== Weekday services =========");
         for(Iterator<Service> it=weekdayServices.iterator(); it.hasNext();) {
             // print the service
-            System.out.println(it.next());
+            System.out.println(it.next().getRoute());
         }
         
         System.out.println("========== Saturday services =========");
         for(Iterator<Service> it=saturdayServices.iterator(); it.hasNext();) {
             // print the service
-            System.out.println(it.next());
+            System.out.println(it.next().getRoute());
         }
         
         System.out.println("========== Sunday services =========");
         for(Iterator<Service> it=sundayServices.iterator(); it.hasNext();) {
             // print the service
-            System.out.println(it.next());
+            System.out.println(it.next().getRoute());
         }
     } 
 }

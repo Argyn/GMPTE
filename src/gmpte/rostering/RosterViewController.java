@@ -19,11 +19,9 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -35,11 +33,12 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
 /**
  * FXML Controller class
  *
@@ -73,9 +72,30 @@ public class RosterViewController implements Initializable, ControllerInterface 
   @FXML
   private GridPane searchOptionsGrid;
   
+  @FXML
+  private Button searchBySettingsButton;
+  
   private DatePicker searchDatePicker;
   
   private MainControllerInterface mainController;
+  
+  
+  @FXML
+  private TextField durationTextField;
+  
+  /* Search Fields Values */
+  
+  private Driver searchByDriver;
+  
+  private Integer searchByRoute;
+  
+  private Service searchByService;
+  
+  private Date searchByDate;
+  
+  private int searchByDuration;
+  
+  
   /**
    * Initializes the controller class.
    */
@@ -90,6 +110,9 @@ public class RosterViewController implements Initializable, ControllerInterface 
     
     // populate search options
     Thread th = populateSearchOptions();
+    
+    // add options change listeners
+    addOptionsChangeListeners();
     
     // show global roster
     showRoster(th);
@@ -109,13 +132,13 @@ public class RosterViewController implements Initializable, ControllerInterface 
       @Override
       protected ArrayList<Roster> call() throws Exception {
         waitThread.join();
+        
+        
         String[] orderBy = {"date"};
         String[] order = {"asc"};
 
         // fetching the roster
-        ArrayList<Roster> rosters = database.busDatabase.getGlobalRoster(orderBy, order);
-        
-        return rosters;
+        return database.busDatabase.getGlobalRoster(orderBy, order);
       };
     };
     
@@ -259,6 +282,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
     task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
       @Override
       public void handle(WorkerStateEvent event) {
+        task.getValue().add(0, null);
         ObservableList<Driver> oListDrivers = FXCollections.observableArrayList(task.getValue());
         driversChooseMenu.setItems(oListDrivers);
       }
@@ -272,6 +296,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
   
   private void populateRoutesOptions() {
     ArrayList<Integer> routes = new ArrayList<Integer>(Arrays.asList(GMPTEConstants.ROUTES));
+    routes.add(0, null);
     routesChooseMenu.setItems(FXCollections.observableArrayList(routes));
   }
   
@@ -299,6 +324,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
     task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
       @Override
       public void handle(WorkerStateEvent event) {
+        task.getValue().add(0, null);
         ObservableList<Service> oListServices = FXCollections.observableArrayList(task.getValue());
         serviceChooseMenu.setItems(oListServices);
       }
@@ -313,6 +339,33 @@ public class RosterViewController implements Initializable, ControllerInterface 
   private void populateSearchDateOption() {
     searchDatePicker = new DatePicker();
     searchOptionsGrid.add(searchDatePicker, 1, 3);
+  }
+  
+  private void onSearchBySettingsButtonClick() {
+    
+  }
+  
+  private void addOptionsChangeListeners() {
+    // handle search button
+    onSearchBySettingsButtonClicked();
+  }
+  
+  private void onSearchBySettingsButtonClicked() {
+    searchBySettingsButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent t) {
+        Driver driver = driversChooseMenu.getValue();
+        Integer route = routesChooseMenu.getValue();
+        Service service = serviceChooseMenu.getValue();
+        
+        if(driver!=null)
+          
+        System.out.println("Driver"+driver);
+        System.out.println("Route:"+route);
+        System.out.println("Service:"+service); 
+
+      }
+    });
   }
   
   @Override

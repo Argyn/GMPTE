@@ -100,9 +100,7 @@ public class Driver implements Comparable<Driver> {
     }
     
     public void assignToService(Service service) {
-        //assignedServices.add(service);
-        
-        // calcaulte shift time
+      shift.addService(service);
     }
     
     public Shift getShift() {

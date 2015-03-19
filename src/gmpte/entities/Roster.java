@@ -21,24 +21,16 @@ public class Roster
   private int day;
   private int serviceTime;
   private Date date;
+  private Route route;
   
-  public Roster(Driver newDriver, Bus newBus, Service newService, int weekDay, Date date)
+  public Roster(Driver newDriver, Bus newBus, Route route, Service newService, int weekDay, Date date)
   {
     driver = newDriver;
     bus = newBus;
     service = newService;
     day = weekDay;
     serviceTime = service.getServiceLengthMinutes();
-    this.date = date;
-  } // Roster
-  
-  public Roster(Driver newDriver, Bus newBus, Service newService, int weekDay, int timeWorked, Date date)
-  {
-    driver = newDriver;
-    bus = newBus;
-    service = newService;
-    day = weekDay;
-    serviceTime = timeWorked;
+    this.route = route;
     this.date = date;
   } // Roster
   
@@ -70,6 +62,10 @@ public class Roster
   public Date getDate()
   {
     return date;
+  }
+  
+  public Route getRoute() {
+    return route;
   }
   
   public void setDriver(Driver setDriver)

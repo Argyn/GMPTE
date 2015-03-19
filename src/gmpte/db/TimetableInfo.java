@@ -150,7 +150,7 @@ public class TimetableInfo
     }
   }
    
-  public static Schedule getDriverRoster(Driver driver)
+  /*public static Schedule getDriverRoster(Driver driver)
   {
     int driverId = driver.getDriverID();
     System.out.println(driverId);
@@ -173,12 +173,12 @@ public class TimetableInfo
       driverRoster.setBus(busAray[index]);
       driverRoster.setService(serviceArray[index]);
       driverRoster.setDay(days[index]);
-      driverRoster.setTime(times[index]); */
+      driverRoster.setTime(times[index]); 
       driverRoster = new Roster(driver, busAray[index], serviceArray[index], days[index], times[index], dates[index]);
       schedule.addRoster(driverRoster);
     }
     return schedule;
-  }
+  }*/
       
   public static int[] getDriverBuses(int driverId)
   {
