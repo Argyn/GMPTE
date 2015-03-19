@@ -1,4 +1,5 @@
 package gmpte.db;
+import gmpte.entities.BusReserve;
 import gmpte.entities.Roster;
 import gmpte.entities.Route;
 import gmpte.entities.Service;
@@ -85,6 +86,7 @@ public class database
   {
      try
      {
+     System.out.println(sql_command);
        Statement s = connection.createStatement();
        s.execute(sql_command);
        if (results != null) results.close();
@@ -139,7 +141,9 @@ public class database
        if (criteria.isEmpty())
          s.execute("Select " + target + " From " + source + ordering);
        else
+       {
          s.execute("Select " + target + " From " + source + " Where " + criteria + ordering);
+       }
        if (results != null) results.close();
        results = s.getResultSet();
     }
@@ -148,7 +152,50 @@ public class database
       throw new InvalidQueryException("Database access failed");
     }
   }
-
+  
+//  ("service", "timetable_line", "timing_point", stationPoint, timingPoint);
+  public BusReserve get_bus_times(int pointOne, int pointTwo) throws SQLException
+  {
+    
+    
+    String query = "SELECT DISTINCT t1.time as time1, t2.time as time2 "
+                  + "FROM `timetable_line` t1 LEFT JOIN timetable_line t2 "
+                  + "ON t1.service=t2.service WHERE t1.timing_point=? "
+                  + "AND t2.timing_point=?";
+    PreparedStatement statement = connection.prepareStatement(query);
+    statement.setInt(1, pointOne);
+    statement.setInt(2, pointTwo);
+    
+    ResultSet result = statement.executeQuery();
+    if(result.next()) {
+      BusReserve reserve = new BusReserve(result.getInt("time1"), result.getInt("time2"));
+      return reserve;
+    } else {
+      return null;
+      // no results, count =0;
+    }
+            
+     /*       SELECT DISTINCT t1.time as time1, t2.time as time2 FROM `timetable_line` 
+            t1 LEFT JOIN timetable_line t2 ON t1.service=t2.service 
+                    WHERE t1.timing_point=814 AND t2.timing_point=817
+    System.out.println("called");
+    int    count    = record_count("service", "timetable_line", "");
+    int[][]  results  = new int[count][2];
+    String target = "DISTINCT t1.time as time1, t2.time as time2";
+    String source = "`timetable_line` t1 LEFT JOIN timetable_line t2 ON t1.service=t2.service";
+    String criteria = "t1.timing_point=" + pointOne + " AND t2.timing_point=" + pointTwo;
+    System.out.println("called");
+    select(target, source, criteria, "");
+    System.out.println("called");
+    for (int i = 0; i < count && move_next(); i = i + 1)
+    {
+      results[i][1] = (Integer)get_field("");
+      //results[i][2] = (Integer)get_field("time2".replaceFirst("Distinct ", ""));
+    }
+    System.out.println("called");
+    return results;*/
+  }
+  
   public Boolean select_record(String target, String source, String field, Object value)
   {
     select("*", source, field + " = " + value_string(value), "");
@@ -212,7 +259,7 @@ public class database
       results[i] = (Integer)get_field(id_field.replaceFirst("Distinct ", ""));
     return results;
   }
-  
+        
   public Date[] select_dates(String id_field, String source, String field, Object value, String order)
   {
     int    count    = record_count(id_field, source, field + " = " + value_string(value));

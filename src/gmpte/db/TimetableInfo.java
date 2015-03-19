@@ -2,6 +2,7 @@ package gmpte.db;
 import java.util.*;
 import static java.util.Calendar.*;
 import gmpte.entities.*;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 /**
@@ -94,7 +95,7 @@ public class TimetableInfo
         storeNewRoster(iterator.next());
   }
   
-  public static void getStartEndTimes(Service service)
+  public static void getStartEndTimes(Service service)   throws SQLException
   {
     int[] timingPoints = getServiceTimingPoints(service.getServiceId());
     int[] times = getRouteTimes(service.getServiceId());
@@ -148,7 +149,44 @@ public class TimetableInfo
         service.setStartTime(serviceStart);
         service.setEndTime(serviceEnd);
       }
+      if (service.getRoute() == 67)
+        addDriverToServiceTime(service);
+      else if (service.getRoute() == 68)
+        addDriverToStation(service);
     }
+  }
+  
+  public static void addDriverToServiceTime(Service service)  throws SQLException
+  {
+    int startTime = service.getStartTime();
+    int timeDifference = 0;
+    BusReserve busTimes = getServiceToStation(790, 793);
+    if (busTimes.getEndTime() < busTimes.getStartTime())
+      busTimes.setEndTime(busTimes.getEndTime() + 1440);
+    timeDifference = busTimes.getEndTime() - busTimes.getStartTime();
+    service.setStartTime(startTime - timeDifference);
+  }
+  
+  public static void addDriverToStation(Service service)  throws SQLException
+  {
+    int endTime = service.getEndTime();
+    int timeDifference = 0;
+    BusReserve busTimes = getServiceToStation(814, 817);
+    int index = 0;
+    if (busTimes.getEndTime() < busTimes.getStartTime())
+      busTimes.setEndTime(busTimes.getEndTime() + 1440);
+    timeDifference = busTimes.getEndTime() - busTimes.getStartTime();
+    service.setEndTime(endTime + timeDifference);
+  }
+  
+  public static BusReserve getServiceToStation(int stationPoint, int timingPoint) throws SQLException
+  {
+    return database.busDatabase.get_bus_times(stationPoint, timingPoint);
+  }
+  
+  public static int[] getServiceFromTimingPoint(int timingPoint)
+  {
+    return database.busDatabase.select_ids("service", "timetable_line", "timing_point", timingPoint, "");
   }
    
   /*public static Schedule getDriverRoster(Driver driver)

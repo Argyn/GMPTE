@@ -19,6 +19,21 @@ public class BusReserve {
     this.endTime = endTime;
   }
   
+  public int getStartTime()
+  {
+    return startTime;
+  }
+  
+  public int getEndTime()
+  {
+    return endTime;
+  }
+  
+  public void setEndTime(int endTime)
+  {
+    this.endTime = endTime;
+  }
+  
   
   public boolean clashes(BusReserve other) {
     return (other.endTime > startTime && other.endTime < endTime)
