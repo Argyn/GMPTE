@@ -160,6 +160,8 @@ public class RosterViewController implements Initializable, ControllerInterface 
 
       @Override
       public void handle(WorkerStateEvent event) {
+        System.out.println("Fetching roster succeeded");
+        
         Iterator<Roster> rosterIt = task.getValue().iterator();
         int row = 0;
         for(; rosterIt.hasNext();) {

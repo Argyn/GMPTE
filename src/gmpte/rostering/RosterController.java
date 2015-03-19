@@ -8,7 +8,6 @@ package gmpte.rostering;
 
 import gmpte.db.BusInfo;
 import gmpte.db.DriverInfo;
-import gmpte.db.ServiceDB;
 import gmpte.db.TimetableInfo;
 import gmpte.db.database;
 import gmpte.entities.Bus;
@@ -74,33 +73,21 @@ public class RosterController {
             servicesIds = TimetableInfo.getServices(route, TimetableInfo.timetableKind.weekday);
 
             for(int service : servicesIds) {
-              try {
-                weekdayServices.add(ServiceDB.fetchService(service));
-              } catch (SQLException ex) {
-                Logger.getLogger(RosterController.class.getName()).log(Level.SEVERE, null, ex);
-              }
+                weekdayServices.add(new Service(service));
             }
             
             // fetching services for saturdays
             servicesIds = TimetableInfo.getServices(route, TimetableInfo.timetableKind.saturday);
 
             for(int service : servicesIds) {
-              try {
-                saturdayServices.add(ServiceDB.fetchService(service));
-              } catch (SQLException ex) {
-                Logger.getLogger(RosterController.class.getName()).log(Level.SEVERE, null, ex);
-              }
+                saturdayServices.add(new Service(service));
             }
             
             // fetching services for sundays
             servicesIds = TimetableInfo.getServices(route, TimetableInfo.timetableKind.sunday);
 
             for(int service : servicesIds) {
-              try {
-                sundayServices.add(ServiceDB.fetchService(service));
-              } catch (SQLException ex) {
-                Logger.getLogger(RosterController.class.getName()).log(Level.SEVERE, null, ex);
-              }
+                sundayServices.add(new Service(service));
             }
         }
     }

@@ -102,7 +102,7 @@ public class RosterDB {
       while(result.next()) {
         gmpte.entities.Driver driver = DriverInfo.fetchDriver(result.getInt("driver"));
         gmpte.entities.Bus bus = BusInfo.fetchBus(result.getInt("bus"));
-        gmpte.entities.Service service = ServiceDB.fetchService(result.getInt("service"));
+        gmpte.entities.Service service = new Service(result.getInt("service"));
         int weekDay = result.getInt("day");
         Date date = result.getDate("date");
         
