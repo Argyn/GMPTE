@@ -56,11 +56,11 @@ public class TimetableInfo
   public static boolean checkServiceClashes(Service serviceOne, Service serviceTwo)
   {   
 
-    if (serviceTwo.getEndTime() > serviceOne.getStartTime() && serviceTwo.getEndTime() < serviceOne.getEndTime())
+    if (serviceTwo.getEndTime() > serviceOne.getStartTime() && serviceTwo.getEndTime() <= serviceOne.getEndTime())
         return true;
-    if (serviceTwo.getStartTime() > serviceOne.getStartTime() && serviceTwo.getStartTime() < serviceOne.getEndTime())
+    if (serviceTwo.getStartTime() >= serviceOne.getStartTime() && serviceTwo.getStartTime() < serviceOne.getEndTime())
         return true;
-    if (serviceTwo.getStartTime() < serviceOne.getStartTime() && serviceTwo.getEndTime() > serviceOne.getEndTime())
+    if (serviceTwo.getStartTime() <= serviceOne.getStartTime() && serviceTwo.getEndTime() >= serviceOne.getEndTime())
         return true;
     return false;
   }
