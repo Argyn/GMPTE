@@ -29,7 +29,7 @@ public class Roster
     bus = newBus;
     service = newService;
     day = weekDay;
-    serviceTime = service.getServiceLengthMinutes();
+    serviceTime = service.getServiceLength();
     this.route = route;
     this.date = date;
   } // Roster

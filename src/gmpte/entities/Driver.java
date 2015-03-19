@@ -27,7 +27,7 @@ public class Driver implements Comparable<Driver> {
     
     private int hoursThisYear;
     
-    private int hoursThisWeek;
+    private int minutesThisWeek;
     
     private boolean available;
     
@@ -75,16 +75,16 @@ public class Driver implements Comparable<Driver> {
         return hoursThisYear;
     }
     
-    public void setHoursThisWeek(int hoursThisWeek) {
-        this.hoursThisWeek = hoursThisWeek;
+    public void setHoursThisWeek(int minutesThisWeek) {
+        this.minutesThisWeek = minutesThisWeek;
     }
     
-    public double getHoursThisWeek() {
-        return hoursThisWeek;
+    public double getMinutesThisWeek() {
+        return minutesThisWeek;
     }
     
-    public void increaseHoursThisWeek(int hoursIncrease) {
-      setHoursThisWeek(hoursThisWeek+hoursIncrease);
+    public void increaseHoursThisWeek(int minutesIncrease) {
+      setHoursThisWeek(minutesThisWeek+minutesIncrease);
     }
     
     public boolean isAvailable() {
@@ -108,7 +108,7 @@ public class Driver implements Comparable<Driver> {
     }
     
     public void dbUpdateHoursThisWeek() {
-        DriverInfo.setHoursThisWeek(driverID, hoursThisWeek);
+        DriverInfo.setHoursThisWeek(driverID, minutesThisWeek);
     }
     
     public boolean isAbleToTakeService(Service service) {
@@ -129,9 +129,9 @@ public class Driver implements Comparable<Driver> {
     
     @Override
     public int compareTo(Driver other) {
-      if(hoursThisWeek > other.hoursThisWeek)
+      if(minutesThisWeek > other.minutesThisWeek)
         return -1;
-      else if(hoursThisWeek == other.hoursThisWeek)
+      else if(minutesThisWeek == other.minutesThisWeek)
         return 0;
       return 1;
     }

@@ -530,7 +530,6 @@ public class database
     }
     
     try {
-      System.out.println(builder.toString());
       PreparedStatement statement = connection.prepareStatement(builder.toString());
       ResultSet result = statement.executeQuery();
       while(result.next()) {
@@ -540,7 +539,7 @@ public class database
         int weekDay = result.getInt("day");
         Date date = result.getDate("date");
         
-        if(driver!=null && bus!=null && service!=null) {
+        if(driver!=null && bus!=null) {
           // add the roster to the arrayList
           rosters.add(new Roster(driver, bus, new Route(service.getRoute()), service, weekDay, date));
         }

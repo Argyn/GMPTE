@@ -21,8 +21,7 @@ public class Service
   private final int serviceId;
   private final int dailyTimetableId;
   private final int routeId;
-  private final int serviceLengthMinutes;
-  private final int serviceLengthHours;
+  private final int serviceLength;
   // start of the shift inc the time taken to get to the start point eg route 67
   private int startTime;
   // end of the shift inc the time taken to get to the end point eg route 67
@@ -37,9 +36,13 @@ public class Service
     serviceId = id;
     dailyTimetableId = TimetableInfo.getDailyTimetableId(id);
     routeId = TimetableInfo.getRouteId(dailyTimetableId);
+    
     TimetableInfo.getStartEndTimes(this);
-    serviceLengthMinutes =  endTime - startTime;  
-    serviceLengthHours = (int)Math.ceil((double) serviceLengthMinutes / 60);
+    
+    if(startTime > endTime)
+      endTime+=1440;
+    
+    serviceLength =  endTime - startTime;  
     
     Calendar date = new GregorianCalendar();
     // reset hour, minutes, seconds and millis
@@ -77,16 +80,12 @@ public class Service
     return routeId;
   } // getServiceTime
   
-  public int getServiceLengthMinutes()
+  public int getServiceLength()
   {
-    return serviceLengthMinutes;
+    return serviceLength;
   } // getServiceTime
   
-  
-  public int getServiceLengthHours() {
-      return serviceLengthHours;
-  }
-  
+ 
   public int getStartTime()
   {
       return startTime;

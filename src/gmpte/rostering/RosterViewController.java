@@ -134,8 +134,8 @@ public class RosterViewController implements Initializable, ControllerInterface 
         waitThread.join();
         
         
-        String[] orderBy = {"date"};
-        String[] order = {"asc"};
+        String[] orderBy = {"date", "driver"};
+        String[] order = {"asc", "asc"};
 
         // fetching the roster
         return database.busDatabase.getGlobalRoster(orderBy, order);
@@ -177,7 +177,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
     applyLabelStyle(driverName);
     rosterTable.add(wrapLabelInHBox(driverName, Pos.TOP_LEFT), column++, row);
     
-    Label route = new Label(Integer.toString(roster.getService().getRoute()));
+    Label route = new Label(Integer.toString(roster.getRoute().getRouteID()));
     applyLabelStyle(route);
     rosterTable.add(wrapLabelInHBox(route, Pos.CENTER), column++, row);
     

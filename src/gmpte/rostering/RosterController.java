@@ -18,8 +18,6 @@ import gmpte.entities.Schedule;
 import gmpte.entities.Service;
 import gmpte.helpers.DBHelper;
 import java.sql.SQLException;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -44,7 +42,7 @@ public class RosterController {
     private Date fromDate;
     private Date toDate;
     
-    public static final int HOURS_PER_WEEK_LIMIT = 50;
+    public static final int MINUTES_PER_WEEK_LIMIT = 3000;
     
     public ArrayList<Integer> routes;
     
@@ -75,10 +73,7 @@ public class RosterController {
             servicesIds = TimetableInfo.getServices(route, TimetableInfo.timetableKind.weekday);
 
             for(int service : servicesIds) {
-                if(service!=0)
-                  weekdayServices.add(new Service(service));
-                else
-                  System.out.println("0 encountered");
+                weekdayServices.add(new Service(service));
             }
             
             // fetching services for saturdays
@@ -156,27 +151,36 @@ public class RosterController {
         }
         
 
+        printServices();
         
         return new RosterGenerationResponse(fromDate, toDate);
     }
     
     
     public void generateDayRoster(ArrayList<Service> services, int weekDay, Date date) {
+        
+        // fhash driver services
         flashDriverServices();
+        
+        // flash bus reservations
+        flashBusReservations();
+        
         Iterator<Service> servicesIterator = services.iterator();
-        Iterator<Bus> busesIterator = buses.iterator();
         
         for(; servicesIterator.hasNext();) {
             
             Service service = servicesIterator.next();
             
+            if(service.getServiceId()==6529) {
+              System.out.println("6529 selected");
+            }
             // for each service
 
             /* Choosing the driver */
             Driver driver = chooseDriver(service);
             if(driver!=null) {
                 // increase the number of hours driver has drover
-                driver.increaseHoursThisWeek(service.getServiceLengthHours());
+                driver.increaseHoursThisWeek(service.getServiceLength());
                 // update databsae information
                 driver.dbUpdateHoursThisWeek();
 
@@ -185,22 +189,40 @@ public class RosterController {
                 System.out.println("NO DRIVER HAS BEEN CHOOSEN");
             }
             
-            
-            Bus bus = null;
-            /* Choosing the bus */
-            if(busesIterator.hasNext()) {
-                // there is a bus for this service
-                bus = busesIterator.next();
+            // Choosing the bus
+            Bus bus = chooseBus(service);
+            if(bus==null) {
+              System.out.println("No bus has been found");
             }
             
-            Route route = new Route(service.getRoute());
-            if(bus!=null && driver!=null) {
+            
+            if(driver!=null && bus!=null) {
+                Route route = new Route(service.getRoute());
                 Roster roster = new Roster(driver, bus, route, service, weekDay, date);
                 schedule.addRoster(roster);
+            } else {
+              System.out.println("No bus or driver has been selected");
             } 
         }
     }
     
+    public Bus chooseBus(Service service) {
+      
+        Bus bus = null;
+        // find the first available bus
+        Iterator<Bus> busesIterator = buses.iterator();
+        /* Choosing the bus */
+        boolean busFound = false;
+
+        while(busesIterator.hasNext() && !busFound) {
+          bus = busesIterator.next();
+          if(bus.reserve(service.getStartTime(), service.getEndTime())) {
+            busFound = true;
+          }
+        }
+        
+        return bus;
+    }
     public void generateWeekdaysRoster() {        
         Calendar now = Calendar.getInstance();
         
@@ -274,6 +296,14 @@ public class RosterController {
             driverIt.next().flashShift();
         }
     }
+    
+    public void flashBusReservations() {
+        Iterator<Bus> busIt = buses.iterator();
+        while(busIt.hasNext()) {
+          busIt.next().flashReservations();
+        }
+    }
+    
     public Driver chooseDriver(Service service) {
         // sort drivers
         Collections.sort(drivers);
@@ -285,8 +315,8 @@ public class RosterController {
             
             // first check there are no clashes of this services with other
             // services this driver has been assigned to
-            if(driver.getHoursThisWeek() + service.getServiceLengthHours() <= 
-                                                         HOURS_PER_WEEK_LIMIT
+            if(driver.getMinutesThisWeek() + service.getServiceLength() <= 
+                                                         MINUTES_PER_WEEK_LIMIT
                 && driver.isAbleToTakeService(service)) {
                 driver.assignToService(service);
                 return driver;
