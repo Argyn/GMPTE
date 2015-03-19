@@ -73,6 +73,10 @@ public class HolidayRequestController implements Initializable, ControllerInterf
   @FXML
   public Button backButton;
   
+  
+  @FXML
+  public Button logOutButton;
+  
   public DatePicker startDatePicker;
   
   public DatePicker endDatePicker;
@@ -117,18 +121,11 @@ public class HolidayRequestController implements Initializable, ControllerInterf
         }
       });
       
-      // handle log out button
-      backButton.setOnAction(new EventHandler<ActionEvent>() {
-
-        @Override
-        public void handle(ActionEvent t) {
-          try {
-            logOut();
-          } catch (Exception ex) {
-            Logger.getLogger(HolidayRequestController.class.getName()).log(Level.SEVERE, null, ex);
-          }
-        }
-      });
+      // handle back button
+      onBackButtonClick();
+      
+      // handle logout button
+      onLogOutButtonClick();
   }    
 
   public EventHandler<ActionEvent> getSubmitButtonHandler() {
@@ -317,6 +314,26 @@ public class HolidayRequestController implements Initializable, ControllerInterf
   @Override
   public void refresh() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+  
+  public void onBackButtonClick() {
+    backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent t) {
+        mainController.showDriverInterface();
+      }
+    });
+  }
+  
+  public void onLogOutButtonClick() {
+    logOutButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+      @Override
+      public void handle(MouseEvent t) {
+        mainController.showMainPage();
+      }
+
+    });
   }
   
 }

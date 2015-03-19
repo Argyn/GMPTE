@@ -22,6 +22,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 /**
  * FXML Controller class
@@ -39,6 +40,12 @@ public class LoginController implements Initializable, ControllerInterface {
     @FXML
     public HBox wrongCredentialsBox;
     
+    @FXML
+    private Button backButton;
+
+    @FXML
+    private Button logOutButton;
+
     public MainControllerInterface mainController = null;
     
     /**
@@ -59,6 +66,12 @@ public class LoginController implements Initializable, ControllerInterface {
 
       // allow submit by pressing the enter key
       addSubmitOnEnterListener();
+      
+      // handle back button
+      onBackButtonClick();
+    
+      // handle log out buttin
+      onLogOutButtonClick();
     }
     
     
@@ -128,5 +141,24 @@ public class LoginController implements Initializable, ControllerInterface {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
     
+  public void onBackButtonClick() {
+    backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent t) {
+        mainController.showMainPage();
+      }
+    });
+  }
+  
+  public void onLogOutButtonClick() {
+    logOutButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+      @Override
+      public void handle(MouseEvent t) {
+        mainController.showMainPage();
+      }
+
+    });
+  }
     
 }

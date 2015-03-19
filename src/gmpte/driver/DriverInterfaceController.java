@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.control.Button;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 
@@ -31,6 +32,12 @@ public class DriverInterfaceController implements Initializable, ControllerInter
   @FXML
   private VBox checkRosterMenuItem;
   
+  @FXML
+  private Button backButton;
+  
+  @FXML
+  private Button logOutButton;
+  
   /**
    * Initializes the controller class.
    */
@@ -41,6 +48,12 @@ public class DriverInterfaceController implements Initializable, ControllerInter
     
     // handle checkRosterMenuItem
     onCheckRoster();
+    
+    // handle back button
+    onBackButtonClick();
+    
+    // handle log out buttin
+    onLogOutButtonClick();
   }  
 
   @Override
@@ -69,5 +82,25 @@ public class DriverInterfaceController implements Initializable, ControllerInter
   @Override
   public void refresh() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+  
+  public void onBackButtonClick() {
+    backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+      @Override
+      public void handle(MouseEvent t) {
+        mainController.showLoginPage();
+      }
+    });
+  }
+  
+  public void onLogOutButtonClick() {
+    logOutButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+      @Override
+      public void handle(MouseEvent t) {
+        mainController.showMainPage();
+      }
+
+    });
   }
 }

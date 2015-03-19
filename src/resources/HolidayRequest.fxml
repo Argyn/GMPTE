@@ -124,7 +124,7 @@
                   </HBox>
                   <HBox alignment="CENTER_RIGHT" prefHeight="56.0">
                      <children>
-                        <Button fx:id="logOutButton1" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="118.0" styleClass="top-menu-button" text="Log Out">
+                        <Button fx:id="logOutButton" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="118.0" styleClass="top-menu-button" text="Log Out">
                            <HBox.margin>
                               <Insets />
                            </HBox.margin>
