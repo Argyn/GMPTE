@@ -86,7 +86,6 @@ public class database
   {
      try
      {
-     System.out.println(sql_command);
        Statement s = connection.createStatement();
        s.execute(sql_command);
        if (results != null) results.close();

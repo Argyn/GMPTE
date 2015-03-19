@@ -172,7 +172,8 @@ public class TimetableInfo
     int endTime = service.getEndTime();
     int timeDifference = 0;
     BusReserve busTimes = getServiceToStation(814, 817);
-    int index = 0;
+    System.out.println(busTimes.getStartTime());
+    System.out.println(busTimes.getEndTime());
     if (busTimes.getEndTime() < busTimes.getStartTime())
       busTimes.setEndTime(busTimes.getEndTime() + 1440);
     timeDifference = busTimes.getEndTime() - busTimes.getStartTime();
