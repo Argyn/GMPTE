@@ -116,7 +116,7 @@ public class Service
   }
   
   public String toString() {
-      StringBuilder builder = new StringBuilder();
+      /*StringBuilder builder = new StringBuilder();
       builder.append("Service ID:"+serviceId);
       builder.append("\n");
       builder.append("DailyTimeTableID:"+dailyTimetableId);
@@ -131,6 +131,7 @@ public class Service
       builder.append("\n");
       builder.append("End Time:"+endTime);
       builder.append("\n");
-      return builder.toString();
+      return builder.toString();*/
+      return Integer.toString(serviceId);
   }
 }

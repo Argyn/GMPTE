@@ -138,7 +138,8 @@ public class Driver implements Comparable<Driver> {
       return 1;
     }
     
+    @Override
     public String toString() {
-        return "DriverID"+driverID+", DriverNumber: "+driverNumber+", HoursThisWeek:"+hoursThisWeek;
+        return name+"(ID:"+driverID+")";
     }
 }

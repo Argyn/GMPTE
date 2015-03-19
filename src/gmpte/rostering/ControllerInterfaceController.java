@@ -62,12 +62,7 @@ public class ControllerInterfaceController implements Initializable, ControllerI
   @Override
   public void initialize(URL url, ResourceBundle rb) {
     
-    Platform.runLater(new Runnable() {
-      @Override
-      public void run() {
-        rosterGenerationPane.setVisible(false);
-      }
-    });
+    refresh();
     //contentPane.setVisible(false);
     // handle back button click
     handleBackButton();
@@ -170,5 +165,17 @@ public class ControllerInterfaceController implements Initializable, ControllerI
       }
       
     });
+  }
+  
+  @Override
+  public void refresh() {
+    Platform.runLater(new Runnable() {
+      @Override
+      public void run() {
+        rosterGenerationPane.setVisible(false);
+      }
+    });
+    
+    contentPane.setVisible(true);
   }
 }

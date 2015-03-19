@@ -63,4 +63,6 @@ public class GMPTEConstants {
   public static final String ROSTER_GENERATED_LABEL = "The roster for the period from {from} to {to} has been successfully generated.";
   
   public static final String CSS_MEDIUM_LABEL = "medium-label";
+  
+  public static final Integer[] ROUTES = new Integer[]{65,66,67,68};
 }

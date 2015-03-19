@@ -70,7 +70,10 @@ public class RosterController {
             servicesIds = TimetableInfo.getServices(route, TimetableInfo.timetableKind.weekday);
 
             for(int service : servicesIds) {
-                weekdayServices.add(new Service(service));
+                if(service!=0)
+                  weekdayServices.add(new Service(service));
+                else
+                  System.out.println("0 encountered");
             }
             
             // fetching services for saturdays

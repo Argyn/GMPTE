@@ -7,6 +7,7 @@
 package gmpte.holidayrequest;
 
 import eu.schudt.javafx.controls.calendar.DatePicker;
+import gmpte.ControllerInterface;
 import gmpte.entities.Driver;
 import gmpte.GMPTEConstants;
 import gmpte.MainControllerInterface;
@@ -41,7 +42,7 @@ import javafx.scene.layout.HBox;
  *
  * @author mbgm2rm2
  */
-public class HolidayRequestController implements Initializable {
+public class HolidayRequestController implements Initializable, ControllerInterface {
   @FXML
   public Button submitButton;
 
@@ -284,6 +285,7 @@ public class HolidayRequestController implements Initializable {
   }
   
   
+  @Override
   public void setMainController(MainControllerInterface controller) {
     mainController = controller;
   }
@@ -310,6 +312,11 @@ public class HolidayRequestController implements Initializable {
         popErrorBox(GMPTEConstants.REQUEST_EXCEEDS_25_DAYS);
         break;
     }
+  }
+
+  @Override
+  public void refresh() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
   
 }

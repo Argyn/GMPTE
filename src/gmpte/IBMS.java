@@ -204,7 +204,7 @@ public class IBMS extends Application implements MainControllerInterface {
         controllerInterfacePageScene = new Scene(root);
       }
       
-
+      controllerInterfaceController.refresh();
       stage.setScene(controllerInterfacePageScene);
 
       // set window title
@@ -239,7 +239,7 @@ public class IBMS extends Application implements MainControllerInterface {
         driverInterfacePageScene = new Scene(root);
       }
       
-
+      
       stage.setScene(driverInterfacePageScene);
 
       // set window title
@@ -272,6 +272,7 @@ public class IBMS extends Application implements MainControllerInterface {
         rosterViewController.setMainController(this);
         
         rosterViewScene = new Scene(root);
+        rosterViewScene.getStylesheets().add("/resources/calendarstyle.css");
       }
       
 

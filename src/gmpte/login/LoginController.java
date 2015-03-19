@@ -6,6 +6,7 @@
 
 package gmpte.login;
 
+import gmpte.ControllerInterface;
 import gmpte.entities.Driver;
 import gmpte.MainControllerInterface;
 import gmpte.db.DriverInfo;
@@ -28,7 +29,7 @@ import javafx.scene.layout.HBox;
  *
  * @author argyn
  */
-public class LoginController implements Initializable {
+public class LoginController implements Initializable, ControllerInterface {
     
     @FXML
     public TextField driverIDTextField;
@@ -85,6 +86,7 @@ public class LoginController implements Initializable {
         System.out.println("Credentials saved");
     }
     
+    @Override
     public void setMainController(MainControllerInterface mainController) {
         this.mainController = mainController;
     }
@@ -121,6 +123,11 @@ public class LoginController implements Initializable {
         }
       }
     }
+
+  @Override
+  public void refresh() {
+    throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
     
     
 }

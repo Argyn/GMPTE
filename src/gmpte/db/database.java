@@ -47,8 +47,8 @@ public class database
   {
     try
     {
-      busDatabase = new database("2014_comp23420_t7", "mbax2eu2",
-              "1991.sue", "jdbc:mysql://dbhost.cs.man.ac.uk:3306",
+      busDatabase = new database("GMPTE", "root",
+              "XZU3DA4757", "jdbc:mysql://localhost:3306",
               "com.mysql.jdbc.Driver");
       busDatabase.open();
     }
@@ -560,17 +560,60 @@ public class database
       ResultSet result = statement.executeQuery();
       
       if(result.next()) {
-        gmpte.entities.Driver driver = new gmpte.entities.Driver(driverID, result.getInt("number"));
-        driver.setHoursThisWeek(result.getInt("hours_this_week"));
-        driver.setHoursThisYear(result.getInt("hours_this_year"));
-        driver.setHolidaysTaken(result.getInt("holidays_taken"));
-        driver.setName(result.getString("name"));
-        return driver;
+        return buildDriver(result);
       }
     } catch (SQLException ex) {
       Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
     }
     return null;
+  }
+  
+  public gmpte.entities.Driver buildDriver(ResultSet result) throws SQLException {
+    gmpte.entities.Driver driver = new gmpte.entities.Driver(result.getInt("driver_id"), result.getInt("number"));
+    driver.setHoursThisWeek(result.getInt("hours_this_week"));
+    driver.setHoursThisYear(result.getInt("hours_this_year"));
+    driver.setHolidaysTaken(result.getInt("holidays_taken"));
+    driver.setName(result.getString("name"));
+    return driver;
+  }
+  
+  public ArrayList<gmpte.entities.Driver> fetchDrivers(String[] where, String[] values, String[] orderBy, String[] order) {
+    ArrayList<gmpte.entities.Driver> drivers = new ArrayList<gmpte.entities.Driver>();
+    
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT * FROM driver");
+    
+    // handling WHERE
+    if(where.length == values.length && where.length>0) {
+      builder.append(" WHERE ");
+      builder.append(where[0]+"="+values[0]);
+      for(int i=1; i<where.length; i++) {
+        builder.append(" AND ");
+        builder.append(where[i]+"="+values[i]);
+      }
+    }
+    
+    if(orderBy.length==order.length && orderBy.length>0) {
+      builder.append(" ORDER BY ");
+      builder.append(orderBy[0]+" "+order[0]);
+      for(int i=1; i<orderBy.length; i++) {
+        builder.append(",");
+        builder.append(" "+orderBy[i]+" "+order[i]);
+      }
+    }
+    
+    try {
+      PreparedStatement statement = connection.prepareStatement(builder.toString());
+      ResultSet result = statement.executeQuery();
+      while(result.next()) {
+        drivers.add(buildDriver(result));
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, builder.toString());
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return drivers;
   }
   
   private gmpte.entities.Bus fetchBus(int busID) {
@@ -594,6 +637,27 @@ public class database
     }
     
     return null;
+  }
+  
+  public ArrayList<Service> fetchAllServices() {
+    ArrayList<Service> services = new ArrayList<Service>();
+    String query = "SELECT * FROM service ORDER BY service_id ASC";
+    PreparedStatement statement;
+    try {
+      statement = connection.prepareStatement(query);
+      ResultSet result = statement.executeQuery();
+      while(result.next()) {
+        services.add(buildService(result));
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return services;
+  }
+  
+  private Service buildService(ResultSet result) throws SQLException {
+    return new Service(result.getInt("service_id"));
   }
   
   /*private gmpte.entities.Bus fetchService(int serviceID) {

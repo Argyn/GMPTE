@@ -6,22 +6,34 @@
 
 package gmpte.rostering;
 
+import eu.schudt.javafx.controls.calendar.DatePicker;
 import gmpte.ControllerInterface;
 import gmpte.GMPTEConstants;
 import gmpte.MainControllerInterface;
 import gmpte.db.database;
+import gmpte.entities.Driver;
 import gmpte.entities.Roster;
+import gmpte.entities.Service;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.ColumnConstraints;
@@ -41,7 +53,27 @@ public class RosterViewController implements Initializable, ControllerInterface 
   private Button searchOptionsButton;
   
   @FXML
+  private Button searchBoxCloseButton;
+  
+  @FXML
   private VBox searchOptionsBox;
+  
+  @FXML
+  private ChoiceBox<Driver> driversChooseMenu;
+  
+  @FXML
+  private ChoiceBox<Integer> routesChooseMenu;
+  
+  @FXML
+  private HBox progressBarHbox;
+  
+  @FXML
+  private ChoiceBox<Service> serviceChooseMenu;
+  
+  @FXML
+  private GridPane searchOptionsGrid;
+  
+  private DatePicker searchDatePicker;
   
   private MainControllerInterface mainController;
   /**
@@ -49,18 +81,18 @@ public class RosterViewController implements Initializable, ControllerInterface 
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {
-    // TODO
-    //ColumnConstraints col1 = new ColumnConstraints();
-    //col1.setPercentWidth(40);
-    
-    //rosterTable.getColumnConstraints().addAll(col1, col1, col1, col1, col1);
-    
     
     // listen click event for options button
     onSearchOptionsButtonClick();
     
+    // listen search options close button
+    onSearchOptionCloseButtonClick();
+    
+    // populate search options
+    Thread th = populateSearchOptions();
+    
     // show global roster
-    showRoster();
+    showRoster(th);
     
     
   }  
@@ -70,19 +102,49 @@ public class RosterViewController implements Initializable, ControllerInterface 
     this.mainController = mainController;
   }
   
-  public void showRoster() {
-    String[] orderBy = {"date"};
-    String[] order = {"desc"};
+  
+  public void showRoster(final Thread waitThread) {
+    final Task<ArrayList<Roster>> task = new Task<ArrayList<Roster>>() {
+
+      @Override
+      protected ArrayList<Roster> call() throws Exception {
+        waitThread.join();
+        String[] orderBy = {"date"};
+        String[] order = {"asc"};
+
+        // fetching the roster
+        ArrayList<Roster> rosters = database.busDatabase.getGlobalRoster(orderBy, order);
+        
+        return rosters;
+      };
+    };
     
-    // fetching the roster
-    ArrayList<Roster> rosters = database.busDatabase.getGlobalRoster(orderBy, order);
+    // On failed data loading
+    task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        task.getException().printStackTrace();
+      }
+    });
     
-    Iterator<Roster> rosterIt = rosters.iterator();
-    int row = 0;
-    for(; rosterIt.hasNext();) {
-      Roster roster = rosterIt.next();
-      displaySingleRoster(roster, row++);
-    }
+    // On succeeded data loading
+    task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        Iterator<Roster> rosterIt = task.getValue().iterator();
+        int row = 0;
+        for(; rosterIt.hasNext();) {
+          final Roster roster = rosterIt.next();
+          displaySingleRoster(roster, row++);
+        }
+        
+        progressBarHbox.setVisible(false);
+      }
+    });
+    
+    new Thread(task).start();
   }
   
   public void displaySingleRoster(Roster roster, int row) {
@@ -140,6 +202,122 @@ public class RosterViewController implements Initializable, ControllerInterface 
       }
       
     });
+  }
+  
+  public void onSearchOptionCloseButtonClick() {
+    searchBoxCloseButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+      @Override
+      public void handle(MouseEvent event) {
+        searchOptionsBox.setVisible(false);
+      }
+      
+    });
+  }
+
+  public Thread populateSearchOptions() {
+    // populate with drivers 
+    Thread th = populateDriversSearchOption();
+    
+    // populate route options
+    populateRoutesOptions();
+    
+    // populate services options
+    th = populateServicesOptions(th);
+    
+    // put date picker for date
+    populateSearchDateOption();
+    return th;
+  }
+  
+  private Thread populateDriversSearchOption() {
+    
+    final Task<ArrayList<Driver>> task = new Task<ArrayList<Driver>>() {
+
+      @Override
+      protected ArrayList<Driver> call() throws Exception {
+        String[] orderBy = {"name"};
+        String[] order = {"asc"};
+
+        return database.busDatabase.fetchDrivers(new String[]{}, new String[]{}, 
+                                                                orderBy, order);
+      }
+      
+    };
+    
+    
+    // On failed data loading
+    task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        task.getException().printStackTrace();
+      }
+    });
+    
+    // On success put drivers in choose menu
+    task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+      @Override
+      public void handle(WorkerStateEvent event) {
+        ObservableList<Driver> oListDrivers = FXCollections.observableArrayList(task.getValue());
+        driversChooseMenu.setItems(oListDrivers);
+      }
+    });
+    
+    Thread th = new Thread(task);
+    th.start();
+    
+    return th;
+  }
+  
+  private void populateRoutesOptions() {
+    ArrayList<Integer> routes = new ArrayList<Integer>(Arrays.asList(GMPTEConstants.ROUTES));
+    routesChooseMenu.setItems(FXCollections.observableArrayList(routes));
+  }
+  
+  private Thread populateServicesOptions(final Thread waitThread) {
+    final Task<ArrayList<Service>> task = new Task<ArrayList<Service>>() {
+        
+      @Override
+      protected ArrayList<Service> call() throws Exception {
+        waitThread.join();
+        return database.busDatabase.fetchAllServices();
+      }
+      
+    };
+    
+    // On failed data loading
+    task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        task.getException().printStackTrace();
+      }
+    });
+    
+    // On success put drivers in choose menu
+    task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+      @Override
+      public void handle(WorkerStateEvent event) {
+        ObservableList<Service> oListServices = FXCollections.observableArrayList(task.getValue());
+        serviceChooseMenu.setItems(oListServices);
+      }
+    });
+    
+    Thread th = new Thread(task);
+    th.start();
+    
+    return th;
+  }
+  
+  private void populateSearchDateOption() {
+    searchDatePicker = new DatePicker();
+    searchOptionsGrid.add(searchDatePicker, 1, 3);
+  }
+  
+  @Override
+  public void refresh() {
+
   }
   
   

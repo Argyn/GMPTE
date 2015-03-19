@@ -12,4 +12,6 @@ package gmpte;
  */
 public interface ControllerInterface {
   void setMainController(MainControllerInterface mainController);
+  
+  void refresh();
 }
