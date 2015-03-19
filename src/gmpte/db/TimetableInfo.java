@@ -54,11 +54,12 @@ public class TimetableInfo
     // returns TRUE if there is a clash and false if there isn't
   public static boolean checkServiceClashes(Service serviceOne, Service serviceTwo)
   {   
+
     if (serviceTwo.getEndTime() > serviceOne.getStartTime() && serviceTwo.getEndTime() < serviceOne.getEndTime())
         return true;
     if (serviceTwo.getStartTime() > serviceOne.getStartTime() && serviceTwo.getStartTime() < serviceOne.getEndTime())
         return true;
-    if (serviceTwo.getStartTime() > serviceOne.getStartTime() && serviceTwo.getEndTime() > serviceOne.getEndTime())
+    if (serviceTwo.getStartTime() < serviceOne.getStartTime() && serviceTwo.getEndTime() > serviceOne.getEndTime())
         return true;
     return false;
   }

@@ -38,14 +38,14 @@ public class Shift {
     // will return true if the service has been added to a shift, false if the
     // service cannot be added.
     public boolean addService(Service service) {
-        boolean added = false;
+        /*boolean added = false;
         // check if the driver has already worked 10 hours today
         if (totalWorkedTime < 600)
         {
           /* check if this will be the first service assigned to the driver or
              check if there is suffienct time between the new service and the
              current shift for the driver to take a break */
-          if(services.size()==0 || (service.getStartTime() - endTime >=60)) {
+          /*if(services.size()==0 || (service.getStartTime() - endTime >=60)) {
               services.add(service);
               workedTime+=service.getServiceLengthMinutes();
               totalWorkedTime+=service.getServiceLengthMinutes();
@@ -74,7 +74,9 @@ public class Shift {
           shiftTime = endTime-startTime;
         }
         
-        return added;
+        return added;*/
+      services.add(service);
+      return true;
     }
     /* check if adding the service to the shift will make it exceed the max
        time for a driver to work before taking a break and if adding the
