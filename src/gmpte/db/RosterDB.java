@@ -88,6 +88,8 @@ public class RosterDB {
     // handle order by
     builder.append(DBHelper.prepareOrderBy(orderBy, order));
     
+    builder.append(" LIMIT 500");
+    
     try {
       Connection connection = database.busDatabase.getConnection();
       PreparedStatement statement = connection.prepareStatement(builder.toString());
@@ -116,5 +118,15 @@ public class RosterDB {
     }
     
     return rosters;
+  }
+  
+  public static void clearAfterDate(java.util.Date date) throws SQLException {
+    DateFormat dateFormat = new SimpleDateFormat(GMPTEConstants.DATETIME_FORMAT_SQL);
+    // truncate roster table
+    PreparedStatement statement = database.busDatabase.getConnection()
+                          .prepareStatement("DELETE FROM roster WHERE date>=?");
+    
+    statement.setString(1, dateFormat.format(date));
+    statement.execute();
   }
 }

@@ -61,7 +61,7 @@ public class DriverInterfaceController implements Initializable, ControllerInter
     checkRosterMenuItem.setOnMouseClicked(new EventHandler<MouseEvent>(){
       @Override
       public void handle(MouseEvent t) {
-        //mainController.showHolidayRequestPage();
+        mainController.showDriverRosterView();
       }
     });
   }

@@ -189,8 +189,8 @@ public class DriverInfo
   
   public static gmpte.entities.Driver buildDriver(ResultSet result) throws SQLException {
     gmpte.entities.Driver driver = new gmpte.entities.Driver(result.getInt("driver_id"), result.getInt("number"));
-    driver.setHoursThisWeek(result.getInt("hours_this_week"));
-    driver.setHoursThisYear(result.getInt("hours_this_year"));
+    driver.setMinutesThisWeek(result.getInt("hours_this_week"));
+    driver.setMinutesThisYear(result.getInt("hours_this_year"));
     driver.setHolidaysTaken(result.getInt("holidays_taken"));
     driver.setName(result.getString("name"));
     return driver;

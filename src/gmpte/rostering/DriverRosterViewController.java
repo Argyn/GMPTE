@@ -20,6 +20,7 @@ import gmpte.entities.Driver;
 import gmpte.entities.Roster;
 import gmpte.entities.Route;
 import gmpte.entities.Service;
+import gmpte.login.LoginCredentials;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -50,7 +51,7 @@ import javafx.scene.layout.VBox;
  *
  * @author mbgm2rm2
  */
-public class RosterViewController implements Initializable, ControllerInterface {
+public class DriverRosterViewController implements Initializable, ControllerInterface {
   @FXML
   private GridPane rosterTable;
   
@@ -84,6 +85,12 @@ public class RosterViewController implements Initializable, ControllerInterface 
   @FXML
   private ChoiceBox<Bus> busChoiceMenu;
   
+  @FXML
+  private Button backButton;
+  
+  @FXML
+  private Button logOutButton;
+  
   private DatePicker searchDatePicker;
   
   private MainControllerInterface mainController;
@@ -94,12 +101,6 @@ public class RosterViewController implements Initializable, ControllerInterface 
   
   @FXML
   private HBox noResultsBox;
-  
-  @FXML
-  private Button backButton;
-  
-  @FXML
-  private Button logOutButton;
   
   /* Search Fields Values */
   
@@ -138,6 +139,9 @@ public class RosterViewController implements Initializable, ControllerInterface 
     // handle on logout click
     onLogOutButtonClick();
     
+    // show global roster
+    showRoster(th);
+    
     
   }  
 
@@ -146,14 +150,53 @@ public class RosterViewController implements Initializable, ControllerInterface 
     this.mainController = mainController;
   }
   
+  
+  public void showRoster(final Thread waitThread) {
+    final Task<ArrayList<Roster>> task = new Task<ArrayList<Roster>>() {
+
+      @Override
+      protected ArrayList<Roster> call() throws Exception {
+        waitThread.join();
+        
+        return RosterDB.getRosterBy(LoginCredentials.getInstance().getDriver(), null, null, null, null, null);
+      };
+    };
+    
+    // On failed data loading
+    task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        task.getException().printStackTrace();
+      }
+    });
+    
+    // On succeeded data loading
+    task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        System.out.println("Fetching roster succeeded");
+        
+        Iterator<Roster> rosterIt = task.getValue().iterator();
+        int row = 0;
+        for(; rosterIt.hasNext();) {
+          final Roster roster = rosterIt.next();
+          displaySingleRoster(roster, row++);
+        }
+        
+        progressBarHbox.setVisible(false);
+      }
+    });
+    
+    new Thread(task).start();
+  }
+  
+  
   public void displaySingleRoster(Roster roster, int row) {
     int column = 0;
     
-    Label label;
-    label = new Label(roster.getDriver().getName());
-    applyLabelStyle(label);
-    rosterTable.add(wrapLabelInHBox(label, Pos.TOP_LEFT), column++, row);
-    
+    Label label;    
     label = new Label(Integer.toString(roster.getRoute().getRouteID()));
     applyLabelStyle(label);
     rosterTable.add(wrapLabelInHBox(label, Pos.CENTER), column++, row);
@@ -183,6 +226,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
     label = new Label(Integer.toString(roster.getBus().getBusNumber()));
     applyLabelStyle(label);
     rosterTable.add(wrapLabelInHBox(label, Pos.CENTER), column++, row);
+
 
   }
   
@@ -220,62 +264,18 @@ public class RosterViewController implements Initializable, ControllerInterface 
     });
   }
 
-  public Thread populateSearchOptions() {
-    // populate with drivers 
-    Thread th = populateDriversSearchOption();
-    
+  public Thread populateSearchOptions() { 
     // populate route options
     populateRoutesOptions();
     
     // populate services options
-    th = populateServicesOptions(th);
+    Thread th = populateServicesOptions(null);
     
     // populate buses search option
     th = populateBusesSearchOption(th);
     
     // put date picker for date
     populateSearchDateOption();
-    return th;
-  }
-  
-  private Thread populateDriversSearchOption() {
-    
-    final Task<ArrayList<Driver>> task = new Task<ArrayList<Driver>>() {
-
-      @Override
-      protected ArrayList<Driver> call() throws Exception {
-        String[] orderBy = {"name"};
-        String[] order = {"asc"};
-
-        return DriverInfo.fetchDrivers(new String[]{}, new String[]{}, 
-                                                                orderBy, order);
-      }
-      
-    };
-    
-    
-    // On failed data loading
-    task.setOnFailed(new EventHandler<WorkerStateEvent>() {
-
-      @Override
-      public void handle(WorkerStateEvent event) {
-        task.getException().printStackTrace();
-      }
-    });
-    
-    // On success put drivers in choose menu
-    task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
-      @Override
-      public void handle(WorkerStateEvent event) {
-        task.getValue().add(0, null);
-        ObservableList<Driver> oListDrivers = FXCollections.observableArrayList(task.getValue());
-        driversChooseMenu.setItems(oListDrivers);
-      }
-    });
-    
-    Thread th = new Thread(task);
-    th.start();
-    
     return th;
   }
   
@@ -290,7 +290,8 @@ public class RosterViewController implements Initializable, ControllerInterface 
         
       @Override
       protected ArrayList<Service> call() throws Exception {
-        waitThread.join();
+        if(waitThread!=null )
+          waitThread.join();
         return ServiceDB.fetchAllServices();
       }
       
@@ -375,7 +376,6 @@ public class RosterViewController implements Initializable, ControllerInterface 
     searchBySettingsButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
       public void handle(MouseEvent t) {
-        Driver driver = driversChooseMenu.getValue();
         Integer route = routesChooseMenu.getValue();
         Service service = serviceChooseMenu.getValue();
         Integer duration = null;
@@ -387,7 +387,8 @@ public class RosterViewController implements Initializable, ControllerInterface 
         
         searchOptionsBox.setVisible(false);
         
-        showOptionsRoster(driver, route, bus, service, duration, date);
+        showOptionsRoster(LoginCredentials.getInstance().getDriver(), route, bus, 
+                                                      service, duration, date);
       }
     });
   }
@@ -448,7 +449,6 @@ public class RosterViewController implements Initializable, ControllerInterface 
 
   }
   
-  
   public void onBackButtonClick() {
     backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
       @Override
@@ -468,5 +468,6 @@ public class RosterViewController implements Initializable, ControllerInterface 
 
     });
   }
+  
   
 }

@@ -42,6 +42,8 @@ public class IBMS extends Application implements MainControllerInterface {
   
   private ControllerInterface rosterViewController;
   
+  private ControllerInterface driverRosterViewController;
+  
   private Scene mainPageScene;
   private Scene loginPageScene;
   private Scene startUpPageScene;
@@ -49,6 +51,7 @@ public class IBMS extends Application implements MainControllerInterface {
   private Scene controllerInterfacePageScene;
   private Scene driverInterfacePageScene;
   private Scene rosterViewScene;
+  private Scene driverRosterViewScene;
   
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -277,6 +280,42 @@ public class IBMS extends Application implements MainControllerInterface {
       
 
       stage.setScene(rosterViewScene);
+
+      // set window title
+      setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.ROSTER_VIEW_WINDOW);
+
+      stage.show();
+    } catch(IOException exception) {
+      // close the programm
+      
+    }
+  }
+  
+  @Override
+  public void showDriverRosterView() {
+    try {
+      if(rosterViewScene==null) {
+        // Load login page first
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource(
+              "/resources/DriverRosterView.fxml"
+            )
+        );
+
+
+        Parent root = (Parent)loader.load();
+
+        driverRosterViewController = 
+            loader.<ControllerInterface>getController();
+
+        driverRosterViewController.setMainController(this);
+        
+        driverRosterViewScene = new Scene(root);
+        driverRosterViewScene.getStylesheets().add("/resources/calendarstyle.css");
+      }
+      
+
+      stage.setScene(driverRosterViewScene);
 
       // set window title
       setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "+GMPTEConstants.ROSTER_VIEW_WINDOW);

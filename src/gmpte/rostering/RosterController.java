@@ -8,6 +8,7 @@ package gmpte.rostering;
 
 import gmpte.db.BusInfo;
 import gmpte.db.DriverInfo;
+import gmpte.db.RosterDB;
 import gmpte.db.TimetableInfo;
 import gmpte.db.database;
 import gmpte.entities.Bus;
@@ -23,6 +24,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.concurrent.Task;
@@ -110,6 +112,17 @@ public class RosterController {
         }
     }
     
+    public void clearNextWeekRoster() {
+      Calendar nextMonday = nextMonday();
+      
+      try {
+        RosterDB.clearAfterDate(nextMonday.getTime());
+      } catch (SQLException ex) {
+        Logger.getLogger(RosterController.class.getName()).log(Level.SEVERE, null, ex);
+      }
+      
+    }
+    
     public RosterGenerationResponse generateRoster() {
       
         toDate = null;
@@ -118,8 +131,8 @@ public class RosterController {
         // all drivers now get 0 hours driven
         database.busDatabase.execute("UPDATE `driver` SET hours_this_week=0");
         
-        // truncate roster table
-        database.busDatabase.execute("TRUNCATE TABLE `roster`");
+        // clear the roster for the next week
+        clearNextWeekRoster();
         
         // fetch all services
         fetchServices();
@@ -178,7 +191,7 @@ public class RosterController {
                 // increase the number of hours driver has drover
                 driver.increaseHoursThisWeek(service.getServiceLength());
                 // update databsae information
-                driver.dbUpdateHoursThisWeek();
+                driver.dbUpdateHours();
 
                 // update driver info in the database
             } else {
@@ -201,7 +214,9 @@ public class RosterController {
     }
     
     public Bus chooseBus(Service service) {
-      
+        long seed = System.nanoTime();
+        Collections.shuffle(buses, new Random(seed));
+
         Bus bus = null;
         // find the first available bus
         Iterator<Bus> busesIterator = buses.iterator();
@@ -217,16 +232,25 @@ public class RosterController {
         
         return bus;
     }
-    public void generateWeekdaysRoster() {        
-        Calendar now = Calendar.getInstance();
+    
+    public Calendar nextMonday() {
+      Calendar now = Calendar.getInstance();
         
-        int weekday = now.get(Calendar.DAY_OF_WEEK);
-        if (weekday != Calendar.MONDAY) {
-            // calculate how much to add
-            // the 2 is the difference between Saturday and Monday
-            int days = (Calendar.SATURDAY - weekday + 2) % 7;
-            now.add(Calendar.DAY_OF_YEAR, days);
-        }
+      int weekday = now.get(Calendar.DAY_OF_WEEK);
+      if (weekday != Calendar.MONDAY) {
+          // calculate how much to add
+          // the 2 is the difference between Saturday and Monday
+          int days = (Calendar.SATURDAY - weekday + 2) % 7;
+          now.add(Calendar.DAY_OF_YEAR, days);
+      }
+      
+      return now;
+    }
+    
+    
+    public void generateWeekdaysRoster() {        
+        Calendar now = nextMonday();
+        int weekday;
 
         // from date update
         fromDate = now.getTime();
@@ -242,19 +266,10 @@ public class RosterController {
     }
     
     public void generateSaturdayRoster() {
-        Calendar now = Calendar.getInstance();
-        
-        int weekday = now.get(Calendar.DAY_OF_WEEK);
-        
-        if (weekday != Calendar.MONDAY) {
-            // calculate how much to add
-            // the 2 is the difference between Saturday and Monday
-            int days = (Calendar.SATURDAY - weekday + 2) % 7;
-            now.add(Calendar.DAY_OF_YEAR, days);
-        }
+        Calendar now = nextMonday();
         
         now.add(Calendar.DAY_OF_YEAR, 5);
-        weekday = now.get(Calendar.DAY_OF_WEEK);
+        int weekday = now.get(Calendar.DAY_OF_WEEK);
         
         if(weekday==Calendar.SATURDAY) {
             // generating the roster for saturdays
@@ -263,16 +278,10 @@ public class RosterController {
     }
     
     public void generateSundayRoster() {
-        Calendar now = Calendar.getInstance();
-        int weekday = now.get(Calendar.DAY_OF_WEEK);
-        if (weekday != Calendar.MONDAY) {
-            // calculate how much to add
-            // the 2 is the difference between Saturday and Monday
-            int days = (Calendar.SATURDAY - weekday + 2) % 7;
-            now.add(Calendar.DAY_OF_YEAR, days);
-        }
+        Calendar now = nextMonday();
+        
         now.add(Calendar.DAY_OF_YEAR, 6);
-        weekday = now.get(Calendar.DAY_OF_WEEK);
+        int weekday = now.get(Calendar.DAY_OF_WEEK);
         
         if(weekday==Calendar.SUNDAY) {
             // generating the roster for saturdays

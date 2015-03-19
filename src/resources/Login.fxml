@@ -11,7 +11,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" styleClass="mainFxmlClass" stylesheets="@main.css" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.login.LoginController">
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.login.LoginController">
    <children>
       <AnchorPane layoutX="60.0" layoutY="149.0" prefHeight="515.0" prefWidth="820.0" AnchorPane.leftAnchor="60.0" AnchorPane.rightAnchor="60.0" AnchorPane.topAnchor="149.0">
          <children>
@@ -84,4 +84,8 @@
          </children>
       </AnchorPane>
    </children>
+   <stylesheets>
+      <URL value="@main.css" />
+      <URL value="@calendarstyle.css" />
+   </stylesheets>
 </AnchorPane>

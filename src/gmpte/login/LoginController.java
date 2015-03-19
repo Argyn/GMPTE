@@ -10,7 +10,6 @@ import gmpte.ControllerInterface;
 import gmpte.entities.Driver;
 import gmpte.MainControllerInterface;
 import gmpte.db.DriverInfo;
-import gmpte.db.database;
 import java.net.URL;
 import java.util.ResourceBundle;
 import java.util.logging.Level;
@@ -72,8 +71,8 @@ public class LoginController implements Initializable, ControllerInterface {
         driver = new Driver(driverID, driverNumber);
         driver.setName(DriverInfo.getName(driverID));
         driver.setHolidaysTaken(DriverInfo.getHolidaysTaken(driverID));
-        driver.setHoursThisWeek(DriverInfo.getHoursThisWeek(driverID));
-        driver.setHoursThisYear(DriverInfo.getHoursThisYear(driverID));
+        driver.setMinutesThisWeek(DriverInfo.getHoursThisWeek(driverID));
+        driver.setMinutesThisWeek(DriverInfo.getHoursThisYear(driverID));
         driver.setAvailable(DriverInfo.isAvailable(driverID));
       }
 
