@@ -288,6 +288,7 @@ public class RosterController {
             if(driver.getHoursThisWeek() + service.getServiceLengthHours() <= 
                                                          HOURS_PER_WEEK_LIMIT
                 && driver.isAbleToTakeService(service)) {
+                driver.assignToService(service);
                 return driver;
             }
         }
