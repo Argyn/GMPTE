@@ -49,10 +49,10 @@ public class DBHelper {
     if(where.length == values.length && where.length>0) {
       StringBuilder builder = new StringBuilder();
       builder.append(" WHERE ");
-      builder.append(where[0]+"="+values[0]);
+      builder.append(where[0]+"=?");
       for(int i=1; i<where.length; i++) {
         builder.append(" AND ");
-        builder.append(where[i]+"="+values[i]);
+        builder.append(where[i]+"=?");
       }
       
       return builder.toString();
@@ -113,7 +113,7 @@ public class DBHelper {
                   roster.getDay(), roster.getServiceTime(), roster.getDate());
   }
   
-  public static SQLQueryFilter formRosterQueryFilter(Driver driver, Route route, Bus bus, Service service, 
+  public static SQLQueryFilter formRosterQueryFilter(Driver driver, Integer route, Bus bus, Service service, 
                                                   Integer duration, java.util.Date date) {
     SQLQueryFilter filter = new SQLQueryFilter();
     
@@ -122,7 +122,7 @@ public class DBHelper {
     }
     
     if(route!=null) {
-      filter.where("route", Integer.toString(route.getRouteID()));
+      filter.where("route", Integer.toString(route));
     }
     
     if(bus!=null) {
@@ -134,7 +134,7 @@ public class DBHelper {
     }
     
     if(duration!=null) {
-      filter.where("duration", Integer.toString(duration));
+      filter.where("timeWorked", Integer.toString(duration));
     }
     
     if(date!=null) {

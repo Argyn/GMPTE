@@ -1,10 +1,12 @@
 package gmpte.db;
 
 
+import gmpte.entities.Bus;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -113,6 +115,33 @@ public class BusInfo
         gmpte.entities.Bus bus = new gmpte.entities.Bus(busID, result.getInt("number"));
         return bus;
       }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return null;
+  }
+  
+  public static ArrayList<Bus> fetchAllBuses() {
+    ArrayList<Bus> buses = new ArrayList<Bus>();
+    
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT * FROM bus");
+    builder.append(" ORDER BY bus_id ASC");
+    
+    PreparedStatement statement;
+    try {
+      Connection connection = database.busDatabase.getConnection();
+      statement = connection.prepareStatement(builder.toString());
+      
+      // exectuing the query
+      ResultSet result = statement.executeQuery();
+      
+      while(result.next()) {
+        buses.add(new gmpte.entities.Bus(result.getInt("bus_id"), result.getInt("number")));
+      }
+      
+      return buses;
     } catch (SQLException ex) {
       Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
     }

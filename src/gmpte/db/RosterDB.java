@@ -58,9 +58,11 @@ public class RosterDB {
   }
   
   
-  public static ArrayList<Roster> getRosterBy(Driver driver, Route route, Bus bus, Service service, 
+  public static ArrayList<Roster> getRosterBy(Driver driver, Integer route, Bus bus, Service service, 
                                                   Integer duration, java.util.Date date) {
     SQLQueryFilter filter = DBHelper.formRosterQueryFilter(driver, route, bus, service, duration, date);
+    filter.order("date", SQLQueryFilter.ORDER.ASC);
+    filter.order("driver", SQLQueryFilter.ORDER.ASC);
     
     return getRosterBy(filter.getWhereFields(), filter.getWhereValues(), filter.getOrderBy(), filter.getOrder());
   }
@@ -89,11 +91,18 @@ public class RosterDB {
     try {
       Connection connection = database.busDatabase.getConnection();
       PreparedStatement statement = connection.prepareStatement(builder.toString());
+      
+      System.out.println(statement.toString());
+      for(int i=0; i<values.length; i++) {
+        statement.setString(i+1, values[i]);
+      }
+      System.out.println(statement.toString());
       ResultSet result = statement.executeQuery();
+      
       while(result.next()) {
         gmpte.entities.Driver driver = DriverInfo.fetchDriver(result.getInt("driver"));
         gmpte.entities.Bus bus = BusInfo.fetchBus(result.getInt("bus"));
-        gmpte.entities.Service service = new Service(result.getInt("service"));
+        gmpte.entities.Service service = ServiceDB.fetchService(result.getInt("service"));
         int weekDay = result.getInt("day");
         Date date = result.getDate("date");
         

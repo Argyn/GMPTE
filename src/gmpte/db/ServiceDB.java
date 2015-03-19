@@ -39,6 +39,25 @@ public class ServiceDB {
     return services;
   }
   
+  public static Service fetchService(int serviceID) throws SQLException {
+    String query = "SELECT s.service_id, s.daily_timetable, d.route "
+            + "FROM `service` as s LEFT JOIN daily_timetable as d "
+            + "ON s.daily_timetable=d.daily_timetable_id WHERE service_id=?";
+    
+    PreparedStatement statement = database.busDatabase.connection.prepareStatement(query);
+    statement.setInt(1, serviceID);
+    
+    ResultSet result = statement.executeQuery();
+    
+    if(result.next()) {
+      Service service = new Service(serviceID, result.getInt("daily_timetable"), result.getInt("route"));
+      
+      return service;
+    }
+    
+    return null;
+  }
+  
   private static Service buildService(ResultSet result) throws SQLException {
     return new Service(result.getInt("service_id"));
   }

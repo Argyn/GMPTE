@@ -64,6 +64,38 @@ public class Service
     
   } // Service
   
+  public Service(int serviceID, int dailyTimeTableID, int routeID) {
+    this.serviceId = serviceID;
+    this.dailyTimetableId = dailyTimeTableID;
+    this.routeId = routeID;
+    
+    TimetableInfo.getStartEndTimes(this);
+    
+    if(startTime > endTime)
+      endTime+=1440;
+    
+    serviceLength =  endTime - startTime;  
+    
+    Calendar date = new GregorianCalendar();
+    // reset hour, minutes, seconds and millis
+    date.set(Calendar.HOUR_OF_DAY, 0);
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
+    
+    date.add(Calendar.MINUTE, endTime);
+    endTimeDate = date.getTime();
+    
+    date.set(Calendar.HOUR_OF_DAY, 0);
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
+    
+    date.add(Calendar.MINUTE, startTime);
+    startTimeDate = date.getTime();
+  }
+  
+  
   public int getServiceId()
   {
     return serviceId;

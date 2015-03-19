@@ -10,12 +10,15 @@ import eu.schudt.javafx.controls.calendar.DatePicker;
 import gmpte.ControllerInterface;
 import gmpte.GMPTEConstants;
 import gmpte.MainControllerInterface;
+import gmpte.db.BusInfo;
 import gmpte.db.DriverInfo;
 import gmpte.db.RosterDB;
 import gmpte.db.ServiceDB;
 import gmpte.db.database;
+import gmpte.entities.Bus;
 import gmpte.entities.Driver;
 import gmpte.entities.Roster;
+import gmpte.entities.Route;
 import gmpte.entities.Service;
 import java.net.URL;
 import java.text.DateFormat;
@@ -77,6 +80,9 @@ public class RosterViewController implements Initializable, ControllerInterface 
   
   @FXML
   private Button searchBySettingsButton;
+  
+  @FXML
+  private ChoiceBox<Bus> busChoiceMenu;
   
   private DatePicker searchDatePicker;
   
@@ -201,6 +207,10 @@ public class RosterViewController implements Initializable, ControllerInterface 
     applyLabelStyle(endTimeLabel);
     rosterTable.add(wrapLabelInHBox(endTimeLabel, Pos.CENTER), column++, row);
     
+    Label busLabel = new Label(Integer.toString(roster.getBus().getBusNumber()));
+    applyLabelStyle(busLabel);
+    rosterTable.add(wrapLabelInHBox(busLabel, Pos.CENTER), column++, row);
+
   }
   
   public HBox wrapLabelInHBox(Label label, Pos pos) {
@@ -212,6 +222,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
   
   public void applyLabelStyle(Label label) {
     label.getStyleClass().add(GMPTEConstants.CSS_MEDIUM_LABEL);
+    label.setWrapText(true);
   }
   
   public void onSearchOptionsButtonClick() {
@@ -245,6 +256,9 @@ public class RosterViewController implements Initializable, ControllerInterface 
     
     // populate services options
     th = populateServicesOptions(th);
+    
+    // populate buses search option
+    th = populateBusesSearchOption(th);
     
     // put date picker for date
     populateSearchDateOption();
@@ -334,13 +348,49 @@ public class RosterViewController implements Initializable, ControllerInterface 
     return th;
   }
   
-  private void populateSearchDateOption() {
-    searchDatePicker = new DatePicker();
-    searchOptionsGrid.add(searchDatePicker, 1, 3);
+  private Thread populateBusesSearchOption(final Thread waitThread) {
+    
+    final Task<ArrayList<Bus>> task = new Task<ArrayList<Bus>>() {
+        
+      @Override
+      protected ArrayList<Bus> call() throws Exception {
+        
+        if(waitThread!=null)
+          waitThread.join();
+        
+        return BusInfo.fetchAllBuses();
+      }
+      
+    };
+    
+    // On failed data loading
+    task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        task.getException().printStackTrace();
+      }
+    });
+    
+    // On success put drivers in choose menu
+    task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+      @Override
+      public void handle(WorkerStateEvent event) {
+        task.getValue().add(0, null);
+        ObservableList<Bus> oListBuses = FXCollections.observableArrayList(task.getValue());
+        busChoiceMenu.setItems(oListBuses);
+      }
+    });
+    
+    Thread th = new Thread(task);
+    th.start();
+    
+    return th;
   }
   
-  private void onSearchBySettingsButtonClick() {
-    
+  private void populateSearchDateOption() {
+    searchDatePicker = new DatePicker();
+    searchOptionsGrid.add(searchDatePicker, 1, 4);
   }
   
   private void addOptionsChangeListeners() {
@@ -355,15 +405,64 @@ public class RosterViewController implements Initializable, ControllerInterface 
         Driver driver = driversChooseMenu.getValue();
         Integer route = routesChooseMenu.getValue();
         Service service = serviceChooseMenu.getValue();
+        Integer duration = null;
+        Bus bus = busChoiceMenu.getValue();
         
-        if(driver!=null)
-          
-        System.out.println("Driver"+driver);
-        System.out.println("Route:"+route);
-        System.out.println("Service:"+service); 
-
+        if(!durationTextField.getText().equals(""))
+          duration = Integer.parseInt(durationTextField.getText());
+        Date date = searchDatePicker.getSelectedDate();
+        
+        searchOptionsBox.setVisible(false);
+        
+        showOptionsRoster(driver, route, bus, service, duration, date);
       }
     });
+  }
+  
+  public void showOptionsRoster(final Driver driver, final Integer route, final Bus bus, 
+                                final Service service, final Integer duration, 
+                                final java.util.Date date) {
+    final Task<ArrayList<Roster>> task = new Task<ArrayList<Roster>>() {
+
+      @Override
+      protected ArrayList<Roster> call() throws Exception {
+        return RosterDB.getRosterBy(driver, route, bus, service, duration, date);
+      };
+    };
+    
+    // On failed data loading
+    task.setOnFailed(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        task.getException().printStackTrace();
+      }
+    });
+    
+    // On succeeded data loading
+    task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        Iterator<Roster> rosterIt = task.getValue().iterator();
+        int row = 0;
+        for(; rosterIt.hasNext();) {
+          final Roster roster = rosterIt.next();
+          displaySingleRoster(roster, row++);
+        }
+        
+        progressBarHbox.setVisible(false);
+      }
+    });
+    
+    clearRosterTable();
+    progressBarHbox.setVisible(true);
+    
+    new Thread(task).start();
+  }
+  
+  public void clearRosterTable() {
+    rosterTable.getChildren().clear();
   }
   
   @Override

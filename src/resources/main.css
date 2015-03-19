@@ -180,6 +180,8 @@
 
 .roster-table {
     -fx-text-size: 18px;
+    -fx-border-color: #000000;
+    -fx-border-width: 2px;
 }
 
 .search-options-vbox {
