@@ -65,4 +65,6 @@ public class GMPTEConstants {
   public static final String CSS_MEDIUM_LABEL = "medium-label";
   
   public static final Integer[] ROUTES = new Integer[]{65,66,67,68};
+  
+  public static final String DATETIME_FORMAT_SQL = "yyyy-MM-dd 00:00:00";
 }

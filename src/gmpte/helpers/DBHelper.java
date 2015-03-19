@@ -6,6 +6,7 @@
 
 package gmpte.helpers;
 
+import gmpte.GMPTEConstants;
 import gmpte.db.RosterDB;
 import gmpte.entities.Bus;
 import gmpte.entities.Driver;
@@ -59,23 +60,7 @@ public class DBHelper {
     
     return "";
   }
-  
-  public static ArrayList<Roster> searchRosterByOptions(Driver driver, Route route, Service service, 
-                                                  Integer duration, Date date) {
-    ArrayList<String> where = new ArrayList<String>();
-    ArrayList<String> values = new ArrayList<String>();
-    
-    if(driver!=null) {
-      where.add("driver");
-      values.add(Integer.toString(driver.getDriverID()));
-    }
-    if(route!=null) {
-      where.add("route");
-      values.add(Integer.toString(route.getRouteID()));
-    }
-    
-    return new ArrayList<Roster>();
-  }
+ 
   
   public static boolean insertRoster(Driver driver, Bus bus, Service service, Route route, 
                                                           int day, int duration, Date date) throws SQLException {
@@ -107,7 +92,7 @@ public class DBHelper {
     values.add(Integer.toString(duration));
     
     fields.add("date");
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    DateFormat dateFormat = new SimpleDateFormat(GMPTEConstants.DATETIME_FORMAT_SQL);
     values.add(dateFormat.format(date));
     
     String[] fieldsArr = fields.toArray(new String[fields.size()]);
@@ -128,4 +113,35 @@ public class DBHelper {
                   roster.getDay(), roster.getServiceTime(), roster.getDate());
   }
   
+  public static SQLQueryFilter formRosterQueryFilter(Driver driver, Route route, Bus bus, Service service, 
+                                                  Integer duration, java.util.Date date) {
+    SQLQueryFilter filter = new SQLQueryFilter();
+    
+    if(driver!=null) {
+      filter.where("driver", Integer.toString(driver.getDriverID()));
+    }
+    
+    if(route!=null) {
+      filter.where("route", Integer.toString(route.getRouteID()));
+    }
+    
+    if(bus!=null) {
+      filter.where("bus", Integer.toString(bus.getBusId()));
+    }
+    
+    if(service!=null) {
+      filter.where("service", Integer.toString(service.getServiceId()));
+    }
+    
+    if(duration!=null) {
+      filter.where("duration", Integer.toString(duration));
+    }
+    
+    if(date!=null) {
+      DateFormat dateFormat = new SimpleDateFormat(GMPTEConstants.DATETIME_FORMAT_SQL);
+      filter.where("date", dateFormat.format(date));
+    }
+    
+    return filter;
+  }
 }

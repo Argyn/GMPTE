@@ -1,7 +1,13 @@
 package gmpte.db;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A class containing information about buses. 
@@ -88,6 +94,30 @@ public class BusInfo
   public static void setAvailable(int ID, boolean available) 
   {
     setAvailable(ID, database.today(), available);
+  }
+  
+  public static gmpte.entities.Bus fetchBus(int busID) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT * FROM bus");
+    builder.append(" WHERE bus_id=?");
+    PreparedStatement statement;
+    try {
+      Connection connection = database.busDatabase.getConnection();
+      statement = connection.prepareStatement(builder.toString());
+      // setting the paratmeter - busID
+      statement.setInt(1, busID);
+      
+      // exectuing the query
+      ResultSet result = statement.executeQuery();
+      if(result.next()) {
+        gmpte.entities.Bus bus = new gmpte.entities.Bus(busID, result.getInt("number"));
+        return bus;
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return null;
   }
  
 }

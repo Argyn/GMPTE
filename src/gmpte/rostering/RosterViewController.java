@@ -10,6 +10,9 @@ import eu.schudt.javafx.controls.calendar.DatePicker;
 import gmpte.ControllerInterface;
 import gmpte.GMPTEConstants;
 import gmpte.MainControllerInterface;
+import gmpte.db.DriverInfo;
+import gmpte.db.RosterDB;
+import gmpte.db.ServiceDB;
 import gmpte.db.database;
 import gmpte.entities.Driver;
 import gmpte.entities.Roster;
@@ -133,12 +136,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
       protected ArrayList<Roster> call() throws Exception {
         waitThread.join();
         
-        
-        String[] orderBy = {"date", "driver"};
-        String[] order = {"asc", "asc"};
-
-        // fetching the roster
-        return database.busDatabase.getGlobalRoster(orderBy, order);
+        return RosterDB.getGlobalRoster();
       };
     };
     
@@ -262,7 +260,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
         String[] orderBy = {"name"};
         String[] order = {"asc"};
 
-        return database.busDatabase.fetchDrivers(new String[]{}, new String[]{}, 
+        return DriverInfo.fetchDrivers(new String[]{}, new String[]{}, 
                                                                 orderBy, order);
       }
       
@@ -306,7 +304,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
       @Override
       protected ArrayList<Service> call() throws Exception {
         waitThread.join();
-        return database.busDatabase.fetchAllServices();
+        return ServiceDB.fetchAllServices();
       }
       
     };

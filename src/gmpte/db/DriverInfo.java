@@ -1,7 +1,14 @@
 package gmpte.db;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
  
 /**
  * Class which represents information about drivers and their availability.
@@ -156,6 +163,77 @@ public class DriverInfo
   public static void setAvailable(int driver, boolean available)
   {
     setAvailable(driver, database.today(), available);
+  }
+  
+  public static gmpte.entities.Driver fetchDriver(int driverID) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT * FROM driver WHERE driver_id=?");
+    PreparedStatement statement;
+    try {
+      Connection connection = database.busDatabase.getConnection();
+      statement = connection.prepareStatement(builder.toString());
+      // setting the paratmeter - driverID
+      statement.setInt(1, driverID);
+      
+      // exectuing the query
+      ResultSet result = statement.executeQuery();
+      
+      if(result.next()) {
+        return buildDriver(result);
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return null;
+  }
+  
+  public static gmpte.entities.Driver buildDriver(ResultSet result) throws SQLException {
+    gmpte.entities.Driver driver = new gmpte.entities.Driver(result.getInt("driver_id"), result.getInt("number"));
+    driver.setHoursThisWeek(result.getInt("hours_this_week"));
+    driver.setHoursThisYear(result.getInt("hours_this_year"));
+    driver.setHolidaysTaken(result.getInt("holidays_taken"));
+    driver.setName(result.getString("name"));
+    return driver;
+  }
+  
+  public static ArrayList<gmpte.entities.Driver> fetchDrivers(String[] where, String[] values, String[] orderBy, String[] order) {
+    ArrayList<gmpte.entities.Driver> drivers = new ArrayList<gmpte.entities.Driver>();
+    
+    StringBuilder builder = new StringBuilder();
+    builder.append("SELECT * FROM driver");
+    
+    // handling WHERE
+    if(where.length == values.length && where.length>0) {
+      builder.append(" WHERE ");
+      builder.append(where[0]+"="+values[0]);
+      for(int i=1; i<where.length; i++) {
+        builder.append(" AND ");
+        builder.append(where[i]+"="+values[i]);
+      }
+    }
+    
+    if(orderBy.length==order.length && orderBy.length>0) {
+      builder.append(" ORDER BY ");
+      builder.append(orderBy[0]+" "+order[0]);
+      for(int i=1; i<orderBy.length; i++) {
+        builder.append(",");
+        builder.append(" "+orderBy[i]+" "+order[i]);
+      }
+    }
+    
+    try {
+      Connection connection = database.busDatabase.getConnection();
+      PreparedStatement statement = connection.prepareStatement(builder.toString());
+      ResultSet result = statement.executeQuery();
+      while(result.next()) {
+        drivers.add(buildDriver(result));
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, builder.toString());
+      Logger.getLogger(database.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return drivers;
   }
 
 }
