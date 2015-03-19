@@ -14,11 +14,9 @@ import gmpte.db.BusInfo;
 import gmpte.db.DriverInfo;
 import gmpte.db.RosterDB;
 import gmpte.db.ServiceDB;
-import gmpte.db.database;
 import gmpte.entities.Bus;
 import gmpte.entities.Driver;
 import gmpte.entities.Roster;
-import gmpte.entities.Route;
 import gmpte.entities.Service;
 import java.net.URL;
 import java.text.DateFormat;
@@ -150,7 +148,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
     int column = 0;
     
     Label label;
-    label = new Label(roster.getDriver().getName());
+    label = new Label(roster.getDriver().toString());
     applyLabelStyle(label);
     rosterTable.add(wrapLabelInHBox(label, Pos.TOP_LEFT), column++, row);
     
@@ -352,6 +350,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
         task.getValue().add(0, null);
         ObservableList<Bus> oListBuses = FXCollections.observableArrayList(task.getValue());
         busChoiceMenu.setItems(oListBuses);
+        searchOptionsBox.setVisible(true);
       }
     });
     
@@ -363,6 +362,7 @@ public class RosterViewController implements Initializable, ControllerInterface 
   
   private void populateSearchDateOption() {
     searchDatePicker = new DatePicker();
+    searchDatePicker.getStyleClass().add("large-textfield");
     searchOptionsGrid.add(searchDatePicker, 1, 4);
   }
   

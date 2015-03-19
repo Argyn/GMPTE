@@ -94,11 +94,10 @@ public class RosterDB {
       Connection connection = database.busDatabase.getConnection();
       PreparedStatement statement = connection.prepareStatement(builder.toString());
       
-      System.out.println(statement.toString());
       for(int i=0; i<values.length; i++) {
         statement.setString(i+1, values[i]);
       }
-      System.out.println(statement.toString());
+      
       ResultSet result = statement.executeQuery();
       
       while(result.next()) {

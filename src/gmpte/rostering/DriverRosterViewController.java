@@ -11,14 +11,11 @@ import gmpte.ControllerInterface;
 import gmpte.GMPTEConstants;
 import gmpte.MainControllerInterface;
 import gmpte.db.BusInfo;
-import gmpte.db.DriverInfo;
 import gmpte.db.RosterDB;
 import gmpte.db.ServiceDB;
-import gmpte.db.database;
 import gmpte.entities.Bus;
 import gmpte.entities.Driver;
 import gmpte.entities.Roster;
-import gmpte.entities.Route;
 import gmpte.entities.Service;
 import gmpte.login.LoginCredentials;
 import java.net.URL;
@@ -364,7 +361,8 @@ public class DriverRosterViewController implements Initializable, ControllerInte
   
   private void populateSearchDateOption() {
     searchDatePicker = new DatePicker();
-    searchOptionsGrid.add(searchDatePicker, 1, 4);
+    searchDatePicker.getStyleClass().add("large-textfield");
+    searchOptionsGrid.add(searchDatePicker, 1, 3);
   }
   
   private void addOptionsChangeListeners() {

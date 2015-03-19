@@ -7,9 +7,12 @@
 package gmpte.entities;
 
 import gmpte.db.TimetableInfo;
+import java.sql.SQLException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author mbax3jw3
@@ -37,7 +40,11 @@ public class Service
     dailyTimetableId = TimetableInfo.getDailyTimetableId(id);
     routeId = TimetableInfo.getRouteId(dailyTimetableId);
     
-    TimetableInfo.getStartEndTimes(this);
+    try {
+      TimetableInfo.getStartEndTimes(this);
+    } catch (SQLException ex) {
+      Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+    }
     
     if(startTime > endTime)
       endTime+=1440;
@@ -62,14 +69,17 @@ public class Service
     date.add(Calendar.MINUTE, startTime);
     startTimeDate = date.getTime();
     
-  } // Service
-  
+  }  
   public Service(int serviceID, int dailyTimeTableID, int routeID) {
     this.serviceId = serviceID;
     this.dailyTimetableId = dailyTimeTableID;
     this.routeId = routeID;
     
-    TimetableInfo.getStartEndTimes(this);
+    try {
+      TimetableInfo.getStartEndTimes(this);
+    } catch (SQLException ex) {
+      Logger.getLogger(Service.class.getName()).log(Level.SEVERE, null, ex);
+    }
     
     if(startTime > endTime)
       endTime+=1440;
@@ -147,22 +157,6 @@ public class Service
   }
   
   public String toString() {
-      /*StringBuilder builder = new StringBuilder();
-      builder.append("Service ID:"+serviceId);
-      builder.append("\n");
-      builder.append("DailyTimeTableID:"+dailyTimetableId);
-      builder.append("\n");
-      builder.append("Route:"+routeId);
-      builder.append("\n");
-      builder.append("Length(min):"+serviceLengthMinutes);
-      builder.append("\n");
-      builder.append("Length(hrs):"+serviceLengthHours);
-      builder.append("\n");
-      builder.append("Start Time:"+startTime);
-      builder.append("\n");
-      builder.append("End Time:"+endTime);
-      builder.append("\n");
-      return builder.toString();*/
       return Integer.toString(serviceId);
   }
 }

@@ -178,7 +178,7 @@
             </Label>
          </children>
       </HBox>
-      <VBox fx:id="searchOptionsBox" prefHeight="471.0" prefWidth="400.0" AnchorPane.bottomAnchor="79.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="150.0">
+      <VBox fx:id="searchOptionsBox" prefHeight="471.0" prefWidth="400.0" visible="false" AnchorPane.bottomAnchor="79.0" AnchorPane.leftAnchor="300.0" AnchorPane.rightAnchor="300.0" AnchorPane.topAnchor="150.0">
          <styleClass>
             <String fx:value="content-vbox" />
             <String fx:value="search-options-vbox" />

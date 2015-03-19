@@ -163,9 +163,6 @@ public class RosterController {
           Logger.getLogger(RosterController.class.getName()).log(Level.SEVERE, null, ex);
         }
         
-
-        printServices();
-        
         return new RosterGenerationResponse(fromDate, toDate);
     }
     
