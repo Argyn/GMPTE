@@ -49,6 +49,7 @@ public class DBHelper {
     if(where.length == values.length && where.length>0) {
       StringBuilder builder = new StringBuilder();
       builder.append(" WHERE ");
+      
       builder.append(where[0]+"=?");
       for(int i=1; i<where.length; i++) {
         builder.append(" AND ");
@@ -62,8 +63,9 @@ public class DBHelper {
   }
  
   
-  public static boolean insertRoster(Driver driver, Bus bus, Service service, Route route, 
-                                                          int day, int duration, Date date) throws SQLException {
+  public static boolean insertRoster(Driver driver, Bus bus, Service service, 
+                                    Route route, int day, int duration, 
+                                    Date date) throws SQLException {
     ArrayList<String> fields = new ArrayList<String>();
     ArrayList<String> values = new ArrayList<String>();
     
@@ -113,8 +115,11 @@ public class DBHelper {
                   roster.getDay(), roster.getServiceTime(), roster.getDate());
   }
   
-  public static SQLQueryFilter formRosterQueryFilter(Driver driver, Integer route, Bus bus, Service service, 
-                                                  Integer duration, java.util.Date date) {
+  public static SQLQueryFilter formRosterQueryFilter(Driver driver, Integer route, 
+                                                      Bus bus, Service service, 
+                                                      Integer duration, 
+                                                      java.util.Date dateFrom,
+                                                      java.util.Date dateTo) {
     SQLQueryFilter filter = new SQLQueryFilter();
     
     if(driver!=null) {
@@ -137,9 +142,14 @@ public class DBHelper {
       filter.where("timeWorked", Integer.toString(duration));
     }
     
-    if(date!=null) {
+    if(dateFrom!=null) {
       DateFormat dateFormat = new SimpleDateFormat(GMPTEConstants.DATETIME_FORMAT_SQL);
-      filter.where("date", dateFormat.format(date));
+      filter.where("dateFrom", dateFormat.format(dateFrom));
+    }
+    
+    if(dateTo!=null) {
+      DateFormat dateFormat = new SimpleDateFormat(GMPTEConstants.DATETIME_FORMAT_SQL);
+      filter.where("dateTo", dateFormat.format(dateTo));
     }
     
     return filter;

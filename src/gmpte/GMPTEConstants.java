@@ -67,4 +67,10 @@ public class GMPTEConstants {
   public static final Integer[] ROUTES = new Integer[]{65,66,67,68};
   
   public static final String DATETIME_FORMAT_SQL = "yyyy-MM-dd 00:00:00";
+  
+  public static final int MAX_MINUTES_PER_DAY = 600;
+  
+  public static final int MAX_SHIFT_DURATION = 300;
+  
+  public static final int MINUTES_PER_WEEK_LIMIT = 3000;
 }

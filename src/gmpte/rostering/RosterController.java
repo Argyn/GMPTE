@@ -6,6 +6,7 @@
 
 package gmpte.rostering;
 
+import static gmpte.GMPTEConstants.MINUTES_PER_WEEK_LIMIT;
 import gmpte.db.BusInfo;
 import gmpte.db.DriverInfo;
 import gmpte.db.RosterDB;
@@ -34,30 +35,46 @@ import javafx.concurrent.Task;
  */
 public class RosterController {
     
+    // stores weekdays services
     private ArrayList<Service> weekdayServices;
-    private ArrayList<Service> saturdayServices;
-    private ArrayList<Service> sundayServices;
-    private ArrayList<Driver> drivers;
-    private ArrayList<Bus> buses;
-    private Schedule schedule;
-    private Task t;
-    private Date fromDate;
-    private Date toDate;
     
-    public static final int MINUTES_PER_WEEK_LIMIT = 3000;
+    // stores saturday services
+    private ArrayList<Service> saturdayServices;
+    
+    // stores sunday services
+    private ArrayList<Service> sundayServices;
+    
+    // stores the drivers
+    private ArrayList<Driver> drivers;
+    
+    // stores the buses
+    private ArrayList<Bus> buses;
+    
+    // stores the Schedule
+    private Schedule schedule;
+    
+    private Task t;
+    
+    // store response fromDate
+    private Date fromDate;
+    
+    // stores response toDate
+    private Date toDate;
+
     
     public ArrayList<Integer> routes;
     
     public RosterController() {
-        weekdayServices = new ArrayList<Service>();
-        saturdayServices = new ArrayList<Service>();
-        sundayServices = new ArrayList<Service>();
-        drivers = new ArrayList<Driver>();
-        buses = new ArrayList<Bus>();
-        
-        schedule = new Schedule();
-        
-        routes = new ArrayList<Integer>();
+      // initializing data strcutures
+      weekdayServices = new ArrayList<Service>();
+      saturdayServices = new ArrayList<Service>();
+      sundayServices = new ArrayList<Service>();
+      drivers = new ArrayList<Driver>();
+      buses = new ArrayList<Bus>();
+      
+      schedule = new Schedule();
+
+      routes = new ArrayList<Integer>();
     }
     
     public void addRoute(int routeID) {
@@ -95,26 +112,34 @@ public class RosterController {
     }
     
     private void fetchDrivers() {
-        int[] driverIds = DriverInfo.getDrivers();
-        int driverNumber;
-        for(int driverID : driverIds) {
-            driverNumber = Integer.parseInt(DriverInfo.getNumber(driverID));
-            drivers.add(new Driver(driverID, driverNumber));
-        }
+      // get drivers from database
+      int[] driverIds = DriverInfo.getDrivers();
+      int driverNumber;
+      
+      // store drivers in ArrayList
+      for(int driverID : driverIds) {
+          driverNumber = Integer.parseInt(DriverInfo.getNumber(driverID));
+          drivers.add(new Driver(driverID, driverNumber));
+      }
     }
     
     private void fetchBuses() {
-        int[] busesIds = BusInfo.getBuses();
-        int busNumber;
-        for(int busID : busesIds) {
-            busNumber = Integer.parseInt(BusInfo.busNumber(busID));
-            buses.add(new Bus(busID, busNumber));
-        }
+      // fetch buses from database
+      int[] busesIds = BusInfo.getBuses();
+      int busNumber;
+      
+      // store buses in ArrayList
+      for(int busID : busesIds) {
+          busNumber = Integer.parseInt(BusInfo.busNumber(busID));
+          buses.add(new Bus(busID, busNumber));
+      }
     }
     
     public void clearNextWeekRoster() {
+      // get next monday
       Calendar nextMonday = nextMonday();
       
+      // delete all roster after the next monday
       try {
         RosterDB.clearAfterDate(nextMonday.getTime());
       } catch (SQLException ex) {
@@ -128,7 +153,7 @@ public class RosterController {
         toDate = null;
         fromDate = null;
         
-        // all drivers now get 0 hours driven
+        // all drivers now get 0 minutes driven per week
         database.busDatabase.execute("UPDATE `driver` SET hours_this_week=0");
         
         // clear the roster for the next week
@@ -136,7 +161,6 @@ public class RosterController {
         
         // fetch all services
         fetchServices();
-        
         
         // fetch all driver
         fetchDrivers();
@@ -185,13 +209,14 @@ public class RosterController {
             Driver driver = chooseDriver(service);
             if(driver!=null) {
                 // increase the number of hours driver has drover
-                driver.increaseHoursThisWeek(service.getServiceLength());
+                driver.increaseMitnuesThisWeek(service.getServiceLength());
                 // update databsae information
                 driver.dbUpdateHours();
 
                 // update driver info in the database
             } else {
                 System.out.println("NO DRIVER HAS BEEN CHOOSEN");
+                System.out.println("WEEKDAY: "+weekDay);
             }
             
             // Choosing the bus
@@ -244,85 +269,100 @@ public class RosterController {
     }
     
     
-    public void generateWeekdaysRoster() {        
-        Calendar now = nextMonday();
-        int weekday;
+    public void generateWeekdaysRoster() { 
+      // getting next monday
+      Calendar now = nextMonday();
+      int weekday;
 
-        // from date update
-        fromDate = now.getTime();
+      // from date update
+      fromDate = now.getTime();
+      weekday = now.get(Calendar.DAY_OF_WEEK);
+      
+      while(weekday != Calendar.SATURDAY) {
+        // generate for each day MONDAY-FRIDAY
+        generateDayRoster(weekdayServices, weekday, now.getTime());
+
+        // step forward 1 day
+        now.add(Calendar.DAY_OF_YEAR, 1);
         weekday = now.get(Calendar.DAY_OF_WEEK);
-        
-        while(weekday != Calendar.SATURDAY) {
-            // generate for each day MONDAY-FRIDAY
-            generateDayRoster(weekdayServices, weekday, now.getTime());
-            
-            now.add(Calendar.DAY_OF_YEAR, 1);
-            weekday = now.get(Calendar.DAY_OF_WEEK);
-        }
+      }
     }
     
     public void generateSaturdayRoster() {
-        Calendar now = nextMonday();
-        
-        now.add(Calendar.DAY_OF_YEAR, 5);
-        int weekday = now.get(Calendar.DAY_OF_WEEK);
-        
-        if(weekday==Calendar.SATURDAY) {
-            // generating the roster for saturdays
-            generateDayRoster(saturdayServices, weekday, now.getTime());
-        }
+      // get next monday
+      Calendar now = nextMonday();
+      
+      // step 5 days forward to Satruday
+      now.add(Calendar.DAY_OF_YEAR, 5);
+      int weekday = now.get(Calendar.DAY_OF_WEEK);
+
+      if(weekday==Calendar.SATURDAY) {
+          // generating the roster for saturdays
+          generateDayRoster(saturdayServices, weekday, now.getTime());
+      }
     }
     
     public void generateSundayRoster() {
-        Calendar now = nextMonday();
-        
-        now.add(Calendar.DAY_OF_YEAR, 6);
-        int weekday = now.get(Calendar.DAY_OF_WEEK);
-        
-        if(weekday==Calendar.SUNDAY) {
-            // generating the roster for saturdays
-            generateDayRoster(sundayServices, weekday, now.getTime());
-        }
-        
-        // toDate update
-        toDate = now.getTime();
+      // get next monday
+      Calendar now = nextMonday();
+      
+      // step to Sunday
+      now.add(Calendar.DAY_OF_YEAR, 6);
+      int weekday = now.get(Calendar.DAY_OF_WEEK);
+
+      if(weekday==Calendar.SUNDAY) {
+          // generating the roster for saturdays
+          generateDayRoster(sundayServices, weekday, now.getTime());
+      }
+
+      // toDate update
+      toDate = now.getTime();
     }
     
     public void flashDriverServices() {
-        Iterator<Driver> driverIt = drivers.iterator();
-        for(; driverIt.hasNext();) {
-            driverIt.next().flashShift();
-        }
+      Iterator<Driver> driverIt = drivers.iterator();
+
+      // flash each driver
+      for(; driverIt.hasNext();) {
+          driverIt.next().flashShift();
+      }
     }
     
     public void flashBusReservations() {
-        Iterator<Bus> busIt = buses.iterator();
-        while(busIt.hasNext()) {
-          busIt.next().flashReservations();
-        }
+      Iterator<Bus> busIt = buses.iterator();
+
+      // flash bus reservations
+      while(busIt.hasNext()) {
+        busIt.next().flashReservations();
+      }
     }
     
     public Driver chooseDriver(Service service) {
-        // sort drivers
-        Collections.sort(drivers);
-        Iterator<Driver> it = drivers.iterator();
-        Driver driver;
-        
-        for(; it.hasNext();) {
-            driver = it.next();
-            
-            // first check there are no clashes of this services with other
-            // services this driver has been assigned to
-            
-            if(driver.getMinutesThisWeek() + service.getServiceLength() <= 
-                                                         MINUTES_PER_WEEK_LIMIT
-                && driver.isAbleToTakeService(service)) {
-                driver.assignToService(service);
-                return driver;
-            }
+      // drivers are sorted in desc order of hours_this_week
+      // greedy algorithms
+      Collections.sort(drivers);
+      Iterator<Driver> it = drivers.iterator();
+      Driver driver;
+
+      // go through all drivers, choose the first one available
+      while(it.hasNext()) {
+        driver = it.next();
+
+        // first check there are no clashes of this services with other
+        // services this driver has been assigned to
+
+        if(driver.getMinutesThisWeek() + service.getServiceLength() <= 
+                                                     MINUTES_PER_WEEK_LIMIT
+            && driver.isAbleToTakeService(service)) {
+          // try to assign the service to driver
+          // return if successfull
+          if(driver.assignToService(service))
+            return driver;
         }
-        
-        return null;
+      }
+
+      System.out.println("NO DRIVE HAS BEEN CHOOSEN FOR SERVICE"+service);
+      return null;
     }
     
     public void printBuses() {
@@ -342,19 +382,19 @@ public class RosterController {
         System.out.println("========== Weekday services =========");
         for(Iterator<Service> it=weekdayServices.iterator(); it.hasNext();) {
             // print the service
-            System.out.println(it.next().getRoute());
+            System.out.println(it.next());
         }
         
         System.out.println("========== Saturday services =========");
         for(Iterator<Service> it=saturdayServices.iterator(); it.hasNext();) {
             // print the service
-            System.out.println(it.next().getRoute());
+            System.out.println(it.next());
         }
         
         System.out.println("========== Sunday services =========");
         for(Iterator<Service> it=sundayServices.iterator(); it.hasNext();) {
             // print the service
-            System.out.println(it.next().getRoute());
+            System.out.println(it.next());
         }
     } 
 }

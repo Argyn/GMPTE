@@ -84,7 +84,12 @@ public class RosterViewController implements Initializable, ControllerInterface 
   @FXML
   private ChoiceBox<Bus> busChoiceMenu;
   
-  private DatePicker searchDatePicker;
+  @FXML
+  private HBox searchByDateHBox;
+  
+  private DatePicker searchDatePickerFrom;
+  
+  private DatePicker searchDatePickerTo;
   
   private MainControllerInterface mainController;
   
@@ -363,9 +368,18 @@ public class RosterViewController implements Initializable, ControllerInterface 
   }
   
   private void populateSearchDateOption() {
-    searchDatePicker = new DatePicker();
-    searchDatePicker.getStyleClass().add("medium-textfield");
-    searchOptionsGrid.add(searchDatePicker, 1, 4);
+    searchDatePickerFrom = new DatePicker();
+    searchDatePickerFrom.getStyleClass().add("medium-textfield");
+    
+    searchDatePickerTo = new DatePicker();
+    searchDatePickerTo.getStyleClass().add("medium-textfield");
+    
+    Label to = new Label ("TO");
+    to.setWrapText(true);
+    to.getStyleClass().add("medium-label");
+    
+    searchByDateHBox.getChildren().addAll(searchDatePickerFrom, to, 
+                                            searchDatePickerTo);
   }
   
   private void addOptionsChangeListeners() {
@@ -385,23 +399,25 @@ public class RosterViewController implements Initializable, ControllerInterface 
         
         if(!durationTextField.getText().equals(""))
           duration = Integer.parseInt(durationTextField.getText());
-        Date date = searchDatePicker.getSelectedDate();
+        
+        Date dateFrom = searchDatePickerFrom.getSelectedDate();
+        Date dateTo = searchDatePickerTo.getSelectedDate();
         
         searchOptionsBox.setVisible(false);
         
-        showOptionsRoster(driver, route, bus, service, duration, date);
+        showOptionsRoster(driver, route, bus, service, duration, dateFrom, dateTo);
       }
     });
   }
   
   public void showOptionsRoster(final Driver driver, final Integer route, final Bus bus, 
                                 final Service service, final Integer duration, 
-                                final java.util.Date date) {
+                                final Date dateFrom, final Date dateTo) {
     final Task<ArrayList<Roster>> task = new Task<ArrayList<Roster>>() {
 
       @Override
       protected ArrayList<Roster> call() throws Exception {
-        return RosterDB.getRosterBy(driver, route, bus, service, duration, date);
+        return RosterDB.getRosterBy(driver, route, bus, service, duration, dateFrom, dateTo);
       };
     };
     

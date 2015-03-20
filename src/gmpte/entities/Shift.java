@@ -6,7 +6,10 @@
 
 package gmpte.entities;
 
+import gmpte.GMPTEConstants;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  *
@@ -14,83 +17,90 @@ import java.util.ArrayList;
  */
 public class Shift {
     public ArrayList<Service> services;
-    
-    // the time of the current shift
-    public int shiftTime;
-    
-    // how long the driver has actually worked in that shift
-    public int workedTime;
-    
-    public int startTime;
-    
-    public int endTime;
-    
-    // as there can be multiple shifts in this class, this stores the total worked time
-    public int totalWorkedTime;
+    public ArrayList<TimeShift> shiftTimes;
+    public int lastEndTime;
+    public boolean breakTaken;
     
     public Shift() {
         services = new ArrayList<Service>();
-        shiftTime = 0;
-        startTime = 0;
-        totalWorkedTime = 0;
+        shiftTimes = new ArrayList<TimeShift>();
+        breakTaken = false;
     }
     
-    // will return true if the service has been added to a shift, false if the
-    // service cannot be added.
-    public boolean addService(Service service) {
-        boolean added = false;
-        // check if the driver has already worked 10 hours today
-        if (totalWorkedTime < 600)
-        {
-          /* check if this will be the first service assigned to the driver or
-             check if there is suffienct time between the new service and the
-             current shift for the driver to take a break */
-          if(services.size()==0 || (service.getStartTime() - endTime >=60)) {
-              services.add(service);
-              workedTime+=service.getServiceLength();
-              totalWorkedTime+=service.getServiceLength();
-              startTime = service.getStartTime();
-              endTime = service.getEndTime();
-              // if a bus passes midnight add its value to the number of mins in
-              // day
-              if(startTime > endTime)
-                  endTime+=1440;
-              added = true;
-          }
-          // checks the 5 hour before break and 10 hour max constraints
-          else if(isAbleToTakeService(service)) {
-              services.add(service);
-              workedTime+=service.getServiceLength();
-              totalWorkedTime+=service.getServiceLength();             
-              
-              int tempEndTime = service.getEndTime();
-              if(startTime > tempEndTime)
-                  tempEndTime+=1440;
-              endTime = tempEndTime;
-              
-              added = true;
-          }
+    public void updateData() {
+      Collections.sort(shiftTimes);
+    }
+    
+    public boolean satisfy(boolean output) {
+      updateData();
+      Iterator<TimeShift> timeShiftsIt = shiftTimes.iterator();
+      
+      TimeShift firstShiftService = null;
+      int totalTimeWorked = 0;
+      int totalShiftTime;
+      
+      if(timeShiftsIt.hasNext()) {
+        firstShiftService = timeShiftsIt.next();
+        if(output) {
+          System.out.println("First time:"+firstShiftService.getStartTime());
+        }
+      }
         
-          shiftTime = endTime-startTime;
+      TimeShift next;
+      TimeShift prev = firstShiftService;
+      
+      while(timeShiftsIt.hasNext()) {
+        next = timeShiftsIt.next();
+        
+        if(output)
+          System.out.println("End time:"+next.getEndTime());
+                  
+        totalShiftTime = next.getEndTime()-firstShiftService.getStartTime();
+        
+        if(next.getStartTime()-prev.getEndTime()>=60) {
+          firstShiftService = next;
+          totalTimeWorked += totalShiftTime;
+          totalShiftTime = 0;
+          breakTaken = true;
+          if(output)
+            System.out.println("Taking the break");
         }
         
-        return added;
+        if(output) {
+          System.out.println("Total time worked:"+(totalTimeWorked+totalShiftTime));
+        }
+        // do not allow to work more than 10hours a day(600 minutes)
+        if(totalTimeWorked+totalShiftTime>GMPTEConstants.MAX_MINUTES_PER_DAY 
+                          || totalShiftTime>GMPTEConstants.MAX_SHIFT_DURATION) {
+          if(output) {
+            System.out.println("Exceeded maxiumin shift time or timework limit");
+          }
+          return false;
+        }
+        
+        prev = next;
+      }
+      
+      return true;
     }
-    /* check if adding the service to the shift will make it exceed the max
-       time for a driver to work before taking a break and if adding the
-       service will make the time that driver has worked greater than his
-       max working time*/    
-    public boolean isAbleToTakeService(Service service) {
-        if(services.size()==0)
-            return true;
+    public boolean addService(Service service, boolean output) {
+      if(output)
+        System.out.println("Service:"+service.getServiceId());
+      TimeShift tsh = new TimeShift(service.getStartTime(), service.getEndTime());
+      shiftTimes.add(tsh);
+      
+      if(!satisfy(output)) {
+        shiftTimes.remove(tsh);
         
-        int tempEndTime = service.getEndTime();
-        
-        // if a bus passes midnight add its value to the number of mins in a day
-        if(startTime > tempEndTime)
-            tempEndTime+=1440;
-        
-        return (tempEndTime-startTime <=300) && ((totalWorkedTime + (tempEndTime - endTime)) < 600);
+        if(output)
+          System.out.println("Service:"+service.getServiceId()+" Does not satisfy");
+        return false;
+      }
+      
+      services.add(service);
+      if(output)
+          System.out.println("Service:"+service.getServiceId()+" satisfies");
+      return true;
     }
     
     public ArrayList<Service> getAssignedServices() {

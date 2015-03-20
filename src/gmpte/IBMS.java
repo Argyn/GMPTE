@@ -287,7 +287,7 @@ public class IBMS extends Application implements MainControllerInterface {
       stage.show();
     } catch(IOException exception) {
       // close the programm
-      
+      exception.printStackTrace();
     }
   }
   

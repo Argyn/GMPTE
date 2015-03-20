@@ -208,6 +208,7 @@
                   <TextField fx:id="durationTextField" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                   <Label styleClass="medium-label" text="Bus" GridPane.rowIndex="2" />
                   <ChoiceBox fx:id="busChoiceMenu" prefHeight="25.0" prefWidth="319.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                  <HBox fx:id="searchByDateHBox" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                </children>
                <VBox.margin>
                   <Insets left="50.0" right="50.0" top="50.0" />

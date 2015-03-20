@@ -135,7 +135,7 @@ public class ControllerInterfaceController implements Initializable, ControllerI
           @Override
           public void handle(WorkerStateEvent event) {
             System.out.println("Failed");
-            System.out.println(task.getException().getMessage());
+            task.getException().printStackTrace();
           }
         });
         

@@ -58,9 +58,14 @@ public class RosterDB {
   }
   
   
-  public static ArrayList<Roster> getRosterBy(Driver driver, Integer route, Bus bus, Service service, 
-                                                  Integer duration, java.util.Date date) {
-    SQLQueryFilter filter = DBHelper.formRosterQueryFilter(driver, route, bus, service, duration, date);
+  public static ArrayList<Roster> getRosterBy(Driver driver, Integer route, 
+                                              Bus bus, Service service, 
+                                              Integer duration, 
+                                              java.util.Date dateFrom, 
+                                              java.util.Date dateTo) {
+    
+    SQLQueryFilter filter = DBHelper.formRosterQueryFilter(driver, route, 
+                                      bus, service, duration, dateFrom, dateTo);
     filter.order("date", SQLQueryFilter.ORDER.ASC);
     filter.order("driver", SQLQueryFilter.ORDER.ASC);
     
@@ -68,7 +73,7 @@ public class RosterDB {
   }
   
   public static ArrayList<Roster> getGlobalRoster() {
-    SQLQueryFilter filter = DBHelper.formRosterQueryFilter(null, null, null, null, null, null);
+    SQLQueryFilter filter = DBHelper.formRosterQueryFilter(null, null, null, null, null, null, null);
     filter.order("date", SQLQueryFilter.ORDER.ASC);
     filter.order("driver", SQLQueryFilter.ORDER.ASC);
     
@@ -77,13 +82,34 @@ public class RosterDB {
   
   public static ArrayList<Roster> getRosterBy(String where[], String values[],
                                                   String[] orderBy, String[] order) {
+    
     ArrayList<Roster> rosters = new ArrayList<Roster>();
     
     StringBuilder builder = new StringBuilder();
     builder.append("SELECT * FROM roster");
     
     // handle where query
-    builder.append(DBHelper.prepareWhere(where, values));
+    if(where.length == values.length && where.length>0) {
+      builder.append(" WHERE ");
+      
+      if(where[0].equals("dateFrom"))
+          builder.append("date>=?");
+        else if(where[0].equals("dateTo"))
+          builder.append("date<=?");
+        else
+          builder.append(where[0]+"=?");
+      
+      for(int i=1; i<where.length; i++) {
+        builder.append(" AND ");
+        
+        if(where[i].equals("dateFrom"))
+          builder.append("date>=?");
+        else if(where[i].equals("dateTo"))
+          builder.append("date<=?");
+        else
+          builder.append(where[i]+"=?");
+      }
+    }
     
     // handle order by
     builder.append(DBHelper.prepareOrderBy(orderBy, order));
@@ -97,6 +123,8 @@ public class RosterDB {
       for(int i=0; i<values.length; i++) {
         statement.setString(i+1, values[i]);
       }
+      
+      System.out.println(statement.toString());
       ResultSet result = statement.executeQuery();
       
       while(result.next()) {

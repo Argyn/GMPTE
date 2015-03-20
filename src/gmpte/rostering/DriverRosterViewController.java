@@ -91,7 +91,15 @@ public class DriverRosterViewController implements Initializable, ControllerInte
   @FXML
   private Button logOutButton;
   
-  private DatePicker searchDatePicker;
+  @FXML
+  private Label driverName;
+  
+  @FXML
+  private HBox searchByDateHBox;
+  
+  private DatePicker searchDatePickerFrom;
+  
+  private DatePicker searchDatePickerTo;
   
   private MainControllerInterface mainController;
   
@@ -139,6 +147,9 @@ public class DriverRosterViewController implements Initializable, ControllerInte
     // handle on logout click
     onLogOutButtonClick();
     
+    // show driver's name
+    setDriverNameLabel();
+    
     // show global roster
     showRoster(th);
     
@@ -158,7 +169,8 @@ public class DriverRosterViewController implements Initializable, ControllerInte
       protected ArrayList<Roster> call() throws Exception {
         waitThread.join();
         
-        return RosterDB.getRosterBy(LoginCredentials.getInstance().getDriver(), null, null, null, null, null);
+        return RosterDB.getRosterBy(LoginCredentials.getInstance().getDriver(), 
+                                   null, null, null, null, null, null);
       };
     };
     
@@ -276,6 +288,7 @@ public class DriverRosterViewController implements Initializable, ControllerInte
     
     // put date picker for date
     populateSearchDateOption();
+    
     return th;
   }
   
@@ -363,9 +376,18 @@ public class DriverRosterViewController implements Initializable, ControllerInte
   }
   
   private void populateSearchDateOption() {
-    searchDatePicker = new DatePicker();
-    searchDatePicker.getStyleClass().add("medium-textfield");
-    searchOptionsGrid.add(searchDatePicker, 1, 4);
+    searchDatePickerFrom = new DatePicker();
+    searchDatePickerFrom.getStyleClass().add("medium-textfield");
+    
+    searchDatePickerTo = new DatePicker();
+    searchDatePickerTo.getStyleClass().add("medium-textfield");
+    
+    Label to = new Label ("TO");
+    to.setWrapText(true);
+    to.getStyleClass().add("medium-label");
+    
+    searchByDateHBox.getChildren().addAll(searchDatePickerFrom, to, 
+                                            searchDatePickerTo);
   }
   
   private void addOptionsChangeListeners() {
@@ -384,24 +406,28 @@ public class DriverRosterViewController implements Initializable, ControllerInte
         
         if(!durationTextField.getText().equals(""))
           duration = Integer.parseInt(durationTextField.getText());
-        Date date = searchDatePicker.getSelectedDate();
+        Date dateFrom = searchDatePickerFrom.getSelectedDate();
+        Date dateTo = searchDatePickerTo.getSelectedDate();
         
         searchOptionsBox.setVisible(false);
         
         showOptionsRoster(LoginCredentials.getInstance().getDriver(), route, bus, 
-                                                      service, duration, date);
+                                                      service, duration, 
+                                                      dateFrom, dateTo);
       }
     });
   }
   
-  public void showOptionsRoster(final Driver driver, final Integer route, final Bus bus, 
-                                final Service service, final Integer duration, 
-                                final java.util.Date date) {
+  public void showOptionsRoster(final Driver driver, final Integer route, 
+                                final Bus bus, final Service service, 
+                                final Integer duration, final Date dateFrom, 
+                                                        final Date dateTo) {
     final Task<ArrayList<Roster>> task = new Task<ArrayList<Roster>>() {
 
       @Override
       protected ArrayList<Roster> call() throws Exception {
-        return RosterDB.getRosterBy(driver, route, bus, service, duration, date);
+        return RosterDB.getRosterBy(driver, route, bus, service, duration, 
+                                    dateFrom, dateTo);
       };
     };
     
@@ -468,6 +494,10 @@ public class DriverRosterViewController implements Initializable, ControllerInte
       }
 
     });
+  }
+  
+  public void setDriverNameLabel() {
+    driverName.setText(LoginCredentials.getInstance().getDriver().getName());
   }
   
   

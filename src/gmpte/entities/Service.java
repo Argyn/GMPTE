@@ -19,7 +19,7 @@ import java.util.logging.Logger;
  */
 
 
-public class Service
+public class Service implements Comparable<Service>
 {
   private final int serviceId;
   private final int dailyTimetableId;
@@ -174,5 +174,9 @@ public class Service
       builder.append("\n");
       return builder.toString();*/
       return Integer.toString(serviceId);
+  }
+  
+  public int compareTo(Service other) {
+    return 0;
   }
 }

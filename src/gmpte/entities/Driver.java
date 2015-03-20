@@ -6,7 +6,6 @@
 
 package gmpte.entities;
 
-import java.util.ArrayList;
 import java.util.Iterator;
 import gmpte.db.DriverInfo;
 import gmpte.db.TimetableInfo;
@@ -85,7 +84,7 @@ public class Driver implements Comparable<Driver> {
         return minutesThisWeek;
     }
     
-    public void increaseHoursThisWeek(int minutesIncrease) {
+    public void increaseMitnuesThisWeek(int minutesIncrease) {
       this.setMinutesThisWeek(minutesThisWeek+minutesIncrease);
       this.setMinutesThisYear(minutesThisYear+minutesIncrease);
     }
@@ -106,8 +105,13 @@ public class Driver implements Comparable<Driver> {
         shift = new Shift();
     }
     
-    public void assignToService(Service service) {
-      shift.addService(service);
+    public boolean assignToService(Service service) {
+      
+      boolean output = false;
+      //if(driverNumber==8213)
+      //  output = true;
+      
+      return shift.addService(service, output);
     }
     
     public Shift getShift() {
@@ -120,8 +124,7 @@ public class Driver implements Comparable<Driver> {
     }
     
     public boolean isAbleToTakeService(Service service) {
-
-      return shift.isAbleToTakeService(service) && !doesServiceClash(service);
+      return !doesServiceClash(service) && daysWorked<5; 
     }
     
     private boolean doesServiceClash(Service service) {
@@ -148,6 +151,6 @@ public class Driver implements Comparable<Driver> {
     
     @Override
     public String toString() {
-        return name+"(ID:"+driverID+")";
+        return name+"(ID:"+driverNumber+")";
     }
 }
