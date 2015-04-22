@@ -65,6 +65,27 @@ public class TimetableInfo
     return false;
   }
   
+    public static ArrayList<Integer> getServiceTimes(int serviceId, ArrayList<Integer> servicePoints)
+  {
+    ArrayList<Integer> serviceTimes = new ArrayList<>();
+    int[] existingTimes = getServiceTimingPoints(serviceId);
+    int[] times = new int[servicePoints.size()];
+    int existingIndex = 0;
+    Iterator<Integer> iterator = servicePoints.iterator();
+    for (int index = 0; index < times.length; index++)
+    {
+      iterator.next();
+      if (times[index] == existingTimes[existingIndex])
+      {
+        
+      }
+    } 
+    for (int index = 0; index < times.length; index++)
+      serviceTimes.add(times[index]);
+    return serviceTimes;
+  } // getServiceTimes
+  
+  
   public static int getRouteId(int dailyTimetableId)
   {
     if (dailyTimetableId == 0) throw new InvalidQueryException("Nonexistent timetable");

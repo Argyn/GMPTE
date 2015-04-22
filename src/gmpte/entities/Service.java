@@ -17,6 +17,7 @@ import java.util.logging.Logger;
  *
  * @author mbax3jw3
  */
+import java.util.ArrayList;
 
 
 public class Service implements Comparable<Service>
@@ -34,12 +35,23 @@ public class Service implements Comparable<Service>
   
   private Date endTimeDate;
   
+  private ArrayList<Integer> serviceTimes;
+  
+  private ArrayList<Integer> serviceTimingPoints;
+  
   public Service(int id)
   {
     serviceId = id;
     dailyTimetableId = TimetableInfo.getDailyTimetableId(id);
     routeId = TimetableInfo.getRouteId(dailyTimetableId);
     
+    serviceTimingPoints = new ArrayList<>();
+    int[] timingPoints = TimetableInfo.getRoutePath(routeId);
+    for (int index = 0; index < timingPoints.length; index++)
+      serviceTimingPoints.add(timingPoints[index]);
+    
+    serviceTimes = TimetableInfo.getServiceTimes(serviceId, serviceTimingPoints);
+
     try {
       TimetableInfo.getStartEndTimes(this);
     } catch (SQLException ex) {
@@ -68,7 +80,7 @@ public class Service implements Comparable<Service>
     
     date.add(Calendar.MINUTE, startTime);
     startTimeDate = date.getTime();
-    
+
   }  
   public Service(int serviceID, int dailyTimeTableID, int routeID) {
     this.serviceId = serviceID;
@@ -156,26 +168,30 @@ public class Service implements Comparable<Service>
     return endTimeDate;
   }
   
+  @Override
   public String toString() {
-      /*StringBuilder builder = new StringBuilder();
+      StringBuilder builder = new StringBuilder();
       builder.append("Service ID:"+serviceId);
       builder.append("\n");
       builder.append("DailyTimeTableID:"+dailyTimetableId);
       builder.append("\n");
       builder.append("Route:"+routeId);
       builder.append("\n");
-      builder.append("Length(min):"+serviceLengthMinutes);
-      builder.append("\n");
-      builder.append("Length(hrs):"+serviceLengthHours);
-      builder.append("\n");
       builder.append("Start Time:"+startTime);
       builder.append("\n");
       builder.append("End Time:"+endTime);
       builder.append("\n");
-      return builder.toString();*/
-      return Integer.toString(serviceId);
+      builder.append("\n");
+      builder.append("\n");
+      builder.append("\n");
+      builder.append(serviceTimingPoints);
+      builder.append("\n");
+      builder.append(serviceTimes);
+      return builder.toString();
+      //return Integer.toString(serviceId);
   }
   
+  @Override
   public int compareTo(Service other) {
     return 0;
   }
