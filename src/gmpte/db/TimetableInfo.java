@@ -85,6 +85,28 @@ public class TimetableInfo
     return serviceTimes;
   } // getServiceTimes
   
+  public static ArrayList<Integer> getDailyTimetableIds(int dayId)
+  {  
+    ArrayList<Integer> dailyTimetableIds = new ArrayList<>();
+    int[] returnArray = database.busDatabase.select_ids("daily_timetable_id", "daily_timetable", "kind", dayId, "");
+    for (int index = 0; index < returnArray.length; index++)
+      dailyTimetableIds.add(returnArray[index]);
+    return dailyTimetableIds;
+  } // getDailyTimetableIds
+  
+  public static ArrayList<Integer> getLineServices(ArrayList<Integer> dailyTimetableIds)
+  {
+    ArrayList<Integer> lineServices = new ArrayList<>();
+    Iterator<Integer> iterator = dailyTimetableIds.iterator();
+    while (iterator.hasNext())
+    {
+      int dayId = iterator.next();
+      int[] services = database.busDatabase.select_ids("Distinct service", "timetable_line", "daily_timetable", dayId, "");
+      for (int index = 0; index < services.length; index++)
+        lineServices.add(services[index]);
+    } // while
+    return lineServices;
+  } // getLineServices
   
   public static int getRouteId(int dailyTimetableId)
   {
