@@ -68,7 +68,7 @@ public class TimetableInfo
   
   /* need to add something to fill in the gaps between times. MORE importantly need to add something to that
      to make sure the start and end point cases are handled */
-  public static ArrayList<Integer> getServiceTimes(int serviceId, ArrayList<Integer> servicePoints)
+  public static ArrayList<Integer> getServiceTimes(int serviceId, ArrayList<Integer> servicePoints, int startTime, int endTime)
   {
     ArrayList<Integer> serviceTimes = new ArrayList<>();
     int[] existingTimes = getServiceTimingPoints(serviceId);
@@ -76,15 +76,46 @@ public class TimetableInfo
     int[] returnTime = getRouteTimes(serviceId);
     int existingIndex = 0;
     Iterator<Integer> iterator = servicePoints.iterator();
-    for (int index = 0; index < times.length; index++)
+    for (int index = 1; index < times.length - 1; index++)
     {
       int time = iterator.next();
       if (existingIndex < existingTimes.length && time == existingTimes[existingIndex])
       {
        times[index] = returnTime[existingIndex];
        existingIndex++; 
-      }
-    } 
+      } // if
+    } // for
+    times[0] = startTime;
+    times[times.length - 1] = endTime;
+    for (int index = 1; index < times.length - 1; index++)
+    {
+      int startIndex;
+      int endIndex;
+      if (times[index] == 0)
+      {
+        startIndex = index;
+        endIndex = index;
+        while(times[index] == 0)
+        { 
+          endIndex = index;
+          index++;
+        } // while
+        System.out.print("\nstart = " + startIndex + "\nend = " + endIndex);
+        int prevTime = times[startIndex - 1];
+        int nextTime = times[endIndex + 1];
+        if (nextTime < prevTime)
+          nextTime += 1440;
+        int difference = (nextTime - prevTime) / (endIndex - startIndex + 2);
+        System.out.print("\ndiff = " + difference);
+        for (int jIndex = startIndex; jIndex <= endIndex; jIndex++)
+        {
+          prevTime += difference;
+          times[jIndex] = prevTime;
+        }
+      } // if
+    } // for
+        
+        
     for (int index = 0; index < times.length; index++)
       serviceTimes.add(times[index]);
     return serviceTimes;

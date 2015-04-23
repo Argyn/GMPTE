@@ -50,8 +50,6 @@ public class Service implements Comparable<Service>
     for (int index = 0; index < timingPoints.length; index++)
       serviceTimingPoints.add(timingPoints[index]);
     
-    serviceTimes = TimetableInfo.getServiceTimes(serviceId, serviceTimingPoints);
-
     try {
       TimetableInfo.getStartEndTimes(this);
     } catch (SQLException ex) {
@@ -62,6 +60,9 @@ public class Service implements Comparable<Service>
       endTime+=1440;
     
     serviceLength =  endTime - startTime;  
+    
+    serviceTimes = TimetableInfo.getServiceTimes(serviceId, serviceTimingPoints,startTime,endTime);
+
     
     Calendar date = new GregorianCalendar();
     // reset hour, minutes, seconds and millis
@@ -80,6 +81,8 @@ public class Service implements Comparable<Service>
     
     date.add(Calendar.MINUTE, startTime);
     startTimeDate = date.getTime();
+    
+    
 
   }  
   public Service(int serviceID, int dailyTimeTableID, int routeID) {
