@@ -73,29 +73,34 @@ public class TimetableInfo
     ArrayList<Integer> serviceTimes = new ArrayList<>();
     int[] existingTimes = getServiceTimingPoints(serviceId);
     int[] times = new int[servicePoints.size()];
+    boolean[] setTimes = new boolean[times.length];
     int[] returnTime = getRouteTimes(serviceId);
     int existingIndex = 0;
     Iterator<Integer> iterator = servicePoints.iterator();
     for (int index = 1; index < times.length - 1; index++)
     {
+      setTimes[index] = false;
       int time = iterator.next();
       if (existingIndex < existingTimes.length && time == existingTimes[existingIndex])
       {
        times[index] = returnTime[existingIndex];
+       setTimes[index] = true;
        existingIndex++; 
       } // if
     } // for
     times[0] = startTime;
     times[times.length - 1] = endTime;
+    setTimes[0] = true;
+    setTimes[setTimes.length - 1] = true;
     for (int index = 1; index < times.length - 1; index++)
     {
       int startIndex;
       int endIndex;
-      if (times[index] == 0)
+      if (!setTimes[index])
       {
         startIndex = index;
         endIndex = index;
-        while(times[index] == 0)
+        while(!setTimes[index])
         { 
           endIndex = index;
           index++;
