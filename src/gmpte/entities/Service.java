@@ -38,7 +38,7 @@ public class Service implements Comparable<Service>
   private ArrayList<Integer> serviceTimes;
   
   private ArrayList<Integer> serviceTimingPoints;
-  
+   
   public Service(int id)
   {
     serviceId = id;
@@ -170,6 +170,16 @@ public class Service implements Comparable<Service>
   public Date getEndTimeDate() {
     return endTimeDate;
   }
+  
+  public ArrayList<Integer> getServiceTimes()
+  {
+    return serviceTimes;
+  } // getServiceTimes
+  
+  public ArrayList<Integer> getServiceTimingPoints()
+  {
+    return serviceTimingPoints;
+  } // getServiceTimingPoints
   
   @Override
   public String toString() {
