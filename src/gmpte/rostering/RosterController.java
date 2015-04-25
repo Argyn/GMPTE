@@ -361,7 +361,7 @@ public class RosterController {
         }
       }
 
-      System.out.println("NO DRIVE HAS BEEN CHOOSEN FOR SERVICE"+service);
+      //System.out.println("NO DRIVE HAS BEEN CHOOSEN FOR SERVICE"+service);
       return null;
     }
     

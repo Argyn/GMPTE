@@ -1,7 +1,14 @@
 package gmpte.db;
 
 
+import gmpte.entities.BusStop;
+import gmpte.entities.Route;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Information about bus stops. Real bus stops within the GMPTE area are
@@ -197,6 +204,41 @@ public class BusStopInfo
   public static int findAreaByName(String name)
   {
     return database.busDatabase.find_id("area", "name", name);
+  }
+  
+  public static ArrayList<BusStop> getBusStopsByRoute(Route route) {
+    
+    ArrayList<BusStop> busStops = new ArrayList<BusStop>();
+    
+    String query = "SELECT p.bus_stop, p.sequence, b.area, b.name FROM path p "
+                   + "LEFT JOIN bus_stop b ON b.bus_stop_id=p.bus_stop "
+                   + "WHERE p.route=?";
+    
+    PreparedStatement statement;
+    
+    try {
+      statement = database.busDatabase
+              .getConnection().prepareStatement(query);
+      
+      statement.setInt(1, route.getRouteID());
+      
+      ResultSet result = statement.executeQuery();
+      
+      while(result.next()) {
+        int busStopID = result.getInt("bus_stop");
+        int areaCode = result.getInt("area");
+        int seq = result.getInt("sequence");
+        String name = result.getString("name");
+        
+        busStops.add(new BusStop(busStopID, areaCode, name, seq));
+      }
+      
+      return busStops;
+    } catch (SQLException ex) {
+      Logger.getLogger(BusStopInfo.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return null;
   }
      
 }
