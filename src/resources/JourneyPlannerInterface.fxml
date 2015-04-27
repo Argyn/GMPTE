@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.passenger.JourneyPlannerInterfaceController">
+   <children>
+      <AnchorPane layoutX="167.0" layoutY="145.0" prefHeight="426.0" prefWidth="666.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="629.0" styleClass="content-vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="93.0" prefWidth="636.0" styleClass="success-hbox">
+                     <children>
+                        <Label text="Please choose departure and destination points">
+                           <styleClass>
+                              <String fx:value="white-text" />
+                              <String fx:value="medium-label" />
+                           </styleClass>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <GridPane vgap="30.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <ChoiceBox fx:id="departureChoiceBox" prefHeight="25.0" prefWidth="321.0" GridPane.columnIndex="1" />
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="medium-label">
+                           <children>
+                              <ImageView fitHeight="70.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@dep-icon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label text="Departure point:" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+                           <children>
+                              <ImageView fitHeight="70.0" fitWidth="45.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@dest-icon.png" />
+                                 </image>
+                              </ImageView>
+                              <Label styleClass="medium-label" text="Destitation point:" />
+                           </children>
+                           <GridPane.margin>
+                              <Insets />
+                           </GridPane.margin>
+                        </HBox>
+                        <ChoiceBox fx:id="destinationChoiceBox" prefHeight="25.0" prefWidth="321.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                           <children>
+                              <Button fx:id="planJourneyButton" mnemonicParsing="false" styleClass="submit-button" text="Plan my journey">
+                                 <cursor>
+                                    <Cursor fx:constant="OPEN_HAND" />
+                                 </cursor>
+                              </Button>
+                           </children>
+                        </HBox>
+                     </children>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </GridPane>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="20.0" />
+               </padding>
+            </VBox>
+            <VBox fx:id="routeContainerVBox" layoutX="10.0" layoutY="10.0" prefHeight="200.0" prefWidth="629.0" styleClass="content-vbox" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="200.0" AnchorPane.rightAnchor="200.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="15.0" prefWidth="580.0">
+                     <children>
+                        <Button fx:id="closeRouteWindowButton" mnemonicParsing="false" text="X" />
+                     </children>
+                     <VBox.margin>
+                        <Insets right="-10.0" top="-10.0" />
+                     </VBox.margin>
+                  </HBox>
+                  <HBox alignment="CENTER" prefHeight="41.0" prefWidth="569.0" styleClass="success-hbox">
+                     <children>
+                        <Label text="Your route from {from} to {to}">
+                           <styleClass>
+                              <String fx:value="white-text" />
+                              <String fx:value="medium-label" />
+                           </styleClass>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <GridPane fx:id="routeTable" vgap="10.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <VBox.margin>
+                        <Insets top="20.0" />
+                     </VBox.margin>
+                  </GridPane>
+               </children>
+               <padding>
+                  <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+               </padding>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <HBox alignment="CENTER_LEFT" styleClass="top-horizontal-menu" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox prefHeight="52.0">
+               <children>
+                  <Button fx:id="backButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="119.0" styleClass="top-menu-button" text=" &lt; Back" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="60.0" prefWidth="500.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="driverName" styleClass="top-menu-driver-label" text="JOURNEY PLANNER" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="56.0">
+               <children>
+                  <Button fx:id="searchOptionsButton" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="154.0" styleClass="top-menu-button" text="Search Options" wrapText="true">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <Button fx:id="logOutButton" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="118.0" styleClass="top-menu-button" text="Log Out" />
+         </children>
+      </HBox>
+   </children>
+   <stylesheets>
+      <URL value="@main.css" />
+   </stylesheets>
+</AnchorPane>

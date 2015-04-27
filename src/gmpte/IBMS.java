@@ -44,6 +44,10 @@ public class IBMS extends Application implements MainControllerInterface {
   
   private ControllerInterface driverRosterViewController;
   
+  private ControllerInterface passengerInterfaceController;
+  
+  private ControllerInterface journeyPlannerController;
+  
   private Scene mainPageScene;
   private Scene loginPageScene;
   private Scene startUpPageScene;
@@ -52,6 +56,8 @@ public class IBMS extends Application implements MainControllerInterface {
   private Scene driverInterfacePageScene;
   private Scene rosterViewScene;
   private Scene driverRosterViewScene;
+  private Scene passengerInterfaceScene;
+  private Scene journeyPlannerScene;
   
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -326,6 +332,80 @@ public class IBMS extends Application implements MainControllerInterface {
       
     }
   }
+  
+  @Override
+  public void showPassengerInterface() {
+    try {
+      if(passengerInterfaceScene==null) {
+        // Load login page first
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource(
+              "/resources/PassengerInterface.fxml"
+            )
+        );
+
+
+        Parent root = (Parent)loader.load();
+
+        passengerInterfaceController = 
+            loader.<ControllerInterface>getController();
+
+        passengerInterfaceController.setMainController(this);
+        
+        passengerInterfaceScene = new Scene(root);
+        //passengerInterfaceScene.getStylesheets().add("/resources/calendarstyle.css");
+      }
+      
+
+      stage.setScene(passengerInterfaceScene);
+
+      // set window title
+      setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "
+                                    +GMPTEConstants.PASSENGER_INTERFACE_WINDOW);
+
+      stage.show();
+    } catch(IOException exception) {
+      // close the programm
+      
+    }
+  }
+  
+  @Override
+  public void showJourneyPlanner() {
+    try {
+      if(journeyPlannerScene==null) {
+        // Load login page first
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource(
+              "/resources/JourneyPlannerInterface.fxml"
+            )
+        );
+
+
+        Parent root = (Parent)loader.load();
+
+        journeyPlannerController = 
+            loader.<ControllerInterface>getController();
+
+        journeyPlannerController.setMainController(this);
+
+        journeyPlannerScene = new Scene(root);
+        //passengerInterfaceScene.getStylesheets().add("/resources/calendarstyle.css");
+      }
+
+
+      stage.setScene(journeyPlannerScene);
+
+      // set window title
+      setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "
+                                    +GMPTEConstants.JOURNEY_PLANNER_WINDOW);
+
+      stage.show();
+    } catch(IOException exception) {
+      // close the programm
+
+    }
+  }
   /**
    * @param args the command line arguments
    */
@@ -352,4 +432,5 @@ public class IBMS extends Application implements MainControllerInterface {
   public void loadFonts() {
     Font.loadFont(IBMS.class.getResource("/resources/OpenSans-Regular.ttf").toExternalForm(), 10);
   }
+
 }

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-package testing;
+package gmpte.passenger;
 
 import java.util.ArrayList;
 
@@ -18,18 +18,21 @@ public class Vertex<T extends Comparable<T>> implements Comparable<Vertex<T>> {
   public T data;
   public int key;
   public KeyType keyType;
+  public boolean explored;
   
   public enum KeyType {
     REAL, INFINITE
   };
   
   public ArrayList<Vertex<T>> adjList;
+  public ArrayList<Edge<T>> edges;
   
   public Vertex(T data) {
     this.data = data;
-    adjList = new ArrayList<Vertex<T>>();
+    adjList = new ArrayList<>();
     key = Integer.MAX_VALUE;
     keyType = KeyType.INFINITE;
+    explored = false;
   }
   
   public T getData() {
@@ -38,6 +41,10 @@ public class Vertex<T extends Comparable<T>> implements Comparable<Vertex<T>> {
   
   public void addAdjVertex(Vertex<T> v) {
     adjList.add(v);
+  }
+  
+  public void addEdge(Edge<T> e) {
+    edges.add(e);
   }
   
   public ArrayList<Vertex<T>> getAdjVertices() {
@@ -70,6 +77,18 @@ public class Vertex<T extends Comparable<T>> implements Comparable<Vertex<T>> {
     return keyType == KeyType.REAL;
   }
   
+  public void flashKey() {
+    key = Integer.MAX_VALUE;
+    keyType = KeyType.INFINITE;
+  }
+  
+  public boolean isExplored() {
+    return explored;
+  }
+  
+  public void setExplored(boolean explored) {
+    this.explored = explored;
+  }
   
   @Override
   public String toString() {

@@ -54,7 +54,7 @@
                         <String fx:value="main-menu-item" />
                      </styleClass>
                      <HBox.margin>
-                        <Insets right="70.0" />
+                        <Insets left="30.0" right="30.0" />
                      </HBox.margin>
                   </VBox>
                   <VBox fx:id="controllerMenuItem" prefHeight="190.0">
@@ -79,7 +79,32 @@
                         <String fx:value="main-menu-item" />
                      </styleClass>
                      <HBox.margin>
-                        <Insets left="70.0" />
+                        <Insets left="30.0" right="30.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox fx:id="passengerMenuItem" prefHeight="190.0">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-icon-container">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@passenger.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="32.0" prefWidth="200.0" styleClass="main-menu-item-label-container">
+                           <children>
+                              <Label styleClass="main-menu-item-label" text="PASSENGER" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="content-vbox" />
+                        <String fx:value="main-menu-item" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets left="30.0" right="30.0" />
                      </HBox.margin>
                   </VBox>
                </children>

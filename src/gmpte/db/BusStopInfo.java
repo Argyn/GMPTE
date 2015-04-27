@@ -217,20 +217,14 @@ public class BusStopInfo
     PreparedStatement statement;
     
     try {
-      statement = database.busDatabase
-              .getConnection().prepareStatement(query);
+      statement = prepareStatement(query);
       
       statement.setInt(1, route.getRouteID());
       
       ResultSet result = statement.executeQuery();
       
       while(result.next()) {
-        int busStopID = result.getInt("bus_stop");
-        int areaCode = result.getInt("area");
-        int seq = result.getInt("sequence");
-        String name = result.getString("name");
-        
-        busStops.add(new BusStop(busStopID, areaCode, name, seq));
+        busStops.add(resultToBusStop(result));
       }
       
       return busStops;
@@ -239,6 +233,43 @@ public class BusStopInfo
     }
     
     return null;
+  }
+  
+  
+  private static BusStop resultToBusStop(ResultSet result) throws SQLException {
+    BusStop busStop = null;
+    if(result!=null) {
+      int areaCode = result.getInt("area");
+      int seq = result.getInt("sequence");
+      String name = result.getString("name");
+      busStop = new BusStop(areaCode, name, seq);
+    }
+    
+    return busStop;
+  }
+  public static PreparedStatement prepareStatement(String query) throws SQLException {
+    return database.busDatabase
+              .getConnection().prepareStatement(query);
+  }
+  
+  public static ArrayList<BusStop> getAllBusStops() {
+    ArrayList<BusStop> busStops = new ArrayList<>();
+    
+    try {
+      String query = "SELECT DISTINCT name, area, 0 as sequence FROM `bus_stop`";
+      PreparedStatement statement = prepareStatement(query);
+      
+      ResultSet result = statement.executeQuery();
+      
+      while(result.next()) {
+        busStops.add(resultToBusStop(result));
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(BusStopInfo.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return busStops;
+    
   }
      
 }

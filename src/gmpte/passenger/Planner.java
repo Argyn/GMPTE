@@ -4,8 +4,9 @@
  * and open the template in the editor.
  */
 
-package testing;
+package gmpte.passenger;
 
+import testing.*;
 import gmpte.db.BusStopInfo;
 import gmpte.db.database;
 import gmpte.entities.BusStop;
@@ -167,7 +168,7 @@ public class Planner {
     printStops(68);
     System.out.println("==============");
     
-    Graph<BusStop> bStopsNetwork = buildNetwork(routes);
+    Graph bStopsNetwork = buildNetwork(routes);
     
     printNetwork(bStopsNetwork);
     
@@ -177,10 +178,6 @@ public class Planner {
     HashMap<BusStop, BusStop> shortestPath = getShortestPath(bStopsNetwork, from, to);
     
     printShortestPath(bStopsNetwork, shortestPath, to);
-    
-    for(Edge<BusStop> e : bStopsNetwork.getEdges()) {
-      System.out.println("NODE "+e.getVertex1()+" "+e.getVertex2());
-    }
     /*ArrayList<BusStop> route65 = getBStops(65);
     ArrayList<BusStop> route66 = getBStops(66);
     ArrayList<BusStop> route67 = getBStops(67);

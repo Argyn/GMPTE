@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="700.0" prefWidth="900.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.passenger.PassengerInterfaceController">
+   <children>
+      <ImageView fitHeight="82.0" fitWidth="92.0" layoutX="14.0" layoutY="62.0" pickOnBounds="true" preserveRatio="true" styleClass="login-top-hbox">
+         <image>
+            <Image url="@logo2.png" />
+         </image>
+      </ImageView>
+      <Label layoutX="128.0" layoutY="65.0" prefHeight="37.0" prefWidth="291.0" text="Greater Manchester">
+         <styleClass>
+            <String fx:value="greater-manchester-label" />
+            <String fx:value="dropshadow" />
+         </styleClass>
+      </Label>
+      <Label layoutX="128.0" layoutY="103.0" styleClass="greater-manchester-label" text="Public Transport Executive" />
+      <HBox layoutX="531.0" layoutY="190.0" />
+      <AnchorPane prefHeight="52.0" prefWidth="1309.0" AnchorPane.bottomAnchor="648.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" styleClass="top-horizontal-menu" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox prefHeight="44.0" prefWidth="509.0">
+                     <children>
+                        <Button fx:id="backButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="95.0" styleClass="top-menu-button" text=" &lt; Back" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="52.0" prefWidth="800.0">
+                     <children>
+                        <Button fx:id="logOutButton" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="114.0" styleClass="top-menu-button" text="Log Out">
+                           <HBox.margin>
+                              <Insets />
+                           </HBox.margin>
+                        </Button>
+                     </children>
+                  </HBox>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="159.0" layoutY="246.0" prefHeight="200.0" prefWidth="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="246.0">
+         <children>
+            <HBox alignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <children>
+                  <VBox fx:id="journeyPlannerMenuItem" prefHeight="257.0" prefWidth="210.0">
+                     <styleClass>
+                        <String fx:value="main-menu-item" />
+                        <String fx:value="content-vbox" />
+                     </styleClass>
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-icon-container">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@journeyplanner.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-label-container">
+                           <children>
+                              <Label styleClass="main-menu-item-label" text="JOURNEY PLANNER" textAlignment="CENTER" wrapText="true" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <HBox.margin>
+                        <Insets right="70.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox fx:id="checkRosterMenuItem" prefHeight="257.0" prefWidth="210.0">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-icon-container">
+                           <children>
+                              <ImageView fitHeight="150.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@roster.png" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-label-container">
+                           <children>
+                              <Label styleClass="main-menu-item-label" text="CHECK TIMETABLE" textAlignment="CENTER" wrapText="true" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="main-menu-item" />
+                        <String fx:value="content-vbox" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets left="70.0" />
+                     </HBox.margin>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+   </children>
+   <stylesheets>
+      <URL value="@main.css" />
+      <URL value="@calendarstyle.css" />
+   </stylesheets>
+</AnchorPane>

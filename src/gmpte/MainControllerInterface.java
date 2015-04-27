@@ -30,4 +30,8 @@ public interface MainControllerInterface {
     void showRosterView();
     
     void showDriverRosterView();
+    
+    void showPassengerInterface();
+    
+    void showJourneyPlanner();
 }

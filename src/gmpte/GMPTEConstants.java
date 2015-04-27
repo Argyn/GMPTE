@@ -48,6 +48,10 @@ public class GMPTEConstants {
   
   public static final String ROSTER_VIEW_WINDOW = "ROSTER FOR THE NEXT WEEK";
   
+  public static final String PASSENGER_INTERFACE_WINDOW = "Passenger Interface";
+  
+  public static final String JOURNEY_PLANNER_WINDOW = "Journey Planner";
+  
   public static final String CANNOT_REQUEST_HOLIDAYS_FOR_LESS_THAN_DAY = "Start date and end date cannot be the same day";
   
   public static final String CANNOT_TAKE_HOLIDAYS_IN_THE_PAST = "You cannot request holidays in the past";

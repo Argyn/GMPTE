@@ -27,6 +27,9 @@ public class StartupController implements Initializable, ControllerInterface {
   @FXML
   public VBox controllerMenuItem;
   
+  @FXML
+  public VBox passengerMenuItem;
+  
   public MainControllerInterface mainController;
   
   /**
@@ -40,6 +43,8 @@ public class StartupController implements Initializable, ControllerInterface {
     // controller menu item choose handler
     onControllerMenuItemChoose();
     
+    // handle passenger interface menu item
+    onPassengerMenuItemChoose();
   }  
   
   public void onDriverMenuItemChoose() {
@@ -59,6 +64,17 @@ public class StartupController implements Initializable, ControllerInterface {
       @Override
       public void handle(MouseEvent t) {
         mainController.showControllerInterface();
+      }
+      
+    });
+  }
+  
+  public void onPassengerMenuItemChoose() {
+    passengerMenuItem.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+      @Override
+      public void handle(MouseEvent t) {
+        mainController.showPassengerInterface();
       }
       
     });

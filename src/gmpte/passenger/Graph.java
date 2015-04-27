@@ -4,9 +4,11 @@
  * and open the template in the editor.
  */
 
-package testing;
+package gmpte.passenger;
 
 import java.util.ArrayList;
+import java.util.Iterator;
+import testing.*;
 
 /**
  *
@@ -27,15 +29,14 @@ public class Graph<T extends Comparable<T>> {
       vertices.add(vertex);
   }
   
-  public void addEdge(Vertex<T> vertex1, Vertex<T> vertex2) {
+  public Edge addEdge(Vertex<T> vertex1, Vertex<T> vertex2) {
     Vertex<T> source = vertex1;
     Vertex<T> target = vertex2;
     
     if(!vertices.contains(vertex1))
       addVertex(vertex1);
-    else {
+    else
       source = vertices.get(vertices.indexOf(vertex1));
-    }
     
     if(!vertices.contains(vertex2))
       addVertex(vertex2);
@@ -47,7 +48,11 @@ public class Graph<T extends Comparable<T>> {
 
       edges.add(e);
       source.addAdjVertex(target);
+      
+      return e;
     }
+    
+    return null;
   }
   
   public ArrayList<Vertex<T>> getVertices() {
@@ -56,5 +61,12 @@ public class Graph<T extends Comparable<T>> {
   
   public ArrayList<Edge<T>> getEdges() {
     return edges;
+  }
+  
+  public void flashKeys() {
+    Iterator<Vertex<T>> it = vertices.iterator();
+    while(it.hasNext()) {
+      it.next().flashKey();
+    }
   }
 }

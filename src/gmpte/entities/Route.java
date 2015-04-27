@@ -20,4 +20,14 @@ public class Route {
   public int getRouteID() {
     return routeID;
   }
+  
+  public boolean equals(Object other) {
+    Route otherRoute = (Route)other;
+    return routeID == otherRoute.routeID;
+  }
+  
+  @Override
+  public String toString() {
+    return Integer.toString(routeID);
+  }
 }
