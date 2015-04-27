@@ -171,7 +171,7 @@ public class Planner {
     
     printNetwork(bStopsNetwork);
     
-    BusStop from = new BusStop(221, "Little Hayfield", 1);
+    /*BusStop from = new BusStop(221, "Little Hayfield", 1);
     BusStop to = new BusStop(209, "Asda/Sainsbury's", 1);
     
     HashMap<BusStop, BusStop> shortestPath = getShortestPath(bStopsNetwork, from, to);

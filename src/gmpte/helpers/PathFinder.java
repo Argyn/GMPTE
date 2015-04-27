@@ -133,11 +133,9 @@ public static <T extends Comparable<T>> void buildPath(
         ArrayList<Vertex<T>> nextPath = pathMap.get(target);
 
         if(nextPath.size()>0) {
-            System.out.println("Number of pathes:"+nextPath.size());
 
             for(Vertex adjV : nextPath) {
                 try {
-                    System.out.println("New path "+adjV);
                     if(adjV.equals(source)) {
                       path.addHeadVertex(adjV);
                       result.add(path);

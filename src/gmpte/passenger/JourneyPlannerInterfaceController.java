@@ -8,22 +8,31 @@ package gmpte.passenger;
 
 import gmpte.ControllerInterface;
 import gmpte.MainControllerInterface;
+import gmpte.db.AreaDBInfo;
 import gmpte.db.BusStopInfo;
+import gmpte.entities.Area;
 import gmpte.entities.BusChange;
 import gmpte.entities.BusStop;
 import gmpte.entities.Path;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.input.DragEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
@@ -61,42 +70,106 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
   @FXML
   private Button closeRouteWindowButton;
   
+  @FXML
+  private ChoiceBox<Area> deptAreaChoiceBox;
   
+  @FXML
+  private ChoiceBox<Area> destAreaChoiceBox;
+  
+  @FXML
+  private AnchorPane journeyPlannerPane;
+  
+  @FXML
+  private AnchorPane loadingIndicatorPane;
+  
+          
   private ArrayList<BusStop> busStops;
+  
+  private ArrayList<Area> areas;
   
   private MainControllerInterface mainController;
   
   private JourneyPlannerController jController;
+  
+  private HashMap<Area, ArrayList<BusStop>> areaStationsMap;
   /**
    * Initializes the controller class.
    */
   @Override
-  public void initialize(URL url, ResourceBundle rb) {
-    
-    jController = new JourneyPlannerController();
-    
-    
+  public void initialize(URL url, ResourceBundle rb) {    
     // handle back button click
     onBackButtonClick();
     
     // handle log out button
     onLogOutButtonClick();
-    
-    busStops = BusStopInfo.getAllBusStops();
-    
-    // populate departure choice box with stations
-    populateChoiceBoxWithBusStops(departureChoiceBox);
-    
-    // populate destination choice box with stations
-    populateChoiceBoxWithBusStops(destinationChoiceBox);
-
-    
+   
     // handle journey plan button
     onPlanJourneyButtonClick();
     
+    // handle results window close button
     onCloseRouteWindowButtonClick();
+    
+    // pre load needed data
+    preLoadData();
   }  
   
+  public void preLoadData() {
+    
+    Task<Void> loadTask = new Task<Void>() {
+      @Override
+      protected Void call() throws Exception {
+        jController = new JourneyPlannerController();
+        
+        // getting all areas
+        areas = AreaDBInfo.getAllAreas();
+
+        // getting all bus stops
+        busStops = BusStopInfo.getAllBusStops(areas);
+       
+        
+        return null;
+      }
+    };
+    
+    loadTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        // poulate departure point area box
+        populateChoiceBoxWithArea(deptAreaChoiceBox);
+        
+        // poulate destination point area box
+        populateChoiceBoxWithArea(destAreaChoiceBox);
+        
+        
+        // crea mapping between stations and areas
+        formAreasStationsMap();
+        
+        // populate departure choice box with stations
+        //populateChoiceBoxWithBusStops(departureChoiceBox);
+
+        // populate destination choice box with stations
+       // populateChoiceBoxWithBusStops(destinationChoiceBox);
+        
+        // hide loading indicator
+        loadingIndicatorPane.setVisible(false);
+        
+        // show planner
+        journeyPlannerPane.setVisible(true);
+        
+        //handle dep area
+        onDepartureAreaChosen();
+        
+        // handle dest area
+        onDestinationAreaChosen();
+      }
+    });
+    
+    new Thread(loadTask).start();
+
+    
+    
+  }
   
   public void onBackButtonClick() {
     backButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -127,6 +200,10 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
     choiceBox.setItems(FXCollections.observableArrayList(busStops));
   }
   
+  public void populateChoiceBoxWithArea(ChoiceBox choiceBox) {
+    choiceBox.setItems(FXCollections.observableArrayList(areas));
+  }
+  
   public void onPlanJourneyButtonClick() {
     planJourneyButton.setOnMouseClicked(new EventHandler<MouseEvent>() {
 
@@ -140,10 +217,9 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
           
           System.out.println("Planning the journey");
           
-          ArrayList<Path> pathes = jController.getJourneyPlans(from, to);
+          Path path = jController.getJourneyPlan(from, to);
           
-          System.out.println("Number of pathes:"+pathes.size());
-          displayJourneyPlan(pathes.get(0).getFullPath());
+          displayJourneyPlan(path.getFullPath());
         }
       }
     });
@@ -211,6 +287,54 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
       }
     
     });
+  }
+  
+  public void formAreasStationsMap() {
+    areaStationsMap = new HashMap<>();
+    
+    for(BusStop bStop : busStops) {
+      System.out.println(bStop.getArea());
+      if(areaStationsMap.get(bStop.getArea())!=null) {
+        areaStationsMap.get(bStop.getArea()).add(bStop);
+      } else {
+        ArrayList<BusStop> list = new ArrayList<>();
+        list.add(bStop);
+        areaStationsMap.put(bStop.getArea(), list);
+      }
+    }
+  }
+  
+  public void onDepartureAreaChosen() {
+    deptAreaChoiceBox.getSelectionModel().selectedIndexProperty()
+                              .addListener(new ChangeListener<Number>() {
+
+      @Override
+      public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        onAreaChoosen(areas.get(newValue.intValue()), departureChoiceBox);
+      }
+      
+    });
+  }
+  
+  public void onDestinationAreaChosen() {
+    destAreaChoiceBox.getSelectionModel().selectedIndexProperty()
+                              .addListener(new ChangeListener<Number>() {
+
+      @Override
+      public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+        onAreaChoosen(areas.get(newValue.intValue()), destinationChoiceBox);
+      }
+      
+    });
+  }
+  
+  public void onAreaChoosen(Area area, ChoiceBox stationChoiceBox) {
+    ArrayList<BusStop> values = areaStationsMap.get(area);
+    
+    if(values!=null) {
+      stationChoiceBox.setItems(FXCollections.observableArrayList(values));
+      stationChoiceBox.setValue(values.get(0));
+    }
   }
   
 }

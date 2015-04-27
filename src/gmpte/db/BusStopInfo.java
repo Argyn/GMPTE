@@ -1,6 +1,7 @@
 package gmpte.db;
 
 
+import gmpte.entities.Area;
 import gmpte.entities.BusStop;
 import gmpte.entities.Route;
 import java.sql.PreparedStatement;
@@ -208,7 +209,7 @@ public class BusStopInfo
   
   public static ArrayList<BusStop> getBusStopsByRoute(Route route) {
     
-    ArrayList<BusStop> busStops = new ArrayList<BusStop>();
+    ArrayList<BusStop> busStops = new ArrayList<>();
     
     String query = "SELECT p.bus_stop, p.sequence, b.area, b.name FROM path p "
                    + "LEFT JOIN bus_stop b ON b.bus_stop_id=p.bus_stop "
@@ -239,14 +240,37 @@ public class BusStopInfo
   private static BusStop resultToBusStop(ResultSet result) throws SQLException {
     BusStop busStop = null;
     if(result!=null) {
-      int areaCode = result.getInt("area");
+      int areaID = result.getInt("area");
       int seq = result.getInt("sequence");
       String name = result.getString("name");
-      busStop = new BusStop(areaCode, name, seq);
+      busStop = new BusStop(AreaDBInfo.getAreaByID(areaID), name, seq);
     }
     
     return busStop;
   }
+  
+  private static BusStop resultToBusStop(ResultSet result, ArrayList<Area> areas) throws SQLException {
+    BusStop busStop = null;
+    if(result!=null) {
+      int areaID = result.getInt("area");
+      int seq = result.getInt("sequence");
+      String name = result.getString("name");
+      
+      int index = areas.indexOf(new Area(areaID, null));
+      Area area = null;
+      
+      if(areas.get(index)!=null)
+        area = areas.get(index);
+      else {
+        System.out.println("Could not get area");
+        area = AreaDBInfo.getAreaByID(areaID);
+      }
+      busStop = new BusStop(area, name, seq);
+    }
+    
+    return busStop;
+  }
+  
   public static PreparedStatement prepareStatement(String query) throws SQLException {
     return database.busDatabase
               .getConnection().prepareStatement(query);
@@ -269,7 +293,27 @@ public class BusStopInfo
     }
     
     return busStops;
-    
   }
+  
+  public static ArrayList<BusStop> getAllBusStops(ArrayList<Area> areas) {
+    ArrayList<BusStop> busStops = new ArrayList<>();
+    
+    try {
+      String query = "SELECT DISTINCT name, area, 0 as sequence FROM `bus_stop`";
+      PreparedStatement statement = prepareStatement(query);
+      
+      ResultSet result = statement.executeQuery();
+      
+      while(result.next()) {
+        busStops.add(resultToBusStop(result, areas));
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(BusStopInfo.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return busStops;
+  }
+  
+  
      
 }

@@ -8,7 +8,6 @@ package gmpte.entities;
 
 import gmpte.helpers.ListHelper;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.LinkedList;
 
 /**
@@ -17,8 +16,8 @@ import java.util.LinkedList;
  */
 public class Path {
   
-  /*private LinkedList<BusStop> fullPath;
-  private LinkedList<BusChange> changes;
+  private final LinkedList<BusStop> fullPath;
+  private final LinkedList<BusChange> changes;
   
   public Path(LinkedList<BusStop> fullPath) {
     this.fullPath = fullPath;
@@ -57,8 +56,9 @@ public class Path {
     
     changes.add(change);
     
-  }*/
-  private ArrayList<BusStop> fullPath;
+  }
+  
+  /*private ArrayList<BusStop> fullPath;
   private LinkedList<BusChange> changes;
   
   public Path(ArrayList<BusStop> fullPath) {
@@ -108,7 +108,7 @@ public class Path {
     
     changes.add(change);
 
-  }
+  }*/
   
   public LinkedList<BusChange> getFullPath() {
     return changes;

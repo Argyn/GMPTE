@@ -11,7 +11,6 @@ import gmpte.entities.BusStop;
 import gmpte.entities.Path;
 import gmpte.entities.Route;
 import gmpte.helpers.PathFinder;
-import static gmpte.passenger.Planner.getBStops;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -36,7 +35,7 @@ public class JourneyPlannerController {
     
     for(int routeID : routes) {
       Route currentRoute = new Route(routeID);
-      ArrayList<BusStop> bStops = getBStops(routeID);
+      ArrayList<BusStop> bStops = BusStopInfo.getBusStopsByRoute(currentRoute);
       
       Iterator<BusStop> it = bStops.iterator();
       Iterator<BusStop> newIt = bStops.iterator();
@@ -108,19 +107,19 @@ public class JourneyPlannerController {
     this.network = buildNetwork(routes);
   }
   
-  /*public Path getJourneyPlan(BusStop from, BusStop to) {
+  public Path getJourneyPlan(BusStop from, BusStop to) {
     HashMap<BusStop, BusStop> path = 
                         PathFinder.<BusStop>getShortestPath(network, from, to);
     
     
     LinkedList<BusStop> result = routeToLinkedList(path, to);
-    System.out.println(getShortestPathString(result));
+
     result = routeToLinkedList(path, to);
     
     return new Path(result);
-  }*/
-  
-  private ArrayList<PathSolution<BusStop>> getAllPathSolutions(BusStop from, BusStop to) {
+  }
+ 
+  /*private ArrayList<PathSolution<BusStop>> getAllPathSolutions(BusStop from, BusStop to) {
     
     HashMap<Vertex<BusStop>, ArrayList<Vertex<BusStop>>> pathMap =
             PathFinder.bfsPathsFind(network, from, to);
@@ -156,5 +155,5 @@ public class JourneyPlannerController {
   
   public ArrayList<Path> getJourneyPlans(BusStop from, BusStop to) {
     return getPathes(from, to);
-  }
+  }*/
 }

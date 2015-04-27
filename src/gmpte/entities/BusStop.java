@@ -15,22 +15,27 @@ import java.util.Objects;
  * @author mbgm2rm2
  */
 public class BusStop implements Comparable<BusStop> {
- 
-  private final int areaCode;
-  private final int sequence;
+
+  private int sequence;
   private final String name;
   private final ArrayList<Route> routes;
+  private Area area;
   
-  public BusStop(int areaCode, String name, int sequence) {
-    this.areaCode = areaCode;
-    this.sequence = sequence;
+  
+  public BusStop(Area area, String name) {
+    this.area = area;
     this.name = name;
+    this.sequence = 0;
     routes = new ArrayList<>();
   }
   
+  public BusStop(Area area, String name, int sequence) {
+    this(area, name);
+    this.sequence = sequence;
+  }
   
-  public int getAreaCode() {
-    return areaCode;
+  public Area getArea() {
+    return area;
   }
   
   public String getName() {
@@ -43,7 +48,6 @@ public class BusStop implements Comparable<BusStop> {
   
   public void addRoute(Route route) {
     if(!hasRoute(route)) {
-      System.out.println("Adding "+route.getRouteID()+" for "+this);
       routes.add(route);
     }
   }
@@ -56,16 +60,9 @@ public class BusStop implements Comparable<BusStop> {
     return routes;
   }
   
-  public Route getFirstRoute() {
-    if(routes.size()>0)
-      return routes.get(0);
-    
-    return null;
-  }
-  
   @Override
   public String toString() {
-    return name+"("+areaCode+")";
+    return name+"("+area+")";
   }
   
   public String getRoutesString() {
@@ -89,7 +86,7 @@ public class BusStop implements Comparable<BusStop> {
   public boolean equals(Object other) {
     BusStop otheBStop = (BusStop)other;
       if(otheBStop!=null) {
-        return otheBStop.name.equals(name) && areaCode==otheBStop.areaCode;
+        return otheBStop.name.equals(name) && area.equals(otheBStop.area);
       }
     return false;
   }
