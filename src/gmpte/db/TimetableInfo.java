@@ -77,7 +77,7 @@ public class TimetableInfo
     int[] returnTime = getRouteTimes(serviceId);
     int existingIndex = 0;
     Iterator<Integer> iterator = servicePoints.iterator();
-    for (int index = 1; index < times.length - 1; index++)
+    for (int index = 0; index < times.length - 1; index++)
     {
       setTimes[index] = false;
       int time = iterator.next();
@@ -105,13 +105,13 @@ public class TimetableInfo
           endIndex = index;
           index++;
         } // while
-        System.out.print("\nstart = " + startIndex + "\nend = " + endIndex);
+       // System.out.print("\nstart = " + startIndex + "\nend = " + endIndex);
         int prevTime = times[startIndex - 1];
         int nextTime = times[endIndex + 1];
         if (nextTime < prevTime)
           nextTime += 1440;
         int difference = (nextTime - prevTime) / (endIndex - startIndex + 2);
-        System.out.print("\ndiff = " + difference);
+        //System.out.print("\ndiff = " + difference);
         for (int jIndex = startIndex; jIndex <= endIndex; jIndex++)
         {
           prevTime += difference;
@@ -122,7 +122,9 @@ public class TimetableInfo
         
         
     for (int index = 0; index < times.length; index++)
+    {
       serviceTimes.add(times[index]);
+    }
     return serviceTimes;
   } // getServiceTimes
   
