@@ -18,6 +18,7 @@ import java.util.logging.Logger;
  * @author mbax3jw3
  */
 import java.util.ArrayList;
+import java.util.Iterator;
 
 
 public class Service implements Comparable<Service>
@@ -38,7 +39,15 @@ public class Service implements Comparable<Service>
   private ArrayList<Integer> serviceTimes;
   
   private ArrayList<Integer> serviceTimingPoints;
+  
+  private boolean delayed;
+  
+  private String delayReason;
    
+  private boolean cancelled;
+  
+  private String cancelReason; 
+  
   public Service(int id)
   {
     serviceId = id;
@@ -82,7 +91,8 @@ public class Service implements Comparable<Service>
     date.add(Calendar.MINUTE, startTime);
     startTimeDate = date.getTime();
     
-    
+    delayed = false;
+    cancelled = false;
 
   }  
   public Service(int serviceID, int dailyTimeTableID, int routeID) {
@@ -180,6 +190,57 @@ public class Service implements Comparable<Service>
   {
     return serviceTimingPoints;
   } // getServiceTimingPoints
+  
+  public boolean isDelayed()
+  {
+    return delayed;
+  }
+  
+  public String getDelayMessage()
+  {
+    return delayReason;
+  }
+   
+  public boolean isCancelled()
+  {
+    return cancelled;
+  }
+  
+  public String getCancelMessage()
+  {
+    return cancelReason;
+  }
+  
+  public void introduceDelay(int delayPoint, int delay, String cause)
+  {
+    int delayStart = serviceTimes.get(delayPoint);
+    int index = 0;
+    for (Integer serviceTime : serviceTimes) 
+    {
+      if (serviceTime >= delayStart)
+        serviceTimes.set(index, (serviceTime + delay));
+      index++;
+    }
+    delayed = true;
+    StringBuilder builder = new StringBuilder();
+    builder.append("The "+serviceId+" service");
+    builder.append(" is delayed by approximately "+delay+" minutes due to a ");
+    builder.append(cause);
+    builder.append(" and will arrive at bus station at approximately "+serviceTimes.get(serviceTimes.size() - 1));
+    builder.append(".We apologize for the delay in your journey.");
+    delayReason = builder.toString();
+  }
+  
+  public void cancel(String cause)
+  {
+    cancelled = true;  
+    StringBuilder builder = new StringBuilder();
+    builder.append("The "+serviceId+" service");
+    builder.append(" has been cancelled due to a ");
+    builder.append(cause);
+    builder.append(".We apologize for any inconvenience this causes.");
+    cancelReason = builder.toString();
+  }
   
   @Override
   public String toString() {

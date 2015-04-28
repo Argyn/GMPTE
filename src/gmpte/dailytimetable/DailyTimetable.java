@@ -6,14 +6,15 @@ package gmpte.dailytimetable;
  * and open the template in the editor.
  */
 
-import gmpte.entities.Service;
-import java.util.ArrayList;
-import java.util.Date;
 import gmpte.db.TimetableInfo;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Iterator;
+import gmpte.entities.Service;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.Random;
 
 /**
  *
@@ -32,6 +33,7 @@ public class DailyTimetable
       dayId = 0;
       getDayId(date);
       ArrayList<Integer> serviceIds = new ArrayList<>();
+      services = new ArrayList<>();
       dailyTimeTableIds = TimetableInfo.getDailyTimetableIds(dayId);
       serviceIds = TimetableInfo.getLineServices(dailyTimeTableIds);
       Iterator<Integer> iterator = serviceIds.iterator();
@@ -41,8 +43,8 @@ public class DailyTimetable
         Service newService = new Service(serviceId);
         services.add(newService);
       } // while
-      imposeCancelations();
       imposeDelays(); 
+      imposeCancelations();
     } // DailyTimetable
     
     public void getDayId(Date date)
@@ -79,13 +81,33 @@ public class DailyTimetable
     }
     
     private void imposeCancelations()
-    {
-      
+    {    
+      Random random = new Random();
+      int servicesSize = services.size();
+      int numberOfCancels = random.nextInt(servicesSize / 10);
+      int serviceIndex;
+      for (int index = 0; index < numberOfCancels; index++)
+      {
+        serviceIndex = random.nextInt(servicesSize);
+        services.get(serviceIndex).cancel("a shortage of water for the windscreen wipers");
+      } // for
     }
 
     private void imposeDelays()
     {
-      
+      Random random = new Random();
+      int servicesSize = services.size();
+      int numberOfDelays = random.nextInt(servicesSize / 10);
+      int serviceIndex;
+      int stopIndex;
+      int delay;
+      for (int index = 0; index < numberOfDelays; index++)
+      {
+        serviceIndex = random.nextInt(servicesSize);
+        stopIndex = random.nextInt(services.get(serviceIndex).getServiceTimingPoints().size() - 1);
+        delay = random.nextInt(60);
+        services.get(serviceIndex).introduceDelay(stopIndex, delay, "a shortage of water for the windscreen wipers");
+      } // for
     }
     
    /* public void addtimetableNode(DailyTimetableNode node) {
