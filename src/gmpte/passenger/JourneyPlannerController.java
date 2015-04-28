@@ -109,11 +109,13 @@ public class JourneyPlannerController {
   }
   
   public JourneyPlannerController() {
-    this.routes = RouteDBInfo.getAllRoutes();
-    this.allBStops = BusStopInfo.getAllBusStops();
-    this.network = buildNetwork(routes);
-    this.areas = AreaDBInfo.getAllAreas();
     
+    this.routes = RouteDBInfo.getAllRoutes();
+
+    this.areas = AreaDBInfo.getAllAreas();
+    this.allBStops = BusStopInfo.getAllBusStops(areas);
+    
+    this.network = buildNetwork(routes);
     formAreasStationsMap();
   }
   

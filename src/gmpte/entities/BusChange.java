@@ -19,7 +19,9 @@ public class BusChange {
   
   private Route route;
   private int service;
+  
   private Date boardingTime;
+  private Date dropOffTime;
   
   private LinkedList<BusStop> path;
   
@@ -49,6 +51,7 @@ public class BusChange {
   }
   
   public void setBoardingTime(int boardingTime) {
+    System.out.println("Boarding time="+boardingTime);
     // boarding time is number of minutes since midnigth
     Calendar date = new GregorianCalendar();
     // reset hour, minutes, seconds and millis
@@ -59,7 +62,29 @@ public class BusChange {
     
     date.set(Calendar.MINUTE, boardingTime);
     
-    this.boardingTime = date.getTime();
+    setBoardingTime(date.getTime());
+  }
+  
+  public void setDropOffTime(Date time) {
+    this.dropOffTime = time;
+  }
+  
+  public void setDropOffTime(int time) {
+    // boarding time is number of minutes since midnigth
+    Calendar date = new GregorianCalendar();
+    // reset hour, minutes, seconds and millis
+    date.set(Calendar.HOUR_OF_DAY, 0);
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
+    
+    date.set(Calendar.MINUTE, time);
+    
+    setDropOffTime(date.getTime());
+  }
+  
+  public Date getBoardingTime() {
+    return boardingTime;
   }
   
 }

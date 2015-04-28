@@ -6,8 +6,10 @@
 
 package gmpte.entities;
 
+import gmpte.db.ServiceDB;
 import gmpte.helpers.ListHelper;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedList;
 
 /**
@@ -31,6 +33,9 @@ public class Path {
     // add starting bus station
     
     BusStop startBStop = fullPath.poll();
+    
+    change.setBoardingTime(ServiceDB.getNearestServiceTime(currentRoute, startBStop, startBStop, new Date()));
+    
     System.out.println("Start on "+startBStop+" Route:"+currentRoute.getRouteID());
     change.addBusStation(startBStop);
     

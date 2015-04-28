@@ -15,6 +15,8 @@ import gmpte.entities.BusChange;
 import gmpte.entities.BusStop;
 import gmpte.entities.Path;
 import java.net.URL;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -82,6 +84,9 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
   @FXML
   private AnchorPane loadingIndicatorPane;
   
+  @FXML
+  private Label journeyFromToLabel;
+  
   private MainControllerInterface mainController;
   
   private JourneyPlannerController jController;
@@ -105,6 +110,10 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
     
     // pre load needed data
     preLoadData();
+    //jController = new JourneyPlannerController();
+    //ArrayList<Area> areas = AreaDBInfo.getAllAreas();
+    
+    //BusStopInfo.getAllBusStops(areas);
   }  
   
   public void preLoadData() {
@@ -141,7 +150,7 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
         onDestinationAreaChosen();
       }
     });
-    
+   
     new Thread(loadTask).start();
 
     
@@ -196,7 +205,8 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
           
           Path path = jController.getJourneyPlan(from, to);
           
-          displayJourneyPlan(path.getFullPath());
+          setJourneyFromToLabel(from.toString(), to.toString());
+          displayJourneyPlan(path.getFullPath(), to);
         }
       }
     });
@@ -209,7 +219,7 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
   }
   
-  public void displayJourneyPlan(LinkedList<BusChange> journeyPlan) {
+  public void displayJourneyPlan(LinkedList<BusChange> journeyPlan, BusStop target) {
     int currentRow = 0;
     int currentColumn = 0;
     routeTable.getChildren().clear();
@@ -219,17 +229,22 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
     LinkedList<BusStop> currentPath = currentChange.getPath();
     
     BusStop firstBStop = currentPath.poll();
-    printJourneyStep("Board service "+currentChange.getRoute()+" on ", 
-                          firstBStop.toString(), currentRow++, currentColumn);
+    
+    DateFormat format = new SimpleDateFormat("HH:mm");
+    
+    String boardString = "At "+format.format(currentChange.getBoardingTime())
+                   +" board service "+currentChange.getRoute()+" on ";
+    
+    printJourneyStep(boardString, firstBStop.toString(), currentRow++, currentColumn);
     
     while(currentPath.peek()!=null) {
       BusStop nextStop = currentPath.poll();
       //printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
       
-      //if(currentPath.size()>0 && journeyPlan.size()==0)
+      if(!nextStop.equals(target))
           printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
-      ///else
-        //printJourneyStep("Get off on", nextStop.toString(), currentRow++, currentColumn);
+      else
+        printJourneyStep("Get off on", nextStop.toString(), currentRow++, currentColumn);
     }
     
     while(journeyPlan.peek()!=null) {
@@ -242,7 +257,8 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
 
       while(currentPath.peek()!=null) {
         BusStop nextStop = currentPath.poll();
-        if(currentPath.size()>0)
+        
+        if(!nextStop.equals(target))
           printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
         else
           printJourneyStep("Get off on", nextStop.toString(), currentRow++, currentColumn);
@@ -307,5 +323,10 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
     } else {
       stationChoiceBox.setItems(FXCollections.observableArrayList(new ArrayList<BusStop>()));
     }
+  }
+  
+  public void setJourneyFromToLabel(String from, String to) {
+    journeyFromToLabel.setText("Your journey from "+from+" to "+to);
+    journeyFromToLabel.setWrapText(true);
   }
 }

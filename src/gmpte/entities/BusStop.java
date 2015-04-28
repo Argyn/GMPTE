@@ -7,8 +7,8 @@
 package gmpte.entities;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Objects;
 
 /**
  *
@@ -21,12 +21,14 @@ public class BusStop implements Comparable<BusStop> {
   private final ArrayList<Route> routes;
   private Area area;
   
+  private ArrayList<Integer> ids;
   
   public BusStop(Area area, String name) {
     this.area = area;
     this.name = name;
     this.sequence = 0;
     routes = new ArrayList<>();
+    ids = new ArrayList<>();
   }
   
   public BusStop(Area area, String name, int sequence) {
@@ -98,6 +100,21 @@ public class BusStop implements Comparable<BusStop> {
     else
       return 1;
     
+  }
+  
+  public void addId(int id) {
+    ids.add(id);
+  }
+  
+  public void addId(ArrayList<Integer> ids) {
+    for(Integer i : ids) {
+      if(!this.ids.contains(i))
+        this.ids.add(i);
+    }
+  }
+  
+  public ArrayList<Integer> getIds() {
+    return ids;
   }
   
   

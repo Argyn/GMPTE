@@ -252,6 +252,8 @@ public class BusStopInfo
   private static BusStop resultToBusStop(ResultSet result, ArrayList<Area> areas) throws SQLException {
     BusStop busStop = null;
     if(result!=null) {
+      
+      int id = result.getInt("id");
       int areaID = result.getInt("area");
       int seq = result.getInt("sequence");
       String name = result.getString("name");
@@ -266,6 +268,7 @@ public class BusStopInfo
         area = AreaDBInfo.getAreaByID(areaID);
       }
       busStop = new BusStop(area, name, seq);
+      busStop.addId(id);
     }
     
     return busStop;
@@ -280,13 +283,18 @@ public class BusStopInfo
     ArrayList<BusStop> busStops = new ArrayList<>();
     
     try {
-      String query = "SELECT DISTINCT name, area, 0 as sequence FROM `bus_stop`";
+      String query = "SELECT bus_stop_id as id, name, area, 0 as sequence FROM `bus_stop`";
       PreparedStatement statement = prepareStatement(query);
       
       ResultSet result = statement.executeQuery();
       
       while(result.next()) {
-        busStops.add(resultToBusStop(result));
+        BusStop bStop = resultToBusStop(result);
+        
+        if(busStops.contains(bStop))
+          busStops.get(busStops.indexOf(bStop)).addId(bStop.getIds());
+        else
+          busStops.add(resultToBusStop(result));
       }
     } catch (SQLException ex) {
       Logger.getLogger(BusStopInfo.class.getName()).log(Level.SEVERE, null, ex);
@@ -299,15 +307,27 @@ public class BusStopInfo
     ArrayList<BusStop> busStops = new ArrayList<>();
     
     try {
-      String query = "SELECT DISTINCT name, area, 0 as sequence FROM `bus_stop`";
+      String query = "SELECT bus_stop_id as id, name, area, 0 as sequence FROM `bus_stop`";
       PreparedStatement statement = prepareStatement(query);
       
       ResultSet result = statement.executeQuery();
       
       while(result.next()) {
-        busStops.add(resultToBusStop(result, areas));
+        BusStop bStop = resultToBusStop(result, areas);
+        
+        if(busStops.contains(bStop)) {
+          //System.out.println("Multipel ids");
+          BusStop originalB = busStops.get(busStops.indexOf(bStop));
+          System.out.println(originalB);
+          //System.out.println("Adding"+bStop.getIds());
+          originalB.addId(bStop.getIds());
+        } else {
+          //System.out.println("Addind id");
+          busStops.add(bStop);
+        }
       }
     } catch (SQLException ex) {
+      System.out.println(ex.getMessage());
       Logger.getLogger(BusStopInfo.class.getName()).log(Level.SEVERE, null, ex);
     }
     
