@@ -86,10 +86,11 @@ public class DailyTimetable
       int servicesSize = services.size();
       int numberOfCancels = random.nextInt(servicesSize / 10);
       int serviceIndex;
+      Causes reasons = new Causes();
       for (int index = 0; index < numberOfCancels; index++)
       {
         serviceIndex = random.nextInt(servicesSize);
-        services.get(serviceIndex).cancel("a shortage of water for the windscreen wipers");
+        services.get(serviceIndex).cancel(reasons.getRandomCause());
       } // for
     }
 
@@ -101,12 +102,13 @@ public class DailyTimetable
       int serviceIndex;
       int stopIndex;
       int delay;
+      Causes reasons = new Causes();
       for (int index = 0; index < numberOfDelays; index++)
       {
         serviceIndex = random.nextInt(servicesSize);
         stopIndex = random.nextInt(services.get(serviceIndex).getServiceTimingPoints().size() - 1);
         delay = random.nextInt(60);
-        services.get(serviceIndex).introduceDelay(stopIndex, delay, "a shortage of water for the windscreen wipers");
+        services.get(serviceIndex).introduceDelay(stopIndex, delay, reasons.getRandomCause());
       } // for
     }
     
