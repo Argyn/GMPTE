@@ -11,23 +11,30 @@ package gmpte.entities;
  * @author mbgm2rm2
  */
 public class Route {
-  private int routeID;
+  private int id;
   
-  public Route(int routeID) {
-    this.routeID = routeID;
+  private String name;
+  
+  public Route(int id) {
+    this.id = id;
+  }
+  
+  public Route(int id, String name) {
+    this(id);
+    this.name = name;
   }
   
   public int getRouteID() {
-    return routeID;
+    return id;
   }
   
   public boolean equals(Object other) {
     Route otherRoute = (Route)other;
-    return routeID == otherRoute.routeID;
+    return id == otherRoute.id;
   }
   
   @Override
   public String toString() {
-    return Integer.toString(routeID);
+    return name;
   }
 }

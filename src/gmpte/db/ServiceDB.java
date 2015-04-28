@@ -6,12 +6,16 @@
 
 package gmpte.db;
 
+import gmpte.entities.Route;
 import gmpte.entities.Service;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -61,4 +65,14 @@ public class ServiceDB {
   private static Service buildService(ResultSet result) throws SQLException {
     return new Service(result.getInt("service_id"));
   }
+  
+  /*private static int getNearestServiceTime(Route route, Date time) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(time);
+    
+    int minsAfterMidnight = calendar.get(Calendar.HOUR_OF_DAY)*60
+                                                +calendar.get(Calendar.MINUTE);
+    
+    String query = "SELECT * FROM "
+  } */
 }

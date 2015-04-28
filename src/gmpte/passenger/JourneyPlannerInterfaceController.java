@@ -82,16 +82,10 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
   @FXML
   private AnchorPane loadingIndicatorPane;
   
-          
-  private ArrayList<BusStop> busStops;
-  
-  private ArrayList<Area> areas;
-  
   private MainControllerInterface mainController;
   
   private JourneyPlannerController jController;
   
-  private HashMap<Area, ArrayList<BusStop>> areaStationsMap;
   /**
    * Initializes the controller class.
    */
@@ -119,14 +113,7 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
       @Override
       protected Void call() throws Exception {
         jController = new JourneyPlannerController();
-        
-        // getting all areas
-        areas = AreaDBInfo.getAllAreas();
-
-        // getting all bus stops
-        busStops = BusStopInfo.getAllBusStops(areas);
-       
-        
+    
         return null;
       }
     };
@@ -140,16 +127,6 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
         
         // poulate destination point area box
         populateChoiceBoxWithArea(destAreaChoiceBox);
-        
-        
-        // crea mapping between stations and areas
-        formAreasStationsMap();
-        
-        // populate departure choice box with stations
-        //populateChoiceBoxWithBusStops(departureChoiceBox);
-
-        // populate destination choice box with stations
-       // populateChoiceBoxWithBusStops(destinationChoiceBox);
         
         // hide loading indicator
         loadingIndicatorPane.setVisible(false);
@@ -197,11 +174,11 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
   }
   
   public void populateChoiceBoxWithBusStops(ChoiceBox choiceBox) {
-    choiceBox.setItems(FXCollections.observableArrayList(busStops));
+    choiceBox.setItems(FXCollections.observableArrayList(jController.getBusStops()));
   }
   
   public void populateChoiceBoxWithArea(ChoiceBox choiceBox) {
-    choiceBox.setItems(FXCollections.observableArrayList(areas));
+    choiceBox.setItems(FXCollections.observableArrayList(jController.getAreas()));
   }
   
   public void onPlanJourneyButtonClick() {
@@ -247,7 +224,12 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
     
     while(currentPath.peek()!=null) {
       BusStop nextStop = currentPath.poll();
-      printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
+      //printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
+      
+      //if(currentPath.size()>0 && journeyPlan.size()==0)
+          printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
+      ///else
+        //printJourneyStep("Get off on", nextStop.toString(), currentRow++, currentColumn);
     }
     
     while(journeyPlan.peek()!=null) {
@@ -260,7 +242,10 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
 
       while(currentPath.peek()!=null) {
         BusStop nextStop = currentPath.poll();
-        printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
+        if(currentPath.size()>0)
+          printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
+        else
+          printJourneyStep("Get off on", nextStop.toString(), currentRow++, currentColumn);
       }
     }
   }
@@ -289,28 +274,13 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
     });
   }
   
-  public void formAreasStationsMap() {
-    areaStationsMap = new HashMap<>();
-    
-    for(BusStop bStop : busStops) {
-      System.out.println(bStop.getArea());
-      if(areaStationsMap.get(bStop.getArea())!=null) {
-        areaStationsMap.get(bStop.getArea()).add(bStop);
-      } else {
-        ArrayList<BusStop> list = new ArrayList<>();
-        list.add(bStop);
-        areaStationsMap.put(bStop.getArea(), list);
-      }
-    }
-  }
-  
   public void onDepartureAreaChosen() {
     deptAreaChoiceBox.getSelectionModel().selectedIndexProperty()
                               .addListener(new ChangeListener<Number>() {
 
       @Override
       public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        onAreaChoosen(areas.get(newValue.intValue()), departureChoiceBox);
+        onAreaChoosen(jController.getAreas().get(newValue.intValue()), departureChoiceBox);
       }
       
     });
@@ -322,19 +292,20 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
 
       @Override
       public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-        onAreaChoosen(areas.get(newValue.intValue()), destinationChoiceBox);
+        onAreaChoosen(jController.getAreas().get(newValue.intValue()), destinationChoiceBox);
       }
       
     });
   }
   
   public void onAreaChoosen(Area area, ChoiceBox stationChoiceBox) {
-    ArrayList<BusStop> values = areaStationsMap.get(area);
+    ArrayList<BusStop> values = jController.getAreasBusStop(area);
     
     if(values!=null) {
       stationChoiceBox.setItems(FXCollections.observableArrayList(values));
       stationChoiceBox.setValue(values.get(0));
+    } else {
+      stationChoiceBox.setItems(FXCollections.observableArrayList(new ArrayList<BusStop>()));
     }
   }
-  
 }

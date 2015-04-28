@@ -18,7 +18,7 @@ import gmpte.entities.Roster;
 import gmpte.entities.Route;
 import gmpte.entities.Schedule;
 import gmpte.entities.Service;
-import gmpte.helpers.DBHelper;
+import gmpte.db.DBHelper;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;

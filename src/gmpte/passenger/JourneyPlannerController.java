@@ -6,7 +6,10 @@
 
 package gmpte.passenger;
 
+import gmpte.db.AreaDBInfo;
 import gmpte.db.BusStopInfo;
+import gmpte.db.RouteDBInfo;
+import gmpte.entities.Area;
 import gmpte.entities.BusStop;
 import gmpte.entities.Path;
 import gmpte.entities.Route;
@@ -26,15 +29,20 @@ public class JourneyPlannerController {
   
   private ArrayList<BusStop> allBStops;
   
+  private ArrayList<Route> routes;
+  
+  private ArrayList<Area> areas;
+  
+  private HashMap<Area, ArrayList<BusStop>> areasStationsMap;
+  
   public BusStop getOriginalBusStop(BusStop bStop) {
     return allBStops.get(allBStops.indexOf(bStop));
   }
   
-  public Graph buildNetwork(int[] routes) {
+  public Graph buildNetwork(ArrayList<Route> routes) {
     Graph<BusStop> graph = new Graph<>();
     
-    for(int routeID : routes) {
-      Route currentRoute = new Route(routeID);
+    for(Route currentRoute : routes) {
       ArrayList<BusStop> bStops = BusStopInfo.getBusStopsByRoute(currentRoute);
       
       Iterator<BusStop> it = bStops.iterator();
@@ -55,7 +63,6 @@ public class JourneyPlannerController {
           // get original target bus stop
           BusStop targetBStop = getOriginalBusStop(newIt.next());
           
-          targetBStop.addRoute(currentRoute);
           Vertex<BusStop> target = new Vertex<>(targetBStop);
           
           graph.addEdge(source, target);
@@ -102,21 +109,52 @@ public class JourneyPlannerController {
   }
   
   public JourneyPlannerController() {
-    int[] routes = new int[]{65,66,67, 68};
+    this.routes = RouteDBInfo.getAllRoutes();
     this.allBStops = BusStopInfo.getAllBusStops();
     this.network = buildNetwork(routes);
+    this.areas = AreaDBInfo.getAllAreas();
+    
+    formAreasStationsMap();
   }
   
   public Path getJourneyPlan(BusStop from, BusStop to) {
     HashMap<BusStop, BusStop> path = 
                         PathFinder.<BusStop>getShortestPath(network, from, to);
     
-    
     LinkedList<BusStop> result = routeToLinkedList(path, to);
-
-    result = routeToLinkedList(path, to);
     
     return new Path(result);
+  }
+  
+  public ArrayList<BusStop> getBusStops() {
+    return allBStops;
+  }
+  
+  public ArrayList<Route> getRoutes() {
+    return routes;
+  }
+  
+  public ArrayList<Area> getAreas() {
+    return areas;
+  }
+  
+  private void formAreasStationsMap() {
+    areasStationsMap = new HashMap<>();
+    
+    for(BusStop bStop : allBStops) {
+      System.out.println(bStop.getArea());
+      if(areasStationsMap.get(bStop.getArea())!=null) {
+        areasStationsMap.get(bStop.getArea()).add(bStop);
+      } else {
+        ArrayList<BusStop> list = new ArrayList<>();
+        list.add(bStop);
+        areasStationsMap.put(bStop.getArea(), list);
+      }
+    }
+  }
+  
+  public ArrayList<BusStop> getAreasBusStop(Area area) {
+    return areasStationsMap.get(area);
   }
  
   /*private ArrayList<PathSolution<BusStop>> getAllPathSolutions(BusStop from, BusStop to) {

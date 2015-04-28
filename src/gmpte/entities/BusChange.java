@@ -6,6 +6,9 @@
 
 package gmpte.entities;
 
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 
 /**
@@ -16,6 +19,7 @@ public class BusChange {
   
   private Route route;
   private int service;
+  private Date boardingTime;
   
   private LinkedList<BusStop> path;
   
@@ -35,9 +39,27 @@ public class BusChange {
   public Route getRoute() {
     return route;
   }
- 
-  
+
   public int getService() {
     return service;
   }
+  
+  public void setBoardingTime(Date boardingTime) {
+    this.boardingTime = boardingTime;
+  }
+  
+  public void setBoardingTime(int boardingTime) {
+    // boarding time is number of minutes since midnigth
+    Calendar date = new GregorianCalendar();
+    // reset hour, minutes, seconds and millis
+    date.set(Calendar.HOUR_OF_DAY, 0);
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
+    
+    date.set(Calendar.MINUTE, boardingTime);
+    
+    this.boardingTime = date.getTime();
+  }
+  
 }
