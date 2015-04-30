@@ -19,6 +19,7 @@ import java.util.logging.Logger;
  */
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Comparator;
 
 
 public class Service implements Comparable<Service>
@@ -268,5 +269,206 @@ public class Service implements Comparable<Service>
   @Override
   public int compareTo(Service other) {
     return 0;
+  }
+  
+ public static Comparator<Service> idCompDes = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getServiceId();
+	      int idTwo = serviceTwo.getServiceId();
+          return compareIds(idTwo, idOne);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> timetableCompDes = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+	      int idOne = serviceOne.getDailyTimetableId();
+	      int idTwo = serviceTwo.getDailyTimetableId();
+          return compareIds(idTwo, idOne);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> routeCompDes = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getRoute();
+	      int idTwo = serviceTwo.getRoute();
+          return compareIds(idTwo, idOne);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> lengthCompDes = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getServiceLength();
+	      int idTwo = serviceTwo.getServiceLength();
+          return compareIds(idTwo, idOne);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> startTimeCompDes = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getStartTime();
+	      int idTwo = serviceTwo.getStartTime();
+          return compareIds(idTwo, idOne);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> endTimeCompDes = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getEndTime();
+	      int idTwo = serviceTwo.getEndTime();
+          return compareIds(idTwo, idOne);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> startDateCompDes = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      Date dateOne = serviceOne.getStartTimeDate();
+	      Date  dateTwo = serviceTwo.getStartTimeDate();
+          return dateTwo.compareTo(dateOne);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> endDateCompDes = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      Date dateOne = serviceOne.getEndTimeDate();
+	      Date  dateTwo = serviceTwo.getEndTimeDate();
+          return dateTwo.compareTo(dateOne);
+	    }
+ 
+	};
+ 
+  public static Comparator<Service> idCompAsc = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getServiceId();
+	      int idTwo = serviceTwo.getServiceId();
+          return compareIds(idOne, idTwo);
+	    }
+ 
+	};
+  
+ public static Comparator<Service> timetableCompAsc = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getDailyTimetableId();
+	      int idTwo = serviceTwo.getDailyTimetableId();
+          return compareIds(idOne, idTwo);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> routeCompAsc = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getRoute();
+	      int idTwo = serviceTwo.getRoute();
+          return compareIds(idOne, idTwo);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> lengthCompAsc = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getServiceLength();
+	      int idTwo = serviceTwo.getServiceLength();
+          return compareIds(idOne, idTwo);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> startTimeCompAsc = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getStartTime();
+	      int idTwo = serviceTwo.getStartTime();
+          return compareIds(idOne, idTwo);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> endTimeCompAsc = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      int idOne = serviceOne.getEndTime();
+	      int idTwo = serviceTwo.getEndTime();
+          return compareIds(idOne, idTwo);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> startDateCompAsc = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      Date dateOne = serviceOne.getStartTimeDate();
+	      Date  dateTwo = serviceTwo.getStartTimeDate();
+          return dateOne.compareTo(dateTwo);
+	    }
+ 
+	};
+ 
+ public static Comparator<Service> endDateCompAsc = new Comparator<Service>() {
+ 
+        @Override
+	    public int compare(Service serviceOne, Service serviceTwo) {
+ 
+	      Date dateOne = serviceOne.getEndTimeDate();
+	      Date  dateTwo = serviceTwo.getEndTimeDate();
+          return dateOne.compareTo(dateTwo);
+	    }
+ 
+	};
+  
+  public static int compareIds(int idOne, int idTwo)
+  {
+    if (idOne < idTwo)
+      return -1;
+    else if (idOne > idTwo)
+      return 1;
+    else
+      return 0;
   }
 }

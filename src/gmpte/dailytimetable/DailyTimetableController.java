@@ -24,27 +24,41 @@ public class DailyTimetableController
     dailyTimetables = new ArrayList<>();
   }
   
-  public DailyTimetable getTimetable(Date date)
+  public void sortDailyTimeTable(Date date, String orderField, String order)
+  {
+    DailyTimetable timetable = null;
+    timetable = getDailyTimeTable(date);
+    if (order.equals("asc"))
+      timetable.sortAsc(orderField);
+    else if (order.equals("des"))
+      timetable.sortDes(orderField);
+  } // getTimetable
+  
+  public DailyTimetable getDailyTimeTable(Date date)
+  {
+    DailyTimetable returnTimetable = null;
+    for (DailyTimetable timetable : dailyTimetables)
+      if (timetable.getDate().equals(date))
+        returnTimetable = timetable;
+    return returnTimetable;
+  }
+  
+  public void addDailyTimetable(Date date)
   {
     boolean newDate = true;
-    DailyTimetable returnTimetable = null;
     for (DailyTimetable timetable : dailyTimetables)
     {
       if (timetable.getDate().equals(date))
       {
         newDate = false;
-        returnTimetable = timetable;
       }
     }
     if (newDate)
     {
       System.out.println("IS a new date");
-      returnTimetable = new DailyTimetable(date);
-      dailyTimetables.add(returnTimetable);
+      dailyTimetables.add(new DailyTimetable(date));
     }
     else
       System.out.println("is NOT a new date");
-
-    return returnTimetable; 
-  } // getTimetable
+   }
 }
