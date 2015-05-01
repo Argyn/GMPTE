@@ -47,7 +47,9 @@ public class Service implements Comparable<Service>
    
   private boolean cancelled;
   
-  private String cancelReason; 
+  private String cancelReason;
+
+  private int delayTime; 
   
   public Service(int id)
   {
@@ -92,9 +94,11 @@ public class Service implements Comparable<Service>
     date.add(Calendar.MINUTE, startTime);
     startTimeDate = date.getTime();
     
-    delayed = false;
-    cancelled = false;
-
+    delayed      = false;
+    cancelled    = false;
+    cancelReason = "";
+    delayReason  = "";
+    delayTime    = 0;
   }  
   public Service(int serviceID, int dailyTimeTableID, int routeID) {
     this.serviceId = serviceID;
@@ -129,6 +133,12 @@ public class Service implements Comparable<Service>
     
     date.add(Calendar.MINUTE, startTime);
     startTimeDate = date.getTime();
+
+    delayed      = false;
+    cancelled    = false;
+    cancelReason = "";
+    delayReason  = "";
+    delayTime    = 0;
   }
   
   
@@ -191,6 +201,10 @@ public class Service implements Comparable<Service>
   {
     return serviceTimingPoints;
   } // getServiceTimingPoints
+
+  public int getDelayTime(){
+    return delayTime;
+  }
   
   public boolean isDelayed()
   {
@@ -223,6 +237,7 @@ public class Service implements Comparable<Service>
       index++;
     }
     delayed = true;
+    delayTime = delay;
     StringBuilder builder = new StringBuilder();
     builder.append("The "+serviceId+" service");
     builder.append(" is delayed by approximately "+delay+" minutes due to a ");
