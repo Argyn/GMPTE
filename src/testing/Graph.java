@@ -7,6 +7,7 @@
 package testing;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  *
@@ -27,7 +28,7 @@ public class Graph<T extends Comparable<T>> {
       vertices.add(vertex);
   }
   
-  public void addEdge(Vertex<T> vertex1, Vertex<T> vertex2) {
+  public Edge addEdge(Vertex<T> vertex1, Vertex<T> vertex2) {
     Vertex<T> source = vertex1;
     Vertex<T> target = vertex2;
     
@@ -47,7 +48,19 @@ public class Graph<T extends Comparable<T>> {
 
       edges.add(e);
       source.addAdjVertex(target);
+      source.addEdge(e);
+      
+      return e;
     }
+    
+    return null;
+    
+  }
+  
+  public void addEdge(Vertex<T> vertex1, Vertex<T> vertex2, double weight) {
+    Edge e = addEdge(vertex1, vertex2);
+    if(e!=null)
+      e.setWeight(weight);
   }
   
   public ArrayList<Vertex<T>> getVertices() {
@@ -56,5 +69,12 @@ public class Graph<T extends Comparable<T>> {
   
   public ArrayList<Edge<T>> getEdges() {
     return edges;
+  }
+  
+  public void flashKeys() {
+    Iterator<Vertex<T>> it = vertices.iterator();
+    while(it.hasNext()) {
+      it.next().flashKey();
+    }
   }
 }

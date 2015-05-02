@@ -118,6 +118,7 @@ public class JourneyPlannerController {
     this.network = buildNetwork(routes);
     formAreasStationsMap();
   }
+
   
   public Path getJourneyPlan(BusStop from, BusStop to) {
     HashMap<BusStop, BusStop> path = 
@@ -125,6 +126,7 @@ public class JourneyPlannerController {
     
     LinkedList<BusStop> result = routeToLinkedList(path, to);
     
+    //System.out.println(getShortestPathString(result));
     return new Path(result);
   }
   

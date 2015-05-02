@@ -6,6 +6,7 @@
 
 package gmpte.helpers;
 
+import gmpte.passenger.Edge;
 import gmpte.passenger.Graph;
 import gmpte.passenger.PathSolution;
 import gmpte.passenger.Vertex;
@@ -52,13 +53,15 @@ public class PathFinder {
         }
 
         // relax adj vertices
-        if(fetchedVertex.getAdjVertices().size()>0) {
-          Iterator<Vertex<T>> adjVsIt = fetchedVertex.getAdjVertices().iterator();
-          while(adjVsIt.hasNext()) {
-            Vertex<T> adjV = adjVsIt.next();
+        if(fetchedVertex.getEdges().size()>0) {
+          
+          Iterator<Edge<T>> edgesIt = fetchedVertex.getEdges().iterator();
+          while(edgesIt.hasNext()) {
+            Edge<T> adjEdge = edgesIt.next();
+            Vertex<T> adjV = adjEdge.getVertex2();
             // only update key if a new one is smaller
-            if(fetchedVertex.getKey()+1 < adjV.getKey() && heap.remove(adjV)) {
-              adjV.setKey(fetchedVertex.getKey()+1);
+            if(fetchedVertex.getKey()+adjEdge.getWeight() < adjV.getKey() && heap.remove(adjV)) {
+              adjV.setKey(fetchedVertex.getKey()+adjEdge.getWeight());
               heap.add(adjV);
 
               shortestPath.put(adjV.getData(), fetchedVertex.getData());

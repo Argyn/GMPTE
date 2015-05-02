@@ -318,7 +318,7 @@ public class BusStopInfo
         if(busStops.contains(bStop)) {
           //System.out.println("Multipel ids");
           BusStop originalB = busStops.get(busStops.indexOf(bStop));
-          System.out.println(originalB);
+          //System.out.println(originalB);
           //System.out.println("Adding"+bStop.getIds());
           originalB.addId(bStop.getIds());
         } else {
@@ -332,6 +332,62 @@ public class BusStopInfo
     }
     
     return busStops;
+  }
+  
+  private static String buildTimingPoints(BusStop start, String id) {
+    StringBuilder builder = new StringBuilder();
+    
+    if(start.getIds().size()>1) {
+      builder.append("(");
+      Iterator<Integer> it = start.getIds().iterator();
+      
+      while(it.hasNext()) {
+        builder.append(" "+id+".timing_point="+it.next());
+        if(it.hasNext())
+          builder.append(" OR ");
+      }
+      builder.append(")");
+    } else {
+      builder.append(id).append(".timing_point=").append(start.getIds().get(0));
+    }
+    
+    return builder.toString();
+  }
+  
+  public static double getTimeBetweenBusStops(BusStop start, BusStop target) {
+    String query = "SELECT AVG(diff) as avg FROM "
+            + "(SELECT DISTINCT(abs(b1.time-b2.time)) as diff "
+            + "FROM `bus_station_times` b1, bus_station_times b2, "
+            + "daily_timetable d WHERE %s AND "
+            + "%s AND b1.service=b2.service AND b2.timing_point-b1.timing_point=1 "
+            + "AND b2.time-b1.time>0 "
+            + "AND b1.daily_timetable=d.daily_timetable_id "
+            + "AND d.kind=?) d3";
+    
+    query = String.format(query, buildTimingPoints(start, "b1"), 
+                                buildTimingPoints(target, "b2"));
+   
+    
+    PreparedStatement statement = null;
+    try {
+      statement = DBHelper.prepareStatement(query);
+      
+      System.out.println(statement.toString());
+      // setting the kind
+      statement.setInt(1, 0);
+      
+      ResultSet result = statement.executeQuery();
+      if(result.next()) {
+        return result.getDouble("avg");
+      }
+    } catch (SQLException ex) {
+      System.out.println(statement.toString());
+      Logger.getLogger(BusStopInfo.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return -1;
+    
+    
   }
   
   

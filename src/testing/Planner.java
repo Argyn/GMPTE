@@ -6,44 +6,45 @@
 
 package testing;
 
+import gmpte.db.AreaDBInfo;
 import gmpte.db.BusStopInfo;
-import gmpte.db.database;
+import gmpte.db.RouteDBInfo;
+import gmpte.entities.Area;
 import gmpte.entities.BusStop;
+import gmpte.entities.Path;
 import gmpte.entities.Route;
+import gmpte.helpers.PathFinder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Scanner;
 
 /**
  *
  * @author mbgm2rm2
  */
 public class Planner {
-  public static void printStops(int routeID) {
-    Route route = new Route(routeID);
-    ArrayList<BusStop> busStopes = BusStopInfo.getBusStopsByRoute(route);
-    
-    System.out.println("Bus stopes of route "+routeID);
-    Iterator<BusStop> it = busStopes.iterator();
-    while(it.hasNext()) {
-      //BusStop bStop = it.next();
-      System.out.println(it.next());
-    }
+  
+  private Graph<BusStop> network;
+  
+  private ArrayList<BusStop> allBStops;
+  
+  private ArrayList<Route> routes;
+  
+  private ArrayList<Area> areas;
+  
+  private HashMap<Area, ArrayList<BusStop>> areasStationsMap;
+  
+  public BusStop getOriginalBusStop(BusStop bStop) {
+    return allBStops.get(allBStops.indexOf(bStop));
   }
   
-  public static ArrayList<BusStop> getBStops(int routeID) {
-    Route route = new Route(routeID);
-    ArrayList<BusStop> busStopes = BusStopInfo.getBusStopsByRoute(route);
-    return busStopes;
-  }
-  
-  public static Graph buildNetwork(int[] routes) {
-    Graph<BusStop> graph = new Graph<BusStop>();
+  public Graph buildNetwork(ArrayList<Route> routes) {
+    Graph<BusStop> graph = new Graph<>();
     
-    for(int routeID : routes) {
-      ArrayList<BusStop> bStops = getBStops(routeID);
+    for(Route currentRoute : routes) {
+      ArrayList<BusStop> bStops = BusStopInfo.getBusStopsByRoute(currentRoute);
       
       Iterator<BusStop> it = bStops.iterator();
       Iterator<BusStop> newIt = bStops.iterator();
@@ -51,16 +52,28 @@ public class Planner {
         newIt.next();
       
       while(it.hasNext()) {
-        BusStop sourceBStop = it.next();
-        Vertex<BusStop> source = new Vertex<BusStop>(sourceBStop);
+        // source bus stop
+        BusStop sourceBStop = getOriginalBusStop(it.next());
+        sourceBStop.addRoute(currentRoute);
+        
+        Vertex<BusStop> source = new Vertex<>(sourceBStop);
         
         graph.addVertex(source);
         
         if(newIt.hasNext()) {
-          BusStop targetBStop = newIt.next();
-          Vertex<BusStop> target = new Vertex<BusStop>(targetBStop);
+          // get original target bus stop
+          BusStop targetBStop = getOriginalBusStop(newIt.next());
           
-          graph.addEdge(source, target);
+          Vertex<BusStop> target = new Vertex<>(targetBStop);
+          
+          System.out.println("Adding edge between "+sourceBStop+" and "+targetBStop+" on route "+currentRoute.getRouteID());
+          double weight = BusStopInfo.getTimeBetweenBusStops(sourceBStop, targetBStop);
+          if(weight!=-1 ) {
+            graph.addEdge(source, target, weight);
+          } 
+          if(weight>10){
+            System.out.println("Weight is too big!!");
+          }
         }
       }
     }
@@ -68,39 +81,149 @@ public class Planner {
     return graph;
   }
   
-  public static <T extends Comparable<T>> HashMap<T, T> getShortestPath(Graph<T> graph, T from, T to) {
+  public String getShortestPathString(LinkedList<BusStop> finalPath) {
     
-    HashMap<T, T> shortestPath = new HashMap<T, T>();
-    Vertex<T> v = new Vertex<T>(from);
+    //LinkedList<BusStop> finalPath = routeToLinkedList(path, target);
+    
+    StringBuilder builder = new StringBuilder();
+    while(finalPath.peek()!=null) {
+      BusStop bStop = finalPath.poll();
+      builder.append(bStop).append("(").append(bStop.getRoutesString()).append(")");
+      if(finalPath.peek()!=null)
+        builder.append(" --> ");
+    }
+    
+    return builder.toString();
+  }
+  
+  private LinkedList<BusStop> routeToLinkedList(HashMap<BusStop, BusStop> path, BusStop target) {
+    Vertex<BusStop> v = new Vertex(target);
+    BusStop realTarget = getOriginalBusStop(target);
+            
+    LinkedList<BusStop> finalPath = new LinkedList<>();
+    
+    BusStop stop = path.get(realTarget);
+    
+    if(stop!=null) {
+      finalPath.addFirst(realTarget);
+      
+      while(stop!=null) {
+        finalPath.addFirst(stop);
+        stop = path.get(stop);
+      }
+    }
+    
+    return finalPath;
+  }
+  
+  public Planner() {
+    this.routes = RouteDBInfo.getAllRoutes();
+    this.areas = AreaDBInfo.getAllAreas();
+    this.allBStops = BusStopInfo.getAllBusStops(areas);
+    this.network = buildNetwork(routes);
     
     
-    Vertex<T> startVertex = graph.getVertices().get(graph.getVertices().indexOf(v));
+    //formAreasStationsMap();
+  }
+  
+  /*public Path getJourneyPlan(BusStop from, BusStop to) {
+    HashMap<BusStop, BusStop> path = 
+                        PathFinder.<BusStop>getShortestPath(network, from, to);
+    
+    LinkedList<BusStop> result = routeToLinkedList(path, to);
+    
+    return new Path(result);
+  }*/
+  
+  public ArrayList<BusStop> getBusStops() {
+    return allBStops;
+  }
+  
+  public ArrayList<Route> getRoutes() {
+    return routes;
+  }
+  
+  public ArrayList<Area> getAreas() {
+    return areas;
+  }
+  
+  private void formAreasStationsMap() {
+    areasStationsMap = new HashMap<>();
+    
+    for(BusStop bStop : allBStops) {
+      //System.out.println(bStop.getArea());
+      if(areasStationsMap.get(bStop.getArea())!=null) {
+        areasStationsMap.get(bStop.getArea()).add(bStop);
+      } else {
+        ArrayList<BusStop> list = new ArrayList<>();
+        list.add(bStop);
+        areasStationsMap.put(bStop.getArea(), list);
+      }
+    }
+  }
+  
+  public ArrayList<BusStop> getAreasBusStop(Area area) {
+    return areasStationsMap.get(area);
+  }
+  
+  public void printNetwork() {
+    for(Vertex<BusStop> v : network.getVertices()) {
+      System.out.print(v+"(routes="+v.getData().getRoutesString()+"), ");
+      
+      if(v.getEdges().size()>0) {
+        System.out.print(" ---> ");
+      
+        for(Edge<BusStop> e : v.getEdges()) {
+          System.out.print(e.getVertex2()+"(time = "+e.getWeight()+")"+"(routes="+e.getVertex2().getData().getRoutesString()+"), ");
+
+        }
+      }
+      
+      System.out.println();
+      
+    }
+  }
+  public <T extends Comparable<T>> HashMap<T, T> 
+                                getShortestPath(Graph<T> graph, T from, T to) {
+    
+    // flashing the keys
+    graph.flashKeys();
+    
+    HashMap<T, T> shortestPath = new HashMap<>();
+    Vertex<T> v = new Vertex<>(from);
+    
+    
+    Vertex<T> startVertex = graph.getVertices()
+                                          .get(graph.getVertices().indexOf(v));
     
     shortestPath.put(startVertex.getData(), null);
     
     startVertex.setKey(0);
     
-    PriorityQueue<Vertex<T>> heap = new PriorityQueue<Vertex<T>>(graph.getVertices());
+    PriorityQueue<Vertex<T>> heap = 
+                            new PriorityQueue<>(graph.getVertices());
     
     // until heap is not empty
     while(heap.size()>0) {
       
       // fetch the next vertex
       Vertex<T> fetchedVertex = heap.poll();
-      
+
       if(fetchedVertex.isReachable()) {
         if(fetchedVertex.getData().equals(to)) {
           break;
         }
-        
+
         // relax adj vertices
-        if(fetchedVertex.getAdjVertices().size()>0) {
-          Iterator<Vertex<T>> adjVsIt = fetchedVertex.getAdjVertices().iterator();
-          while(adjVsIt.hasNext()) {
-            Vertex<T> adjV = adjVsIt.next();
+        if(fetchedVertex.getEdges().size()>0) {
+          
+          Iterator<Edge<T>> edgesIt = fetchedVertex.getEdges().iterator();
+          while(edgesIt.hasNext()) {
+            Edge<T> adjEdge = edgesIt.next();
+            Vertex<T> adjV = adjEdge.getVertex2();
             // only update key if a new one is smaller
-            if(fetchedVertex.getKey()+1 < adjV.getKey() && heap.remove(adjV)) {
-              adjV.setKey(fetchedVertex.getKey()+1);
+            if(fetchedVertex.getKey()+adjEdge.getWeight() < adjV.getKey() && heap.remove(adjV)) {
+              adjV.setKey(fetchedVertex.getKey()+adjEdge.getWeight());
               heap.add(adjV);
 
               shortestPath.put(adjV.getData(), fetchedVertex.getData());
@@ -113,81 +236,12 @@ public class Planner {
     return shortestPath;
     
   }
-  
-  public static void findRoute(BusStop from, BusStop to) {
-    ArrayList<BusStop> route65 = getBStops(65);
-    ArrayList<BusStop> route66 = getBStops(66);
-    ArrayList<BusStop> route67 = getBStops(67);
-   
-  }
- 
-  
-  public static void printNetwork(Graph graph) {
-    Iterator<Vertex<BusStop>> verticesIT = graph.getVertices().iterator();
-    while(verticesIT.hasNext()) {
-      Vertex<BusStop> next = verticesIT.next();
-      System.out.print(next.getData());
-      if(next.getAdjVertices().size()>0) {
-        System.out.print(" --> ");
-        Iterator<Vertex<BusStop>> adjIt = next.getAdjVertices().iterator();
-        while(adjIt.hasNext()) {
-          Vertex<BusStop> nextAdj = adjIt.next();
-          System.out.print(nextAdj.getData()+",");
-        }
-      }
-      System.out.println();
-    }
-  }
-  
-  public static void printShortestPath(Graph<BusStop> graph, HashMap<BusStop, BusStop> path, BusStop target) {
-    Vertex<BusStop> v = new Vertex(target);
-    BusStop realTarget = graph.getVertices().get(graph.getVertices().indexOf(v)).getData();
+                                
+  public String getJourneyPlan(BusStop from, BusStop to) {
+    HashMap<BusStop, BusStop> path = this.<BusStop>getShortestPath(network, from, to);
     
-    BusStop stop = path.get(realTarget);
-    System.out.print(realTarget+"<--");
+    LinkedList<BusStop> result = routeToLinkedList(path, to);
     
-    while(stop!=null) {
-      System.out.print(stop+" <--");
-      stop = path.get(stop);
-    }
-  }
-  
-  public static void main(String[] args) {
-    Scanner scanner = new Scanner(System.in);
-    database.openBusDatabase();
-    
-    int[] routes = new int[]{65,66,67, 68};
-    
-    printStops(65);
-    System.out.println("==============");
-    printStops(66);
-    System.out.println("==============");
-    printStops(67);
-    System.out.println("==============");
-    printStops(68);
-    System.out.println("==============");
-    
-    Graph<BusStop> bStopsNetwork = buildNetwork(routes);
-    
-    printNetwork(bStopsNetwork);
-    
-    /*BusStop from = new BusStop(221, "Little Hayfield", 1);
-    BusStop to = new BusStop(209, "Asda/Sainsbury's", 1);
-    
-    HashMap<BusStop, BusStop> shortestPath = getShortestPath(bStopsNetwork, from, to);
-    
-    printShortestPath(bStopsNetwork, shortestPath, to);
-    
-    for(Edge<BusStop> e : bStopsNetwork.getEdges()) {
-      System.out.println("NODE "+e.getVertex1()+" "+e.getVertex2());
-    }
-    /*ArrayList<BusStop> route65 = getBStops(65);
-    ArrayList<BusStop> route66 = getBStops(66);
-    ArrayList<BusStop> route67 = getBStops(67);
-    */
-    /*System.out.println("From bus stop:");
-    String fromBusStop = scanner.nextLine();
-    System.out.println("To bus stop:");
-    String toBusStop = scanner.nextLine();*/
-  }
-} 
+    return getShortestPathString(result);
+  }                              
+}

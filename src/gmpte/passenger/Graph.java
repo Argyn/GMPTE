@@ -48,7 +48,8 @@ public class Graph<T extends Comparable<T>> {
 
       edges.add(e);
       source.addAdjVertex(target);
-      
+      source.addEdge(e);
+
       return e;
     }
     
