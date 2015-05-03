@@ -236,6 +236,31 @@ public class BusStopInfo
     return null;
   }
   
+  public static BusStop getBusStopsById(int busStopId) {
+  
+ 
+    String query = "SELECT area, name, 0 as sequence FROM bus_stop WHERE bus_stop_id=?";
+    
+    PreparedStatement statement;
+    
+    try {
+      statement = prepareStatement(query);
+      
+      statement.setInt(1, busStopId);
+      
+      ResultSet result = statement.executeQuery();
+      
+      if(result.next()) {
+        return resultToBusStop(result);
+      }
+
+    } catch (SQLException ex) {
+      Logger.getLogger(BusStopInfo.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return null;
+  }
+  
   
   private static BusStop resultToBusStop(ResultSet result) throws SQLException {
     BusStop busStop = null;
@@ -334,7 +359,7 @@ public class BusStopInfo
     return busStops;
   }
   
-  private static String buildTimingPoints(BusStop start, String id) {
+  public static String buildTimingPoints(BusStop start, String id) {
     StringBuilder builder = new StringBuilder();
     
     if(start.getIds().size()>1) {
@@ -386,9 +411,9 @@ public class BusStopInfo
     }
     
     return -1;
-    
-    
   }
+  
+  
   
   
      

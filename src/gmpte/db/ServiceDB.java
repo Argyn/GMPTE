@@ -9,6 +9,7 @@ package gmpte.db;
 import gmpte.entities.BusStop;
 import gmpte.entities.Route;
 import gmpte.entities.Service;
+import gmpte.entities.Service2;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -17,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
-
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -68,8 +68,7 @@ public class ServiceDB {
     return new Service(result.getInt("service_id"));
   }
 
-  public static int getNearestServiceTime(Route route, BusStop start, BusStop stop, 
-                                                                    Date time) {
+  public static int getNearestServiceID(Route route, BusStop start, Date time) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(time);
     
@@ -125,7 +124,7 @@ public class ServiceDB {
       
       System.out.println(statement.toString());
       if(result.next()) {
-        return result.getInt("time");
+        return result.getInt("service");
       }
       
     } catch (SQLException ex) {
@@ -134,6 +133,43 @@ public class ServiceDB {
     }
     
     return 0; 
+  }
+  
+  public static Service2 getNearestService(Route route, BusStop start, Date time) {
+    int serviceID = getNearestServiceID(route, start, time);
+    
+    String query = "SELECT timing_point, time FROM bus_station_times WHERE service=?";
+    
+    Service2 service = null;
+    
+    PreparedStatement statement = null;
+    
+    try {
+      statement = DBHelper.prepareStatement(query);
+      
+      // setting the service
+      statement.setInt(1, serviceID);
+      
+      ResultSet result = statement.executeQuery();
+      
+      service = new Service2(serviceID);
+      
+      while(result.next()) {
+        BusStop stop = BusStopInfo.getBusStopsById(result.getInt("timing_point"));
+        int minutes = result.getInt("time");
+        
+        service.addTimingPoint(stop, minutes);
+      }
+      
+      return service;
+      
+    } catch (SQLException ex) {
+      Logger.getLogger(ServiceDB.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return service;
+    
+    
   }
   
 }

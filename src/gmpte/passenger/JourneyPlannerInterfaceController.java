@@ -241,10 +241,12 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
       BusStop nextStop = currentPath.poll();
       //printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
       
-      if(!nextStop.equals(target))
-          printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
+      String disembarkMessage = "At "+format.format(currentChange.getDisembarkTime())+" disembark on";
+      
+      if(!nextStop.equals(target) && currentPath.peek()!=null)
+        printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
       else
-        printJourneyStep("Get off on", nextStop.toString(), currentRow++, currentColumn);
+        printJourneyStep(disembarkMessage, nextStop.toString(), currentRow++, currentColumn);
     }
     
     while(journeyPlan.peek()!=null) {
@@ -252,16 +254,20 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
       currentPath = currentChange.getPath();
       
       firstBStop = currentPath.poll();
-      printJourneyStep("Change service to "+currentChange.getRoute()+" on ", 
+      String changeServiceString = "At "+format.format(currentChange.getBoardingTime())
+                          +" change to service "+currentChange.getRoute()+" on";
+      
+      printJourneyStep(changeServiceString, 
                             firstBStop.toString(), currentRow++, currentColumn);
 
       while(currentPath.peek()!=null) {
         BusStop nextStop = currentPath.poll();
         
-        if(!nextStop.equals(target))
+        String disembarkMessage = "At "+format.format(currentChange.getDisembarkTime())+" disembark on";
+        if(!nextStop.equals(target) && currentPath.peek()!=null)
           printJourneyStep(null, nextStop.toString(), currentRow++, currentColumn);
         else
-          printJourneyStep("Get off on", nextStop.toString(), currentRow++, currentColumn);
+          printJourneyStep(disembarkMessage, nextStop.toString(), currentRow++, currentColumn);
       }
     }
   }

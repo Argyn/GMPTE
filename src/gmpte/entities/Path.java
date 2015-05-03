@@ -6,6 +6,7 @@
 
 package gmpte.entities;
 
+import gmpte.db.RouteDBInfo;
 import gmpte.db.ServiceDB;
 import gmpte.helpers.ListHelper;
 import java.util.ArrayList;
@@ -25,6 +26,7 @@ public class Path {
     this.fullPath = fullPath;
     changes = new LinkedList<>();
     
+    
     Route currentRoute = chooseRoute(fullPath.peek(), fullPath.get(1));
     System.out.println(fullPath.get(1));
     System.out.println(currentRoute);
@@ -34,7 +36,8 @@ public class Path {
     
     BusStop startBStop = fullPath.poll();
     
-    change.setBoardingTime(ServiceDB.getNearestServiceTime(currentRoute, startBStop, startBStop, new Date()));
+    Date lastDate = new Date();
+    
     
     System.out.println("Start on "+startBStop+" Route:"+currentRoute.getRouteID());
     change.addBusStation(startBStop);
@@ -47,7 +50,20 @@ public class Path {
         next = fullPath.get(0);
       
       if(next!=null && !next.hasRoute(currentRoute)) {
+        change.addBusStation(current);
+        // updating change times
+        change.setBusStopTimes(ServiceDB.getNearestService(currentRoute, startBStop, lastDate));
+        
+        // updating last date to the disembarkment time of the last service
+        lastDate = change.getDisembarkTime();
+        
+        // saving the change
         changes.add(change);
+        
+        // change start bus stop
+        startBStop = current;
+        
+        // choosing new route now
         System.out.println("Choosing common root betwen "+current+current.getRoutesString()+" and "+next+next.getRoutesString());
         currentRoute = chooseRoute(current, next);
         System.out.println("Chose "+currentRoute.getRouteID());
@@ -60,60 +76,9 @@ public class Path {
     }
     
     changes.add(change);
-    
+    change.setBusStopTimes(ServiceDB.getNearestService(currentRoute, startBStop, lastDate));
   }
-  
-  /*private ArrayList<BusStop> fullPath;
-  private LinkedList<BusChange> changes;
-  
-  public Path(ArrayList<BusStop> fullPath) {
-    this.fullPath = fullPath;
-    changes = new LinkedList<>();
-    
-    Iterator<BusStop> it = fullPath.iterator();
-    Iterator<BusStop> it2 = fullPath.iterator();
-    
-    Route currentRoute = chooseRoute(fullPath.get(0), fullPath.get(1));
-   
-    //System.out.println(fullPath.get(1));
-    //System.out.println(currentRoute);
-    
-    BusChange change = new BusChange(currentRoute);
-    // add starting bus station
-    
-    BusStop startBStop = it.next();
-    it2.next();
-    
-    System.out.println("Start on "+startBStop+" Route:"+currentRoute.getRouteID());
-    change.addBusStation(startBStop);
-    
-    while(it.hasNext()) {
-      BusStop current = it.next();
  
-      BusStop next = null;
-      
-      if(it2.hasNext() && it2.next()!=null && it2.hasNext()) {
-        next = it2.next();
-        System.out.println("Current:"+current);
-        System.out.println("Next:"+next);
-      }
-      
-      if(next!=null && !next.hasRoute(currentRoute)) {
-        changes.add(change);
-        System.out.println("Choosing common root betwen "+current+current.getRoutesString()+" and "+next+next.getRoutesString());
-        currentRoute = chooseRoute(current, next);
-        System.out.println("Chose "+currentRoute.getRouteID());
-        change = new BusChange(currentRoute);
-      }
-      
-      System.out.println(current+" Route:"+currentRoute.getRouteID());
-      
-      change.addBusStation(current);
-    }
-    
-    changes.add(change);
-
-  }*/
   
   public LinkedList<BusChange> getFullPath() {
     return changes;
@@ -126,9 +91,12 @@ public class Path {
     ArrayList<Route> routes = (ArrayList<Route>)ListHelper
                             .<Route>intersect(currentRoutes, nextStationRoutes);
     
+    for(Route route : routes) {
+      // check if route goes from current to nextStation
+      if(RouteDBInfo.doesRouteGoFromTo(current, nextStation, route))
+        return route;
+    }
     
-    if(routes.size()>0)
-      return routes.get(0);
     
     return null;
   }

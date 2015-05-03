@@ -21,7 +21,7 @@ public class BusChange {
   private int service;
   
   private Date boardingTime;
-  private Date dropOffTime;
+  private Date disembarkTime;
   
   private LinkedList<BusStop> path;
   
@@ -65,11 +65,11 @@ public class BusChange {
     setBoardingTime(date.getTime());
   }
   
-  public void setDropOffTime(Date time) {
-    this.dropOffTime = time;
+  public void setDisembarkTime(Date time) {
+    this.disembarkTime = time;
   }
   
-  public void setDropOffTime(int time) {
+  public void setDisembarkTime(int time) {
     // boarding time is number of minutes since midnigth
     Calendar date = new GregorianCalendar();
     // reset hour, minutes, seconds and millis
@@ -80,11 +80,19 @@ public class BusChange {
     
     date.set(Calendar.MINUTE, time);
     
-    setDropOffTime(date.getTime());
+    setDisembarkTime(date.getTime());
   }
   
   public Date getBoardingTime() {
     return boardingTime;
+  }
+  
+  public Date getDisembarkTime() {
+    return disembarkTime;
+  }
+  
+  public void setBusStopTimes(Service2 service) {
+    service.updateBoardingDisembarkTimes(this, path.peekFirst(), path.peekLast());
   }
   
 }
