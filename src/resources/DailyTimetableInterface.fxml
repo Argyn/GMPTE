@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import java.lang.*?>
+<?import java.net.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="900.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.dailytimetable.DailyTimetableInterfaceController">
+   <children>
+       <AnchorPane fx:id="loadingIndicatorPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="200.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <ProgressIndicator prefHeight="300.0" prefWidth="327.0" />
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="mainContentPane" layoutX="167.0" layoutY="145.0" prefHeight="426.0" prefWidth="666.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="90.0">
+         <children>
+            <VBox prefHeight="200.0" prefWidth="100.0" styleClass="content-vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="0.0" prefWidth="960.0">
+                     <children>
+                        <Label styleClass="medium-label" text="Choose bus stop:" textFill="#c24c4c" />
+                        <ChoiceBox fx:id="busStopChoiceBox" prefWidth="150.0" />
+                     </children>
+                  </HBox>
+                  <Accordion fx:id="servicesAccordion" prefHeight="759.0" prefWidth="960.0" />
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+      <HBox alignment="CENTER_LEFT" styleClass="top-horizontal-menu" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox prefHeight="52.0">
+               <children>
+                  <Button fx:id="backButton" mnemonicParsing="false" prefHeight="49.0" prefWidth="119.0" styleClass="top-menu-button" text=" &lt; Back" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER" prefHeight="60.0" prefWidth="500.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <Label fx:id="driverName" styleClass="top-menu-driver-label" text="TIMETABLE" textFill="WHITE" />
+               </children>
+            </HBox>
+            <HBox alignment="CENTER_RIGHT" prefHeight="56.0">
+               <children>
+                  <Button fx:id="searchOptionsButton" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="154.0" styleClass="top-menu-button" text="Search Options" wrapText="true">
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+               </children>
+            </HBox>
+            <Button fx:id="logOutButton" cancelButton="true" mnemonicParsing="false" prefHeight="50.0" prefWidth="118.0" styleClass="top-menu-button" text="Log Out" />
+         </children>
+      </HBox>
+   </children>
+   <stylesheets>
+      <URL value="@main.css" />
+   </stylesheets>
+</AnchorPane>

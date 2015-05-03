@@ -13,8 +13,10 @@ import gmpte.entities.Area;
 import gmpte.entities.BusStop;
 import gmpte.entities.Path;
 import gmpte.entities.Route;
+import gmpte.helpers.DateHelper;
 import gmpte.helpers.PathFinder;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -38,6 +40,40 @@ public class JourneyPlannerController {
   public BusStop getOriginalBusStop(BusStop bStop) {
     return allBStops.get(allBStops.indexOf(bStop));
   }
+  
+  /*public Graph buildNetwork(ArrayList<Route> routes) {
+    Graph<BusStop> graph = new Graph<>();
+    
+    for(Route currentRoute : routes) {
+      ArrayList<BusStop> bStops = BusStopInfo.getBusStopsByRoute(currentRoute);
+      
+      Iterator<BusStop> it = bStops.iterator();
+      Iterator<BusStop> newIt = bStops.iterator();
+      if(newIt.hasNext())
+        newIt.next();
+      
+      while(it.hasNext()) {
+        // source bus stop
+        BusStop sourceBStop = getOriginalBusStop(it.next());
+        sourceBStop.addRoute(currentRoute);
+        
+        Vertex<BusStop> source = new Vertex<>(sourceBStop);
+        
+        graph.addVertex(source);
+        
+        if(newIt.hasNext()) {
+          // get original target bus stop
+          BusStop targetBStop = getOriginalBusStop(newIt.next());
+          
+          Vertex<BusStop> target = new Vertex<>(targetBStop);
+          
+          graph.addEdge(source, target);
+        }
+      }
+    }
+    
+    return graph;
+  }*/
   
   public Graph buildNetwork(ArrayList<Route> routes) {
     Graph<BusStop> graph = new Graph<>();
@@ -65,7 +101,14 @@ public class JourneyPlannerController {
           
           Vertex<BusStop> target = new Vertex<>(targetBStop);
           
-          graph.addEdge(source, target);
+          System.out.println("Adding edge between "+sourceBStop+" and "+targetBStop+" on route "+currentRoute.getRouteID());
+          double weight = BusStopInfo.getTimeBetweenBusStops(sourceBStop, targetBStop, DateHelper.getKind(new Date()));
+          if(weight!=-1 ) {
+            graph.addEdge(source, target, weight);
+          } 
+          if(weight>10){
+            System.out.println("Weight is too big!!");
+          }
         }
       }
     }

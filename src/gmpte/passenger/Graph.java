@@ -56,6 +56,12 @@ public class Graph<T extends Comparable<T>> {
     return null;
   }
   
+  public void addEdge(Vertex<T> vertex1, Vertex<T> vertex2, double weight) {
+    Edge e = addEdge(vertex1, vertex2);
+    if(e!=null)
+      e.setWeight(weight);
+  }
+  
   public ArrayList<Vertex<T>> getVertices() {
     return vertices;
   }

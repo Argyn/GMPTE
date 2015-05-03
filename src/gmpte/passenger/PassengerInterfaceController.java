@@ -33,6 +33,9 @@ public class PassengerInterfaceController implements Initializable, ControllerIn
   @FXML
   private VBox journeyPlannerMenuItem;
   
+  @FXML
+  private VBox checkTimetableMenuItem;
+  
   private MainControllerInterface mainController;
   
   /**
@@ -50,6 +53,9 @@ public class PassengerInterfaceController implements Initializable, ControllerIn
     
     // handle journey planner menu item
     onJourneyPlannerMenuItemClick();
+    
+    // handle check timetable menu item
+    onCheckTimetableMenuItemClick();
   }  
   
   public void onJourneyPlannerMenuItemClick() {
@@ -58,6 +64,17 @@ public class PassengerInterfaceController implements Initializable, ControllerIn
       @Override
       public void handle(MouseEvent t) {
         mainController.showJourneyPlanner();
+      }
+    
+    });
+  }
+  
+  public void onCheckTimetableMenuItemClick() {
+    checkTimetableMenuItem.setOnMouseClicked(new EventHandler<MouseEvent>() {
+
+      @Override
+      public void handle(MouseEvent t) {
+        mainController.showDailyTimetable();
       }
     
     });

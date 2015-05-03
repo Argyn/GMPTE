@@ -48,6 +48,8 @@ public class IBMS extends Application implements MainControllerInterface {
   
   private ControllerInterface journeyPlannerController;
   
+  private ControllerInterface dailyTimetableController;
+  
   private Scene mainPageScene;
   private Scene loginPageScene;
   private Scene startUpPageScene;
@@ -58,6 +60,7 @@ public class IBMS extends Application implements MainControllerInterface {
   private Scene driverRosterViewScene;
   private Scene passengerInterfaceScene;
   private Scene journeyPlannerScene;
+  private Scene dailyTimetableScene;
   
   @Override
   public void start(Stage primaryStage) throws Exception {
@@ -399,6 +402,43 @@ public class IBMS extends Application implements MainControllerInterface {
       // set window title
       setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "
                                     +GMPTEConstants.JOURNEY_PLANNER_WINDOW);
+
+      stage.show();
+    } catch(IOException exception) {
+      // close the programm
+
+    }
+  }
+  
+  @Override
+  public void showDailyTimetable() {
+    try {
+      if(dailyTimetableScene==null) {
+        // Load login page first
+        FXMLLoader loader = new FXMLLoader(
+            getClass().getResource(
+              "/resources/DailyTimetableInterface.fxml"
+            )
+        );
+
+
+        Parent root = (Parent)loader.load();
+
+        dailyTimetableController = 
+            loader.<ControllerInterface>getController();
+
+        dailyTimetableController.setMainController(this);
+
+        dailyTimetableScene = new Scene(root);
+        //passengerInterfaceScene.getStylesheets().add("/resources/calendarstyle.css");
+      }
+
+
+      stage.setScene(dailyTimetableScene);
+
+      // set window title
+      setWindowTitle(stage, GMPTEConstants.IBMS_SYSTEM+" : "
+                                    +GMPTEConstants.DAILY_TIMETABLE_WINDOW);
 
       stage.show();
     } catch(IOException exception) {

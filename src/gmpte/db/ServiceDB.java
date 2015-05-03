@@ -10,6 +10,7 @@ import gmpte.entities.BusStop;
 import gmpte.entities.Route;
 import gmpte.entities.Service;
 import gmpte.entities.Service2;
+import gmpte.helpers.DateHelper;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -67,7 +68,27 @@ public class ServiceDB {
   private static Service buildService(ResultSet result) throws SQLException {
     return new Service(result.getInt("service_id"));
   }
-
+  
+  public static String buildTimingPoints(BusStop start, String id) {
+    StringBuilder builder = new StringBuilder();
+    
+    if(start.getIds().size()>1) {
+      builder.append("(");
+      Iterator<Integer> it = start.getIds().iterator();
+      
+      while(it.hasNext()) {
+        builder.append(" "+id+".timing_point="+it.next());
+        if(it.hasNext())
+          builder.append(" OR ");
+      }
+      builder.append(")");
+    } else {
+      builder.append(id).append(".timing_point=").append(start.getIds().get(0));
+    }
+    
+    return builder.toString();
+  }
+  
   public static int getNearestServiceID(Route route, BusStop start, Date time) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(time);
@@ -135,9 +156,7 @@ public class ServiceDB {
     return 0; 
   }
   
-  public static Service2 getNearestService(Route route, BusStop start, Date time) {
-    int serviceID = getNearestServiceID(route, start, time);
-    
+  public static Service2 getServiceById(int serviceID) {
     String query = "SELECT timing_point, time FROM bus_station_times WHERE service=?";
     
     Service2 service = null;
@@ -168,8 +187,78 @@ public class ServiceDB {
     }
     
     return service;
+  }
+  
+  public static Service2 getNearestService(Route route, BusStop start, Date time) {
+    int serviceID = getNearestServiceID(route, start, time);
+    
+    return getServiceById(serviceID);
+  }
+  
+  public static ArrayList<Service2> getServicesByRoute(Route route, int kind) {
+    
+    ArrayList<Service2> services = new ArrayList<>();
+    
+    String query = "SELECT DISTINCT bs.service FROM bus_station_times bs, "
+            + "daily_timetable d WHERE d.daily_timetable_id=bs.daily_timetable "
+            + "AND d.kind=? AND d.route=?";
+    
+    PreparedStatement statement = null;
+            
+    try {
+      statement = DBHelper.prepareStatement(query);
+      
+      // setting the kind
+      statement.setInt(1, kind);
+      
+      // setting the route
+      statement.setInt(2, route.getRouteID());
+      
+      ResultSet result = statement.executeQuery();
+      
+      while(result.next()) {
+        services.add(getServiceById(result.getInt("service")));
+      }
+    } catch (SQLException ex) {
+      Logger.getLogger(ServiceDB.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return services;
+  }
+  
+  public static ArrayList<Date> getTimesByRouteAndBusStop(Route route, BusStop bStop, int kind) {
+    ArrayList<Date> times = new ArrayList<>();
+    
+    String query = "SELECT bs.time FROM bus_station_times bs, daily_timetable d "
+            + "WHERE d.daily_timetable_id=bs.daily_timetable AND d.route=? "
+            + "AND %s AND d.kind=?";
+    
+    query = String.format(query, buildTimingPoints(bStop, "bs"));
+    
+    PreparedStatement statement = null;
     
     
+    try {
+      statement = DBHelper.prepareStatement(query);
+      
+      // setting the route
+      statement.setInt(1, route.getRouteID());
+      // setting the kind
+      statement.setInt(2, kind);
+      
+      ResultSet result = statement.executeQuery();
+      
+      while(result.next()) {
+        times.add(DateHelper.afterMidnighMinsToDate(result.getInt("time")));
+      }
+      
+      System.out.println(statement.toString());
+      
+    } catch (SQLException ex) {
+      Logger.getLogger(ServiceDB.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return times;
   }
   
 }

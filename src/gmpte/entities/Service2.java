@@ -65,4 +65,8 @@ public class Service2 {
     change.setBoardingTime(boardingTime);
     change.setDisembarkTime(disembardkTime);
   }
+  
+  public ArrayList<BusStop> getBusStops() {
+    return busStops;
+  }
 }

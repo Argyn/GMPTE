@@ -236,6 +236,35 @@ public class BusStopInfo
     return null;
   }
   
+  public static ArrayList<BusStop> getDistinctBusStopsByRoute(Route route) {
+    
+    ArrayList<BusStop> busStops = new ArrayList<>();
+    
+    String query = "SELECT DISTINCT b.area, b.name, 0 as sequence FROM path p "
+                   + "LEFT JOIN bus_stop b ON b.bus_stop_id=p.bus_stop "
+                   + "WHERE p.route=?";
+    
+    PreparedStatement statement;
+    
+    try {
+      statement = prepareStatement(query);
+      
+      statement.setInt(1, route.getRouteID());
+      
+      ResultSet result = statement.executeQuery();
+      
+      while(result.next()) {
+        busStops.add(resultToBusStop(result));
+      }
+      
+      return busStops;
+    } catch (SQLException ex) {
+      Logger.getLogger(BusStopInfo.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return null;
+  }
+  
   public static BusStop getBusStopsById(int busStopId) {
   
  
@@ -341,7 +370,7 @@ public class BusStopInfo
         BusStop bStop = resultToBusStop(result, areas);
         
         if(busStops.contains(bStop)) {
-          //System.out.println("Multipel ids");
+          System.out.println("Multipel ids");
           BusStop originalB = busStops.get(busStops.indexOf(bStop));
           //System.out.println(originalB);
           //System.out.println("Adding"+bStop.getIds());
@@ -379,7 +408,7 @@ public class BusStopInfo
     return builder.toString();
   }
   
-  public static double getTimeBetweenBusStops(BusStop start, BusStop target) {
+  public static double getTimeBetweenBusStops(BusStop start, BusStop target, int kind) {
     String query = "SELECT AVG(diff) as avg FROM "
             + "(SELECT DISTINCT(abs(b1.time-b2.time)) as diff "
             + "FROM `bus_station_times` b1, bus_station_times b2, "
@@ -399,7 +428,7 @@ public class BusStopInfo
       
       System.out.println(statement.toString());
       // setting the kind
-      statement.setInt(1, 0);
+      statement.setInt(1, kind);
       
       ResultSet result = statement.executeQuery();
       if(result.next()) {

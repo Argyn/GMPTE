@@ -21,7 +21,7 @@ public class testController
   public static void main(String args[])  throws ParseException
   {
     database.openBusDatabase();
-    DailyTimetableController controller = new DailyTimetableController();
+    DailyTimetableController2 controller = new DailyTimetableController2();
     // adding new dates
     controller.addDailyTimetable(new SimpleDateFormat("dd/M/yyyy").parse("23/04/2015"));
     controller.addDailyTimetable(new SimpleDateFormat("dd/M/yyyy").parse("24/04/2015"));

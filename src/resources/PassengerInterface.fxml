@@ -77,7 +77,7 @@
                         <Insets right="70.0" />
                      </HBox.margin>
                   </VBox>
-                  <VBox fx:id="checkRosterMenuItem" prefHeight="257.0" prefWidth="210.0">
+                  <VBox fx:id="checkTimetableMenuItem" prefHeight="257.0" prefWidth="210.0">
                      <children>
                         <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-icon-container">
                            <children>

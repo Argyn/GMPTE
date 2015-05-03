@@ -67,7 +67,7 @@ public class Planner {
           Vertex<BusStop> target = new Vertex<>(targetBStop);
           
           System.out.println("Adding edge between "+sourceBStop+" and "+targetBStop+" on route "+currentRoute.getRouteID());
-          double weight = BusStopInfo.getTimeBetweenBusStops(sourceBStop, targetBStop);
+          double weight = BusStopInfo.getTimeBetweenBusStops(sourceBStop, targetBStop,0);
           if(weight!=-1 ) {
             graph.addEdge(source, target, weight);
           } 
