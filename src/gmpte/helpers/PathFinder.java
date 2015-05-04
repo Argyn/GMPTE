@@ -6,6 +6,7 @@
 
 package gmpte.helpers;
 
+import gmpte.entities.BusChange;
 import gmpte.passenger.Edge;
 import gmpte.passenger.Graph;
 import gmpte.passenger.PathSolution;
@@ -23,6 +24,7 @@ import java.util.PriorityQueue;
 public class PathFinder {
   public static <T extends Comparable<T>> HashMap<T, T> 
                                 getShortestPath(Graph<T> graph, T from, T to) {
+    
     
     // flashing the keys
     graph.flashKeys();
@@ -63,7 +65,7 @@ public class PathFinder {
             if(fetchedVertex.getKey()+adjEdge.getWeight() < adjV.getKey() && heap.remove(adjV)) {
               adjV.setKey(fetchedVertex.getKey()+adjEdge.getWeight());
               heap.add(adjV);
-
+              
               shortestPath.put(adjV.getData(), fetchedVertex.getData());
             }
           }

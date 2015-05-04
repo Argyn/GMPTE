@@ -14,7 +14,6 @@ import gmpte.entities.Area;
 import gmpte.entities.BusStop;
 import gmpte.entities.Route;
 import gmpte.entities.RouteBusStop;
-import gmpte.entities.Service;
 import gmpte.entities.Service2;
 import gmpte.helpers.DateHelper;
 import java.util.ArrayList;

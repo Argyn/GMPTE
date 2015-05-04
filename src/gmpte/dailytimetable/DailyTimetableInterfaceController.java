@@ -29,6 +29,8 @@ import javafx.scene.control.Accordion;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ScrollPane.ScrollBarPolicy;
 import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
@@ -91,7 +93,9 @@ public class DailyTimetableInterfaceController implements Initializable, Control
       @Override
       protected Void call() throws Exception {
         tController = new DailyTimetableController();
-    
+        
+        
+        
         return null;
       }
     };
@@ -127,25 +131,43 @@ public class DailyTimetableInterfaceController implements Initializable, Control
       ArrayList<Service2> routeServices = tController.getServicesOfRoute(route);
 
       for(BusStop stop : tController.getBusStopsOfRoute(route)) {
+        
         bStopsGridPane.add(new Label(stop.toString()), col, row);
         bStopsGridPane.setHgap(10);
         bStopsGridPane.setVgap(5);
-        
-        ArrayList<Date> times = tController.getRouteBusStopTimes(route, stop);
-        
+
         int timesCol = 1;
-        for(Date time : times) {
+        for(Service2 service : routeServices) {
+          int index = 0;
+          for(BusStop bStop : service.getBusStops()) {
+            if(stop.equals(bStop)) {
+              Date arriveTime = service.getTimes().get(index);
+              Label timeLabel = new Label(DateHelper.formatDateToString("HH:mm", 
+              arriveTime));
+
+              if(!service.doesTerminateAtTime(arriveTime))
+                timeLabel.getStyleClass().add("medium-label");
+              
+              bStopsGridPane.add(timeLabel, timesCol++, row);
+            }
+            index++;
+          }
+          
           if(timesCol>12) {
             timesCol = 1;
             row++;
           }
-          bStopsGridPane.add(new Label(DateHelper.formatDateToString("HH:mm", time)), timesCol++, row);
         }
         
         row++;
       }
       
-      titledPane.setContent(bStopsGridPane);
+      ScrollPane scrollPane = new ScrollPane();
+      AnchorPane anchorPane = new AnchorPane(bStopsGridPane);
+      scrollPane.setContent(anchorPane);
+      scrollPane.setFitToHeight(true);
+      scrollPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+      titledPane.setContent(scrollPane);
       
       servicesAccordion.getPanes().add(titledPane);
     }
@@ -162,6 +184,7 @@ public class DailyTimetableInterfaceController implements Initializable, Control
       TitledPane titledPane = new TitledPane();
       titledPane.setText(route.toString());
       
+      ScrollPane scrollPane = new ScrollPane();
       GridPane bStopsGridPane = new GridPane();
       int row = 0;
       int col = 0;
@@ -170,14 +193,14 @@ public class DailyTimetableInterfaceController implements Initializable, Control
 
       bStopsGridPane.add(new Label(stop.toString()), col, row);
       bStopsGridPane.setHgap(10);
-      bStopsGridPane.setVgap(5);
+      bStopsGridPane.setVgap(3);
       
       ArrayList<Date> times = tController.getRouteBusStopTimes(route, stop);
       if(times!=null) {
  
         int timesCol = 1;
         for(Date time : times) {
-          if(timesCol>12) {
+          if(timesCol>18) {
             timesCol = 1;
             row++;
           }
@@ -185,9 +208,13 @@ public class DailyTimetableInterfaceController implements Initializable, Control
         }
 
         row++;
-
-        titledPane.setContent(bStopsGridPane);
-
+        
+        AnchorPane anchorPane = new AnchorPane(bStopsGridPane);
+        scrollPane.setContent(anchorPane);
+        scrollPane.setFitToHeight(true);
+        scrollPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
+        titledPane.setContent(scrollPane);
+        
         servicesAccordion.getPanes().add(titledPane);
       }
     }

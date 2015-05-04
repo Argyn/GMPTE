@@ -69,4 +69,12 @@ public class Service2 {
   public ArrayList<BusStop> getBusStops() {
     return busStops;
   }
+  
+  public ArrayList<Date> getTimes() {
+    return times;
+  }
+  
+  public boolean doesTerminateAtTime(Date time) {
+    return times.indexOf(time)==(times.size()-1);
+  }
 }
