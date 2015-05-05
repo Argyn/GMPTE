@@ -40,6 +40,10 @@ public class DailyTimetableController {
           
   private int kind;
   
+  private ArrayList<Service2> delayedServices;
+  
+  private ArrayList<Service2> cancelledServices;
+  
   public DailyTimetableController() {
     // fetching all areas
     areas = AreaDBInfo.getAllAreas();
@@ -50,10 +54,6 @@ public class DailyTimetableController {
     // fetching all bus stops
     allBusStops = BusStopInfo.getAllBusStops(areas);
     
-    routeServices = new HashMap<>();
-    routeBusStops = new HashMap<>();
-    routeBusStopsTimes = new HashMap<>();
-    
     kind = DateHelper.getKind(new Date());
     
     // map routes and bus stops
@@ -63,7 +63,7 @@ public class DailyTimetableController {
     mapRoutesAndServices();
     
     // map routes, bus stops and times
-    mapRoutesBusStopsAndTimes();
+    //mapRoutesBusStopsAndTimes();
   }
   
   private BusStop getOriginalBusStop(BusStop bStop) {
@@ -71,6 +71,7 @@ public class DailyTimetableController {
   }
   
   private void mapRoutesAndBusStops() {
+    routeBusStops = new HashMap<>();
     for(Route route : routes) {
       ArrayList<BusStop> routeBStops = BusStopInfo.getDistinctBusStopsByRoute(route);
       ArrayList<BusStop> newRouteBStops = new ArrayList<>();
@@ -82,36 +83,23 @@ public class DailyTimetableController {
   }
   
   private void mapRoutesAndServices() {
+    routeServices = new HashMap<>();
+    delayedServices = new ArrayList<>();
+    cancelledServices = new ArrayList<>();
+    
     for(Route route : routes) {
-      routeServices.put(route, ServiceDB.getServicesByRoute(route, kind));
-    }
-  }
-  
-  private void mapRoutesBusStopsAndTimes() {
-    for(Route route : routes) {
-      for(BusStop stop : getBusStopsOfRoute(route)) {
-        RouteBusStop routeBStop = new RouteBusStop(route, stop);
-        ArrayList<Date> times = ServiceDB.getTimesByRouteAndBusStop(route, stop, kind);
-        
-        
-        routeBusStopsTimes.put(routeBStop, times);
-        if(times.size()==0) {
-          System.out.println("NULL TIMES!!!");
-          System.out.println(route.getRouteID());
-          System.out.println(stop);
+      ArrayList<Service2> services = ServiceDB.getServicesByRoute(route, kind);
+      
+      for(Service2 service : services) {
+        if(service.isDelayed()) {
+          delayedServices.add(service);
+        } else if(service.isCancelled()) {
+          cancelledServices.add(service);
         }
       }
+      routeServices.put(route, services);
     }
   }
-  
-  public ArrayList<Date> getRouteBusStopTimes(Route route, BusStop stop) {
-    RouteBusStop routeBusStop = new RouteBusStop(route, stop);
-    return routeBusStopsTimes.get(routeBusStop);
-  }
-  
-  
-  
-  
   
   public ArrayList<BusStop> getBusStopsOfRoute(Route route) {
     return routeBusStops.get(route);
@@ -129,7 +117,16 @@ public class DailyTimetableController {
     return allBusStops;
   }
   
+  public ArrayList<Service2> getDelayedServices() {
+    return delayedServices;
+  }
   
+  public ArrayList<Service2> getCancelledServices() {
+    return cancelledServices;
+  }
   
-  
+  public void refresh() {
+    mapRoutesAndServices();
+  }
+
 }

@@ -86,9 +86,10 @@ public class BusStop implements Comparable<BusStop> {
   
   @Override
   public boolean equals(Object other) {
-    BusStop otheBStop = (BusStop)other;
-      if(otheBStop!=null) {
-        return otheBStop.name.equals(name) && area.equals(otheBStop.area);
+    
+    BusStop otherBStop = (BusStop)other;
+      if(otherBStop!=null) {
+        return otherBStop.name.equals(name) && area.equals(otherBStop.area);
       }
     return false;
   }

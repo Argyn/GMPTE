@@ -100,7 +100,7 @@
                         </HBox>
                      </children>
                      <HBox.margin>
-                        <Insets right="20.0" />
+                        <Insets left="10.0" right="10.0" />
                      </HBox.margin>
                   </VBox>
                   <VBox fx:id="viewRosterMenuItem" prefHeight="257.0" prefWidth="210.0">
@@ -125,7 +125,32 @@
                         <String fx:value="content-vbox" />
                      </styleClass>
                      <HBox.margin>
-                        <Insets left="20.0" />
+                        <Insets left="10.0" right="10.0" />
+                     </HBox.margin>
+                  </VBox>
+                  <VBox fx:id="viewRosterMenuItem1" prefHeight="257.0" prefWidth="210.0">
+                     <children>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-icon-container">
+                           <children>
+                              <ImageView fitHeight="296.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@manage-ico.jpg" />
+                                 </image>
+                              </ImageView>
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" styleClass="main-menu-item-label-container">
+                           <children>
+                              <Label styleClass="main-menu-item-label" text="MANAGE SERVICES" textAlignment="CENTER" wrapText="true" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <styleClass>
+                        <String fx:value="main-menu-item" />
+                        <String fx:value="content-vbox" />
+                     </styleClass>
+                     <HBox.margin>
+                        <Insets left="10.0" right="10.0" />
                      </HBox.margin>
                   </VBox>
                </children>

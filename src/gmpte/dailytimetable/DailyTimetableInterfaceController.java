@@ -17,11 +17,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.ResourceBundle;
+import javafx.animation.Interpolator;
+import javafx.animation.TranslateTransition;
+import javafx.animation.TranslateTransitionBuilder;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -35,6 +39,9 @@ import javafx.scene.control.TitledPane;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 
 /**
  * FXML Controller class
@@ -61,10 +68,25 @@ public class DailyTimetableInterfaceController implements Initializable, Control
   @FXML
   private ChoiceBox busStopChoiceBox;
   
+  @FXML
+  private Label refreshTimerLabel;
+  
+  @FXML
+  private Text marqueueMessagesText;
+  
+  @FXML
+  private HBox marqueueMessagesBox;
+  
   private DailyTimetableController tController;
   
   private MainControllerInterface mainController;
  
+  private ArrayList<BusStop> busStopsChoices;
+  
+  private TranslateTransition marqueueTransition;
+  
+  private BusStop currentBusStop;
+  
   /**
    * Initializes the controller class.
    */
@@ -107,12 +129,68 @@ public class DailyTimetableInterfaceController implements Initializable, Control
         loadingIndicatorPane.setVisible(false);
         mainContentPane.setVisible(true);
         
+        busStopsChoices = new ArrayList<>(tController.getAllBusStops());
+        busStopsChoices.add(0, null);
+        
         // populate accordion services
         populateRoutesAccordionWithAllBusStops();
         
         populateBusStopChoiceBox();
         
         onBusStopChoiceChange();
+        
+        constructMarqueueMessages();
+        
+        showMarqueueMessage();
+        
+        refreshData();
+        
+      }
+    });
+   
+    new Thread(loadTask).start();
+  }
+  
+  public void refreshData() {
+    
+    final Task<Void> loadTask = new Task<Void>() {
+      @Override
+      protected Void call() throws Exception {
+        int seconds = 60;
+        while(seconds>0) {
+          Thread.sleep(1000);
+          seconds-=1;
+          //refreshTimerLabel.setText(seconds+" seconds");
+        }
+        loadingIndicatorPane.setVisible(true);
+        mainContentPane.setVisible(false);
+
+        tController.refresh();
+        
+        constructMarqueueMessages();
+        
+        showMarqueueMessage();
+        
+        return null;
+      }
+    };
+    
+    loadTask.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+
+      @Override
+      public void handle(WorkerStateEvent event) {
+        loadingIndicatorPane.setVisible(false);
+        mainContentPane.setVisible(true);
+        
+        clearTimetable();
+        
+        if(currentBusStop!=null) {
+          populateRoutesAccordionWithBusStop(currentBusStop);
+        } else {
+          populateRoutesAccordionWithAllBusStops();
+        }
+        
+        refreshData();
       }
     });
    
@@ -120,6 +198,9 @@ public class DailyTimetableInterfaceController implements Initializable, Control
   }
   
   public void populateRoutesAccordionWithAllBusStops() {
+    
+    Date nowDate = new Date();
+    
     for(Route route : tController.getRoutes()) {
       TitledPane titledPane = new TitledPane();
       titledPane.setText(route.toString());
@@ -132,7 +213,11 @@ public class DailyTimetableInterfaceController implements Initializable, Control
 
       for(BusStop stop : tController.getBusStopsOfRoute(route)) {
         
-        bStopsGridPane.add(new Label(stop.toString()), col, row);
+        Label firstToArrive = null;
+        Date firstToArriveDate = null;
+        Label bStopLabel = new Label(stop.toString());
+        
+        bStopsGridPane.add(bStopLabel, col, row);
         bStopsGridPane.setHgap(10);
         bStopsGridPane.setVgap(5);
 
@@ -144,9 +229,30 @@ public class DailyTimetableInterfaceController implements Initializable, Control
               Date arriveTime = service.getTimes().get(index);
               Label timeLabel = new Label(DateHelper.formatDateToString("HH:mm", 
               arriveTime));
-
-              if(!service.doesTerminateAtTime(arriveTime))
-                timeLabel.getStyleClass().add("medium-label");
+               
+             
+              
+              if(!service.doesTerminateAtTime(arriveTime)) {
+                timeLabel.getStyleClass().add("timeteable-time-depart-label");
+                if(arriveTime.after(nowDate)) { 
+                  if(firstToArriveDate==null || (firstToArriveDate!=null 
+                                    && arriveTime.before(firstToArriveDate))) {
+                    firstToArrive = timeLabel;
+                    firstToArriveDate = arriveTime;
+                  }
+                }
+              } else
+                timeLabel.getStyleClass().add("timetable-time-arrive-label");
+              
+              if(service.isDelayed()) {
+                timeLabel.setText(timeLabel.getText()+"(D)");
+                timeLabel.getStyleClass().add("delayed-service-time-label");
+              }
+              
+              if(service.isCancelled()) {
+                timeLabel.setText(timeLabel.getText()+"(C)");
+                timeLabel.getStyleClass().add("cancelled-service-time-label");
+              }
               
               bStopsGridPane.add(timeLabel, timesCol++, row);
             }
@@ -160,10 +266,14 @@ public class DailyTimetableInterfaceController implements Initializable, Control
         }
         
         row++;
+        
+        if(firstToArrive!=null)
+          firstToArrive.getStyleClass().add("next-service-time-label");
       }
       
       ScrollPane scrollPane = new ScrollPane();
-      AnchorPane anchorPane = new AnchorPane(bStopsGridPane);
+      AnchorPane anchorPane = new AnchorPane();
+      anchorPane.getChildren().add(bStopsGridPane);
       scrollPane.setContent(anchorPane);
       scrollPane.setFitToHeight(true);
       scrollPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
@@ -180,7 +290,13 @@ public class DailyTimetableInterfaceController implements Initializable, Control
   }
   
   public void populateRoutesAccordionWithBusStop(BusStop stop) {
+    Date nowDate = new Date();
+
+    Label firstToArrive = null;
+    Date firstToArriveDate = null;
+   
     for(Route route : tController.getRoutes()) {
+
       TitledPane titledPane = new TitledPane();
       titledPane.setText(route.toString());
       
@@ -195,21 +311,54 @@ public class DailyTimetableInterfaceController implements Initializable, Control
       bStopsGridPane.setHgap(10);
       bStopsGridPane.setVgap(3);
       
-      ArrayList<Date> times = tController.getRouteBusStopTimes(route, stop);
-      if(times!=null) {
- 
-        int timesCol = 1;
-        for(Date time : times) {
-          if(timesCol>18) {
-            timesCol = 1;
-            row++;
+      int timesCol = 1;
+      boolean hasServices = false;
+      for(Service2 service : routeServices) {
+        int index = 0;
+        for(BusStop bStop : service.getBusStops()) {
+          if(stop.equals(bStop)) {
+            hasServices= true;
+            Date arriveTime = service.getTimes().get(index);
+              Label timeLabel = new Label(DateHelper.formatDateToString("HH:mm", 
+              arriveTime));
+            
+              
+              if(!service.doesTerminateAtTime(arriveTime)) {
+                timeLabel.getStyleClass().add("timeteable-time-depart-label");
+                if(arriveTime.after(nowDate)) { 
+                  if(firstToArriveDate==null || (firstToArriveDate!=null 
+                                    && arriveTime.before(firstToArriveDate))) {
+                    firstToArrive = timeLabel;
+                    firstToArriveDate = arriveTime;
+                  }
+                }
+              } else
+                timeLabel.getStyleClass().add("timetable-time-arrive-label");
+              
+              if(service.isDelayed()) {
+                timeLabel.setText(timeLabel.getText()+"(D)");
+                timeLabel.getStyleClass().add("delayed-service-time-label");
+              }
+              
+              if(service.isCancelled()) {
+                timeLabel.setText(timeLabel.getText()+"(C)");
+                timeLabel.getStyleClass().add("cancelled-service-time-label");
+              }
+              
+              bStopsGridPane.add(timeLabel, timesCol++, row);
           }
-          bStopsGridPane.add(new Label(DateHelper.formatDateToString("HH:mm", time)), timesCol++, row);
+          index++;
         }
 
-        row++;
-        
-        AnchorPane anchorPane = new AnchorPane(bStopsGridPane);
+        if(timesCol>12) {
+          timesCol = 1;
+          row++;
+        }
+      }
+      
+      if(hasServices) {
+        AnchorPane anchorPane = new AnchorPane();
+        anchorPane.getChildren().add(bStopsGridPane);
         scrollPane.setContent(anchorPane);
         scrollPane.setFitToHeight(true);
         scrollPane.setVbarPolicy(ScrollBarPolicy.ALWAYS);
@@ -219,12 +368,12 @@ public class DailyTimetableInterfaceController implements Initializable, Control
       }
     }
     
-    servicesAccordion.setExpandedPane(servicesAccordion.getPanes().get(0));
+    //servicesAccordion.setExpandedPane(servicesAccordion.getPanes().get(0));
   }
   
   public void populateBusStopChoiceBox() {
     busStopChoiceBox.setItems(
-                    FXCollections.observableArrayList(tController.getAllBusStops()));
+                    FXCollections.observableArrayList(busStopsChoices));
   }
   
   public void onBusStopChoiceChange() {
@@ -234,7 +383,11 @@ public class DailyTimetableInterfaceController implements Initializable, Control
       @Override
       public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         clearTimetable();
-        populateRoutesAccordionWithBusStop(tController.getAllBusStops().get(newValue.intValue()));
+        currentBusStop = busStopsChoices.get(newValue.intValue());
+        if(currentBusStop!=null)
+          populateRoutesAccordionWithBusStop(currentBusStop);
+        else
+          populateRoutesAccordionWithAllBusStops();
       }
       
     });
@@ -268,6 +421,60 @@ public class DailyTimetableInterfaceController implements Initializable, Control
   @Override
   public void refresh() {
     throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+  }
+  
+  public void constructMarqueueMessages() {
+    marqueueMessagesText.setText("");
+    for(Service2 service : tController.getCancelledServices()) {
+      String currentText = marqueueMessagesText.getText();
+      if(currentText.length()>0)
+        currentText+=";  ";
+      
+      marqueueMessagesText.setText(currentText+"Service "+service.getId()+" has been cancelled "+service.getReason());
+    }
+    
+    for(Service2 service : tController.getDelayedServices()) {
+      String currentText = marqueueMessagesText.getText();
+      if(currentText.length()>0)
+        currentText+=";  ";
+      
+      marqueueMessagesText.setText(currentText+"Service "+service.getId()+" on route "+service.getRoute()+" is delayed by "
+                            +service.getDelayTime()+" minutes "+service.getReason());
+    }
+  }
+  
+  
+  public void showMarqueueMessage() {
+    marqueueTransition = TranslateTransitionBuilder.create()
+        .duration(new Duration(10))
+        .node(marqueueMessagesText)
+        .interpolator(Interpolator.LINEAR)
+        .cycleCount(1)
+        .build();
+
+    marqueueTransition.setOnFinished(new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+            rerunAnimation();
+        }
+    });
+
+    rerunAnimation();
+  }
+  
+  private void rerunAnimation() {
+    marqueueTransition.stop();
+    // if needed set different text on "node"
+    recalculateTransition();
+    marqueueTransition.playFromStart();
+  }
+  
+  private void recalculateTransition() {
+    marqueueTransition.setToX(marqueueMessagesBox.getBoundsInLocal().getMaxX() * -1 - 100);
+    marqueueTransition.setFromX(marqueueMessagesBox.widthProperty().get() + 100);
+
+    double distance = marqueueMessagesBox.widthProperty().get() + 2 * marqueueMessagesText.getBoundsInLocal().getMaxX();
+    marqueueTransition.setDuration(new Duration(distance / 0.1));
   }
   
   

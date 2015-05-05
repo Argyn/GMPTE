@@ -28,11 +28,21 @@
                <children>
                   <HBox alignment="CENTER_RIGHT" prefHeight="0.0" prefWidth="960.0">
                      <children>
-                        <Label styleClass="medium-label" text="Choose bus stop:" textFill="#c24c4c" />
-                        <ChoiceBox fx:id="busStopChoiceBox" prefWidth="150.0" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="537.0" />
+                        <HBox prefHeight="25.0" prefWidth="415.0">
+                           <children>
+                              <Label styleClass="medium-label" text="Choose bus stop:" textFill="#c24c4c" />
+                              <ChoiceBox fx:id="busStopChoiceBox" prefHeight="25.0" prefWidth="250.0" />
+                           </children>
+                        </HBox>
                      </children>
                   </HBox>
-                  <Accordion fx:id="servicesAccordion" prefHeight="759.0" prefWidth="960.0" />
+                  <Accordion fx:id="servicesAccordion" prefHeight="553.0" prefWidth="960.0" />
+                  <HBox fx:id="marqueueMessagesBox" prefHeight="39.0" prefWidth="960.0">
+                     <children>
+                        <Text fx:id="marqueueMessagesText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="1639.7294921875" HBox.hgrow="ALWAYS" />
+                     </children>
+                  </HBox>
                </children>
             </VBox>
          </children>

@@ -156,7 +156,41 @@ public class ServiceDB {
     return 0; 
   }
   
-  public static Service2 getServiceById(int serviceID) {
+  private static void checkDelaysCancellations(Service2 service, Date time) {
+    String query = "SELECT service, status, reason, delay_time "
+            + "FROM service_availability WHERE service=? AND date=? LIMIT 1";
+    
+    PreparedStatement statement = null;
+    
+    try {
+      statement = DBHelper.prepareStatement(query);
+      
+      // setting service id
+      statement.setInt(1, service.getId());
+      
+      java.sql.Date sqlDate = new java.sql.Date(time.getTime());
+      // setting the date
+      statement.setDate(2, sqlDate);
+      
+      ResultSet result = statement.executeQuery();
+      
+      if(result.next()) {
+        String status = result.getString("status");
+        String reason = result.getString("reason");
+        if(status.equals("DELAYED")) {
+          int delayTime = result.getInt("delay_time");
+          service.setDelayedTime(delayTime, reason);
+        } else if(status.equals("CANCELLED")) {
+          service.setCancelled(reason);
+        }
+      }
+      
+    } catch (SQLException ex) {
+      Logger.getLogger(ServiceDB.class.getName()).log(Level.SEVERE, null, ex);
+    }
+  } 
+  
+  public static Service2 getServiceById(Route route, int serviceID) {
     String query = "SELECT timing_point, time FROM bus_station_times WHERE service=?";
     
     Service2 service = null;
@@ -171,7 +205,7 @@ public class ServiceDB {
       
       ResultSet result = statement.executeQuery();
       
-      service = new Service2(serviceID);
+      service = new Service2(route, serviceID);
       
       while(result.next()) {
         BusStop stop = BusStopInfo.getBusStopsById(result.getInt("timing_point"));
@@ -179,6 +213,9 @@ public class ServiceDB {
         
         service.addTimingPoint(stop, minutes);
       }
+      
+      // check delays and cancellations
+      checkDelaysCancellations(service, new Date());
       
       return service;
       
@@ -192,7 +229,7 @@ public class ServiceDB {
   public static Service2 getNearestService(Route route, BusStop start, Date time) {
     int serviceID = getNearestServiceID(route, start, time);
     
-    return getServiceById(serviceID);
+    return getServiceById(route, serviceID);
   }
   
   public static ArrayList<Service2> getServicesByRoute(Route route, int kind) {
@@ -217,7 +254,7 @@ public class ServiceDB {
       ResultSet result = statement.executeQuery();
       
       while(result.next()) {
-        services.add(getServiceById(result.getInt("service")));
+        services.add(getServiceById(route, result.getInt("service")));
       }
     } catch (SQLException ex) {
       Logger.getLogger(ServiceDB.class.getName()).log(Level.SEVERE, null, ex);

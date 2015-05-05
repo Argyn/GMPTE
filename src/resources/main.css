@@ -193,3 +193,28 @@
         linear-gradient(#e3e2e2, #f1f1f1);
     -fx-effect: dropshadow( gaussian , rgba(255,255,255,0.5) , 10, 1, 0.5, 3 );
 }
+
+.timeteable-time-depart-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #020DAB;
+    
+}
+
+.timetable-time-arrive-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #10A300;
+}
+
+.next-service-time-label {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.delayed-service-time-label {
+    -fx-text-fill:#D2080F;
+}
+
+.cancelled-service-time-label {
+    -fx-strikethrough: true;
+    -fx-text-fill: #919191;
+}

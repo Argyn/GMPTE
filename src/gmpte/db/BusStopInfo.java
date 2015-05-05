@@ -370,7 +370,7 @@ public class BusStopInfo
         BusStop bStop = resultToBusStop(result, areas);
         
         if(busStops.contains(bStop)) {
-          System.out.println("Multipel ids");
+          //System.out.println("Multipel ids");
           BusStop originalB = busStops.get(busStops.indexOf(bStop));
           //System.out.println(originalB);
           //System.out.println("Adding"+bStop.getIds());

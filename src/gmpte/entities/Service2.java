@@ -8,6 +8,7 @@ package gmpte.entities;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
@@ -20,12 +21,24 @@ public class Service2 {
   private int id;
   private ArrayList<BusStop> busStops;
   private ArrayList<Date> times;
+  private ArrayList<Date> afterDelayTimes;
+  private boolean delayed;
+  private int delayTime;
+  private boolean cancelled;
+  private String delayCancelReason;
+  private Route route;
   
-  public Service2(int id) {
+  public Service2(Route route, int id) {
     this.id = id;
+    this.route = route;
     
     busStops = new ArrayList<>();
+    
     times = new ArrayList<>();
+    
+    delayed = false;
+    
+    cancelled = false;
   }
   
   public void addTimingPoint(BusStop stop, Date time) {
@@ -76,5 +89,50 @@ public class Service2 {
   
   public boolean doesTerminateAtTime(Date time) {
     return times.indexOf(time)==(times.size()-1);
+  }
+  
+  public void setDelayedTime(int time, String reason) {
+    delayTime = time;
+    delayed = true;
+    delayCancelReason= reason;
+    
+    Calendar calendar = Calendar.getInstance();
+    
+    int index = 0;
+    for(Date date : times) {
+      calendar.setTime(date);
+      calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE)+time);
+      times.set(index, calendar.getTime());
+      index++;
+    }
+  }
+  
+  public void setCancelled(String reason) {
+    cancelled = true;
+    delayCancelReason = reason;
+  }
+  
+  public boolean isDelayed() {
+    return delayed;
+  }
+  
+  public boolean isCancelled() {
+    return cancelled;
+  }
+  
+  public int getId() {
+    return id;
+  }
+  
+  public int getDelayTime() {
+    return delayTime;
+  }
+  
+  public String getReason() {
+    return delayCancelReason;
+  }
+  
+  public Route getRoute() {
+    return route;
   }
 }
