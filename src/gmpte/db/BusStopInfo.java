@@ -318,7 +318,6 @@ public class BusStopInfo
       if(areas.get(index)!=null)
         area = areas.get(index);
       else {
-        System.out.println("Could not get area");
         area = AreaDBInfo.getAreaByID(areaID);
       }
       busStop = new BusStop(area, name, seq);
@@ -370,13 +369,9 @@ public class BusStopInfo
         BusStop bStop = resultToBusStop(result, areas);
         
         if(busStops.contains(bStop)) {
-          //System.out.println("Multipel ids");
           BusStop originalB = busStops.get(busStops.indexOf(bStop));
-          //System.out.println(originalB);
-          //System.out.println("Adding"+bStop.getIds());
           originalB.addId(bStop.getIds());
         } else {
-          //System.out.println("Addind id");
           busStops.add(bStop);
         }
       }
@@ -426,7 +421,7 @@ public class BusStopInfo
     try {
       statement = DBHelper.prepareStatement(query);
       
-      System.out.println(statement.toString());
+      
       // setting the kind
       statement.setInt(1, kind);
       

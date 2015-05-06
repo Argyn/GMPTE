@@ -41,47 +41,17 @@ public class JourneyPlannerController {
     return allBStops.get(allBStops.indexOf(bStop));
   }
   
-  /*public Graph buildNetwork(ArrayList<Route> routes) {
-    Graph<BusStop> graph = new Graph<>();
-    
-    for(Route currentRoute : routes) {
-      ArrayList<BusStop> bStops = BusStopInfo.getBusStopsByRoute(currentRoute);
-      
-      Iterator<BusStop> it = bStops.iterator();
-      Iterator<BusStop> newIt = bStops.iterator();
-      if(newIt.hasNext())
-        newIt.next();
-      
-      while(it.hasNext()) {
-        // source bus stop
-        BusStop sourceBStop = getOriginalBusStop(it.next());
-        sourceBStop.addRoute(currentRoute);
-        
-        Vertex<BusStop> source = new Vertex<>(sourceBStop);
-        
-        graph.addVertex(source);
-        
-        if(newIt.hasNext()) {
-          // get original target bus stop
-          BusStop targetBStop = getOriginalBusStop(newIt.next());
-          
-          Vertex<BusStop> target = new Vertex<>(targetBStop);
-          
-          graph.addEdge(source, target);
-        }
-      }
-    }
-    
-    return graph;
-  }*/
   
   public Graph buildNetwork(ArrayList<Route> routes) {
     Graph<BusStop> graph = new Graph<>();
     
+    
     for(Route currentRoute : routes) {
+      // fetch all bus stops on that route
       ArrayList<BusStop> bStops = BusStopInfo.getBusStopsByRoute(currentRoute);
       
       Iterator<BusStop> it = bStops.iterator();
+      
       Iterator<BusStop> newIt = bStops.iterator();
       if(newIt.hasNext())
         newIt.next();
@@ -101,14 +71,11 @@ public class JourneyPlannerController {
           
           Vertex<BusStop> target = new Vertex<>(targetBStop);
           
-          System.out.println("Adding edge between "+sourceBStop+" and "+targetBStop+" on route "+currentRoute.getRouteID());
           double weight = BusStopInfo.getTimeBetweenBusStops(sourceBStop, targetBStop, DateHelper.getKind(new Date()));
           if(weight!=-1 ) {
+            // add edge between bus stops with time = weight
             graph.addEdge(source, target, weight);
           } 
-          if(weight>10){
-            System.out.println("Weight is too big!!");
-          }
         }
       }
     }
@@ -117,9 +84,6 @@ public class JourneyPlannerController {
   }
   
   public String getShortestPathString(LinkedList<BusStop> finalPath) {
-    
-    //LinkedList<BusStop> finalPath = routeToLinkedList(path, target);
-    
     StringBuilder builder = new StringBuilder();
     while(finalPath.peek()!=null) {
       BusStop bStop = finalPath.poll();
@@ -152,24 +116,32 @@ public class JourneyPlannerController {
   }
   
   public JourneyPlannerController() {
-    
+    // fetch all routes from database
     this.routes = RouteDBInfo.getAllRoutes();
-
+    
+    // fetch all ares from database
     this.areas = AreaDBInfo.getAllAreas();
+    
+    // fetch all bus stops
     this.allBStops = BusStopInfo.getAllBusStops(areas);
     
+    // build bus stops network
     this.network = buildNetwork(routes);
+    
+    // map areas and bus stations
     formAreasStationsMap();
   }
 
   
   public Path getJourneyPlan(BusStop from, BusStop to) {
+    // get shortest path
     HashMap<BusStop, BusStop> path = 
                         PathFinder.<BusStop>getShortestPath(network, from, to);
     
+    // convert shortest path to linked list
     LinkedList<BusStop> result = routeToLinkedList(path, to);
     
-    //System.out.println(getShortestPathString(result));
+    // build path 
     return new Path(result);
   }
   
@@ -189,7 +161,6 @@ public class JourneyPlannerController {
     areasStationsMap = new HashMap<>();
     
     for(BusStop bStop : allBStops) {
-      System.out.println(bStop.getArea());
       if(areasStationsMap.get(bStop.getArea())!=null) {
         areasStationsMap.get(bStop.getArea()).add(bStop);
       } else {
@@ -203,42 +174,8 @@ public class JourneyPlannerController {
   public ArrayList<BusStop> getAreasBusStop(Area area) {
     return areasStationsMap.get(area);
   }
- 
-  /*private ArrayList<PathSolution<BusStop>> getAllPathSolutions(BusStop from, BusStop to) {
-    
-    HashMap<Vertex<BusStop>, ArrayList<Vertex<BusStop>>> pathMap =
-            PathFinder.bfsPathsFind(network, from, to);
-    
-    ArrayList<PathSolution<BusStop>> allPathes = new ArrayList<>();
-
-    PathSolution<BusStop> p = new PathSolution<>();
-    
-    Vertex<BusStop> target = network.getVertices()
-                                          .get(network.getVertices().indexOf(new Vertex(to)));
-    
-    Vertex<BusStop> source = network.getVertices()
-                                          .get(network.getVertices().indexOf(new Vertex(from)));
-    
-    PathFinder.<BusStop>buildPath(pathMap, source, target, p, allPathes);
-    
-    return allPathes;
-  }
   
-  private ArrayList<Path> getPathes(BusStop from, BusStop to) {
-    ArrayList<PathSolution<BusStop>> pathSolutions = getAllPathSolutions(from, to);
-    ArrayList<Path> results = new ArrayList<>();
-    
-    for(PathSolution<BusStop> sol : pathSolutions) {
-      for(BusStop stop : sol.getData()) {
-        System.out.println(stop+","+stop.getRoutesString());
-      }
-      results.add(new Path(sol.getData()));
-    }
-    
-    return results;
+  public Graph<BusStop> getNetwork() {
+    return network;
   }
-  
-  public ArrayList<Path> getJourneyPlans(BusStop from, BusStop to) {
-    return getPathes(from, to);
-  }*/
 }

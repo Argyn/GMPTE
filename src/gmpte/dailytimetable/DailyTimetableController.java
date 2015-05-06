@@ -62,8 +62,6 @@ public class DailyTimetableController {
     // map routes and services
     mapRoutesAndServices();
     
-    // map routes, bus stops and times
-    //mapRoutesBusStopsAndTimes();
   }
   
   private BusStop getOriginalBusStop(BusStop bStop) {

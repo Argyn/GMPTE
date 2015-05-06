@@ -86,11 +86,10 @@ public class RouteDBInfo {
       statement.setInt(1, route.getRouteID());
       
       ResultSet result = statement.executeQuery();
-      
-      System.out.println(statement.toString());
-      
+
       return result.next();
     } catch (SQLException ex) {
+      System.out.println(statement.toString());
       Logger.getLogger(RouteDBInfo.class.getName()).log(Level.SEVERE, null, ex);
     }
     

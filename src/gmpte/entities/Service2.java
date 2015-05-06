@@ -135,4 +135,9 @@ public class Service2 {
   public Route getRoute() {
     return route;
   }
+  
+  public boolean equals(Object other) {
+    Service2 otherService = (Service2)other;
+    return id==otherService.id;
+  }
 }

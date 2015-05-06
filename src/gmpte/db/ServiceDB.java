@@ -141,9 +141,7 @@ public class ServiceDB {
       statement.setInt(3, kind);
       
       ResultSet result = statement.executeQuery();
-     
       
-      System.out.println(statement.toString());
       if(result.next()) {
         return result.getInt("service");
       }
