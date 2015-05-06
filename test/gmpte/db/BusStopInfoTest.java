@@ -60,20 +60,4 @@ public class BusStopInfoTest {
     assertEquals("", expResult, result);
   }
   
-  /**
-   * Test of getTimeBetweenBusStops method, of class BusStopInfo.
-   */
-  /*@Test
-  public void testGetTimeBetweenBusStops() {
-    System.out.println("getTimeBetweenBusStops");
-    BusStop start = null;
-    BusStop target = null;
-    int kind = 0;
-    double expResult = 0.0;
-    double result = BusStopInfo.getTimeBetweenBusStops(start, target, kind);
-    assertEquals(expResult, result, 0.0);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }*/
-  
 }

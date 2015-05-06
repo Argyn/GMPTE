@@ -210,11 +210,13 @@ public class DailyTimetableInterfaceController implements Initializable, Control
       int col = 0;
       
       ArrayList<Service2> routeServices = tController.getServicesOfRoute(route);
-
+      
       for(BusStop stop : tController.getBusStopsOfRoute(route)) {
+        
         
         Label firstToArrive = null;
         Date firstToArriveDate = null;
+        
         Label bStopLabel = new Label(stop.toString());
         
         bStopsGridPane.add(bStopLabel, col, row);
@@ -222,6 +224,7 @@ public class DailyTimetableInterfaceController implements Initializable, Control
         bStopsGridPane.setVgap(5);
 
         int timesCol = 1;
+        
         for(Service2 service : routeServices) {
           int index = 0;
           for(BusStop bStop : service.getBusStops()) {
@@ -244,7 +247,8 @@ public class DailyTimetableInterfaceController implements Initializable, Control
               } else
                 timeLabel.getStyleClass().add("timetable-time-arrive-label");
               
-              if(service.isDelayed()) {
+              if(service.isDelayed() && bStop.getIds().get(0)>=service.getDelayPoint()) {
+                
                 timeLabel.setText(timeLabel.getText()+"(D)");
                 timeLabel.getStyleClass().add("delayed-service-time-label");
               }
@@ -296,7 +300,9 @@ public class DailyTimetableInterfaceController implements Initializable, Control
     Date firstToArriveDate = null;
    
     for(Route route : tController.getRoutes()) {
-
+      firstToArrive = null;
+      firstToArriveDate = null;
+      
       TitledPane titledPane = new TitledPane();
       titledPane.setText(route.toString());
       
@@ -335,7 +341,7 @@ public class DailyTimetableInterfaceController implements Initializable, Control
               } else
                 timeLabel.getStyleClass().add("timetable-time-arrive-label");
               
-              if(service.isDelayed()) {
+              if(service.isDelayed() && bStop.getIds().get(0)>=service.getDelayPoint()) {
                 timeLabel.setText(timeLabel.getText()+"(D)");
                 timeLabel.getStyleClass().add("delayed-service-time-label");
               }
@@ -348,6 +354,8 @@ public class DailyTimetableInterfaceController implements Initializable, Control
               bStopsGridPane.add(timeLabel, timesCol++, row);
           }
           index++;
+          
+          
         }
 
         if(timesCol>12) {
@@ -365,6 +373,10 @@ public class DailyTimetableInterfaceController implements Initializable, Control
         titledPane.setContent(scrollPane);
         
         servicesAccordion.getPanes().add(titledPane);
+        
+        if(firstToArrive!=null)
+            firstToArrive.getStyleClass().add("next-service-time-label");
+        
       }
     }
     
@@ -383,7 +395,12 @@ public class DailyTimetableInterfaceController implements Initializable, Control
       @Override
       public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
         clearTimetable();
-        currentBusStop = busStopsChoices.get(newValue.intValue());
+        
+        if(newValue.intValue()==-1)
+          currentBusStop = null;
+        else
+          currentBusStop = busStopsChoices.get(newValue.intValue());
+        
         if(currentBusStop!=null)
           populateRoutesAccordionWithBusStop(currentBusStop);
         else

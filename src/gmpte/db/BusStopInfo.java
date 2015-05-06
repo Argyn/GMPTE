@@ -280,7 +280,10 @@ public class BusStopInfo
       ResultSet result = statement.executeQuery();
       
       if(result.next()) {
-        return resultToBusStop(result);
+        BusStop stop = resultToBusStop(result);
+        stop.addId(busStopId);
+        
+        return stop;
       }
 
     } catch (SQLException ex) {

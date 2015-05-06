@@ -27,6 +27,7 @@ public class Service2 {
   private boolean cancelled;
   private String delayCancelReason;
   private Route route;
+  private int delayPoint;
   
   public Service2(Route route, int id) {
     this.id = id;
@@ -72,6 +73,7 @@ public class Service2 {
         disembardkTime = times.get(index);
         break;
       }
+      
       index++;
     }
     
@@ -91,17 +93,23 @@ public class Service2 {
     return times.indexOf(time)==(times.size()-1);
   }
   
-  public void setDelayedTime(int time, String reason) {
+  public void setDelayedTime(int time, int delayPoint, String reason) {
     delayTime = time;
     delayed = true;
     delayCancelReason= reason;
+    this.delayPoint = delayPoint;
+    
+    
     
     Calendar calendar = Calendar.getInstance();
     
     int index = 0;
     for(Date date : times) {
       calendar.setTime(date);
-      calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE)+time);
+      
+      if(busStops.get(index).getIds().get(0)>=delayPoint)
+        calendar.set(Calendar.MINUTE, calendar.get(Calendar.MINUTE)+time);
+      
       times.set(index, calendar.getTime());
       index++;
     }
@@ -139,5 +147,9 @@ public class Service2 {
   public boolean equals(Object other) {
     Service2 otherService = (Service2)other;
     return id==otherService.id;
+  }
+  
+  public int getDelayPoint() {
+    return delayPoint;
   }
 }

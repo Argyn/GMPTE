@@ -155,7 +155,7 @@ public class ServiceDB {
   }
   
   private static void checkDelaysCancellations(Service2 service, Date time) {
-    String query = "SELECT service, status, reason, delay_time "
+    String query = "SELECT service, status, reason, delay_time, delay_point "
             + "FROM service_availability WHERE service=? AND date=? LIMIT 1";
     
     PreparedStatement statement = null;
@@ -177,7 +177,8 @@ public class ServiceDB {
         String reason = result.getString("reason");
         if(status.equals("DELAYED")) {
           int delayTime = result.getInt("delay_time");
-          service.setDelayedTime(delayTime, reason);
+          int delayPoint = result.getInt("delay_point");
+          service.setDelayedTime(delayTime, delayPoint, reason);
         } else if(status.equals("CANCELLED")) {
           service.setCancelled(reason);
         }

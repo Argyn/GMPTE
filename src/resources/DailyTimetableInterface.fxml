@@ -26,13 +26,41 @@
          <children>
             <VBox prefHeight="200.0" prefWidth="100.0" styleClass="content-vbox" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <HBox alignment="CENTER_RIGHT" prefHeight="0.0" prefWidth="960.0">
+                  <HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="960.0">
                      <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="537.0" />
-                        <HBox prefHeight="25.0" prefWidth="415.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="585.0">
                            <children>
-                              <Label styleClass="medium-label" text="Choose bus stop:" textFill="#c24c4c" />
-                              <ChoiceBox fx:id="busStopChoiceBox" prefHeight="25.0" prefWidth="250.0" />
+                              <Label text="HH:mm">
+                                 <styleClass>
+                                    <String fx:value="next-service-time-label" />
+                                    <String fx:value="timeteable-time-depart-label" />
+                                 </styleClass>
+                              </Label>
+                              <Label text=" - Nearest service arrival" />
+                              <Label text="HH:mm(D)">
+                                 <styleClass>
+                                    <String fx:value="delayed-service-time-label" />
+                                    <String fx:value="timeteable-time-depart-label" />
+                                 </styleClass>
+                                 <HBox.margin>
+                                    <Insets left="5.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label text="- Delayed Service" />
+                              <Label styleClass="cancelled-service-time-label" text="HH:mm(C)">
+                                 <HBox.margin>
+                                    <Insets left="3.0" />
+                                 </HBox.margin>
+                              </Label>
+                              <Label text="-Cancelled Service" />
+                           </children></HBox>
+                        <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="422.0">
+                           <children>
+                              <Label prefHeight="23.0" prefWidth="148.0" styleClass="medium-label" text="Choose bus stop:" textFill="#c24c4c">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font></Label>
+                              <ChoiceBox fx:id="busStopChoiceBox" prefHeight="26.0" prefWidth="230.0" />
                            </children>
                         </HBox>
                      </children>
