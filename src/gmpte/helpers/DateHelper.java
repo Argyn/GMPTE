@@ -74,4 +74,34 @@ public class DateHelper {
     DateFormat dateFormat = new SimpleDateFormat(format);
     return dateFormat.format(date);
   }
+  
+  public static boolean isToday(Date date) {
+    System.out.println(date);
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    
+    int day = calendar.get(Calendar.DAY_OF_MONTH);
+    int month = calendar.get(Calendar.MONTH);
+    int year = calendar.get(Calendar.YEAR);
+    
+    calendar.setTime(new Date());
+    int todayDay = calendar.get(Calendar.DAY_OF_MONTH);
+    int todayMonth = calendar.get(Calendar.MONTH);
+    int todayYear = calendar.get(Calendar.YEAR);
+    
+    return day==todayDay && month==todayMonth && year==todayYear;
+  }
+  
+  public static Date nextDayMidnight(Date now) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(now);
+    
+    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR)+1);
+    calendar.set(Calendar.HOUR_OF_DAY, 0);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
+    
+    return calendar.getTime();
+  }
 }

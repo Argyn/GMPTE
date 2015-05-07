@@ -411,10 +411,10 @@ public class BusStopInfo
             + "(SELECT DISTINCT(abs(b1.time-b2.time)) as diff "
             + "FROM `bus_station_times` b1, bus_station_times b2, "
             + "daily_timetable d WHERE %s AND "
-            + "%s AND b1.service=b2.service AND b2.timing_point-b1.timing_point=1 "
+            + "%s AND b1.service=b2.service "
             + "AND b2.time-b1.time>0 "
             + "AND b1.daily_timetable=d.daily_timetable_id "
-            + "AND d.kind=?) d3";
+            + "AND d.kind=? AND abs(b1.time-b2.time)<=20) d3";
     
     query = String.format(query, buildTimingPoints(start, "b1"), 
                                 buildTimingPoints(target, "b2"));
@@ -428,6 +428,8 @@ public class BusStopInfo
       // setting the kind
       statement.setInt(1, kind);
       
+      
+      //System.out.println(statement.toString());
       ResultSet result = statement.executeQuery();
       if(result.next()) {
         return result.getDouble("avg");

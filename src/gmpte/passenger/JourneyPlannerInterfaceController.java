@@ -6,29 +6,39 @@
 
 package gmpte.passenger;
 
+import eu.schudt.javafx.controls.calendar.DatePicker;
 import gmpte.ControllerInterface;
+import gmpte.GMPTEConstants;
 import gmpte.MainControllerInterface;
 import gmpte.entities.Area;
 import gmpte.entities.BusChange;
 import gmpte.entities.BusStop;
 import gmpte.entities.Path;
+import gmpte.helpers.DateHelper;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.ResourceBundle;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.concurrent.Task;
 import javafx.concurrent.WorkerStateEvent;
+import javafx.event.Event;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
@@ -83,15 +93,30 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
   @FXML
   private Label journeyFromToLabel;
   
+  @FXML
+  private GridPane journeyPlannerGridPane;
+  
+  @FXML
+  private CheckBox dateNowCheckBox;
+  
+  @FXML
+  private TextField timeTextField;
+  
+  private DatePicker datePicker;
+  
   private MainControllerInterface mainController;
   
   private JourneyPlannerController jController;
+  
+  private Pattern timePattern;
   
   /**
    * Initializes the controller class.
    */
   @Override
   public void initialize(URL url, ResourceBundle rb) {    
+    timePattern = Pattern.compile("(\\d{1,2}):(\\d{1,2})");
+    
     // handle back button click
     onBackButtonClick();
     
@@ -104,6 +129,8 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
     // handle results window close button
     onCloseRouteWindowButtonClick();
     
+    datePicker = new DatePicker();
+    journeyPlannerGridPane.add(datePicker, 1, 4);
     // pre load needed data
     preLoadData();
     //jController = new JourneyPlannerController();
@@ -199,7 +226,28 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
           
           System.out.println("Planning the journey");
           
-          Path path = jController.getJourneyPlan(from, to);
+          Date when = new Date();
+          
+          if(!dateNowCheckBox.isSelected()) {
+            when = datePicker.getSelectedDate();
+
+            Matcher matcher = timePattern.matcher(timeTextField.getText());
+            
+            System.out.println("Getting new date");
+            if(matcher.find()) {
+              int hours = Integer.parseInt(matcher.group(1));
+              int minutes = Integer.parseInt(matcher.group(2));
+              
+              Calendar calendar = Calendar.getInstance();
+              calendar.setTime(when);
+              calendar.set(Calendar.HOUR, hours);
+              calendar.set(Calendar.MINUTE, minutes); 
+              
+              when = calendar.getTime();
+            }
+          }
+          
+          Path path = jController.getJourneyPlan(from, to, when);
           
           setJourneyFromToLabel(from.toString(), to.toString());
           displayJourneyPlan(path.getFullPath(), to);
@@ -227,6 +275,14 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
     BusStop firstBStop = currentPath.poll();
     
     DateFormat format = new SimpleDateFormat("HH:mm");
+    
+    
+    
+    if(!DateHelper.isToday(currentChange.getBoardingTime())) {
+      System.out.println("Is not today");
+      String onDate = "On "+DateHelper.formatDateToString(GMPTEConstants.DATE_FORMAT, currentChange.getBoardingTime());
+      printJourneyStep(onDate, null, currentRow++, currentColumn);
+    }
     
     String boardString = "At "+format.format(currentChange.getBoardingTime())
                    +" board service "+currentChange.getRoute()+" on ";

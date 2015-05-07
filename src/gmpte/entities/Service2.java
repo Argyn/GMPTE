@@ -63,22 +63,23 @@ public class Service2 {
   
   public void updateBoardingDisembarkTimes(BusChange change, BusStop source, BusStop target) {
     Date boardingTime = null;
-    Date disembardkTime = null;
+    Date disembarkTime = null;
     
     int index = 0;
     for(BusStop bStop : busStops) {
       if(boardingTime==null && bStop.equals(source))
         boardingTime = times.get(index);
       else if(boardingTime!=null && bStop.equals(target)) {
-        disembardkTime = times.get(index);
+        disembarkTime = times.get(index);
         break;
       }
       
       index++;
     }
-    
+
     change.setBoardingTime(boardingTime);
-    change.setDisembarkTime(disembardkTime);
+   
+    change.setDisembarkTime(disembarkTime);
   }
   
   public ArrayList<BusStop> getBusStops() {
@@ -98,9 +99,7 @@ public class Service2 {
     delayed = true;
     delayCancelReason= reason;
     this.delayPoint = delayPoint;
-    
-    
-    
+
     Calendar calendar = Calendar.getInstance();
     
     int index = 0;

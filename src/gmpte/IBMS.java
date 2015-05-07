@@ -393,7 +393,7 @@ public class IBMS extends Application implements MainControllerInterface {
         journeyPlannerController.setMainController(this);
 
         journeyPlannerScene = new Scene(root);
-        //passengerInterfaceScene.getStylesheets().add("/resources/calendarstyle.css");
+        journeyPlannerScene.getStylesheets().add("/resources/calendarstyle.css");
       }
 
 

@@ -110,58 +110,6 @@ public class DelayCancelController implements Runnable
         // sleep
         
       }
-      
-      /*while (true)
-      { 
-        Date date = new Date();
-        int randomWait = random.nextInt(60);
-        for (minServiceIndex = 0; minServiceIndex < services.size(); minServiceIndex++)
-        {
-          Service2 currentService = services.get(minServiceIndex);
-          if (currentService.getTimes().get(currentService.getTimes().size()-1).compareTo(date) == -1)
-          {
-            break;
-          }
-        }
-        int currentService = random.nextInt(services.size() - minServiceIndex) + minServiceIndex;
-        Service2 service = services.get(currentService);
-        System.out.println(randomWait);
-        if (random.nextInt(100) < 33)
-        {    
-          StringBuilder builder = new StringBuilder();
-          builder.append("due to a " + causes.getRandomCancel());
-          builder.append(". We apologize for any inconvienience this causes.");
-          String reason = builder.toString();
-          System.out.println("canel " + service.getId());
-          TimetableInfo.addNewCancel(service.getId(), reason, date);
-        }
-        else
-        {
-          int minDelayPoint = 0;
-          int delayTime = random.nextInt(55) + 5;
-          
-          for (minDelayPoint = 0; minDelayPoint < service.getBusStops().size(); minDelayPoint++)
-          {
-            Date currentStop = service.getTimes().get(minDelayPoint);
-            if (currentStop.compareTo(date) == -1)
-            {
-              break;
-            }
-          }
-          StringBuilder builder = new StringBuilder();
-          int delayPoint = random.nextInt((service.getBusStops().size() - 1) - minDelayPoint) + minDelayPoint;
-          BusStop delayStop = service.getBusStops().get(delayPoint);
-          builder.append(delayTime + " minutes due to a " + causes.getRandomDelay());
-          builder.append(", and will arrive  at " + service.getBusStops().get(delayPoint + 1).getName());
-          builder.append(" at approximately " + service.getDelayTime());
-          builder.append(". We apologize for the delay to your journey.");
-          String reason = builder.toString();
-          System.out.println("delay " + service.getId() + " of " + delayTime);
-          TimetableInfo.addNewDelay(service.getId(), reason, date, delayTime, delayStop.getSequence());
-        } // else
-        Thread.sleep(randomWait * 1000);
-      }*/
-      
     } catch (InterruptedException ex) { /* do nothing */}
   }
 }

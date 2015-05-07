@@ -8,6 +8,7 @@ package gmpte.passenger;
 
 import gmpte.db.AreaDBInfo;
 import gmpte.db.BusStopInfo;
+import gmpte.db.DBHelper;
 import gmpte.db.RouteDBInfo;
 import gmpte.entities.Area;
 import gmpte.entities.BusStop;
@@ -75,6 +76,7 @@ public class JourneyPlannerController {
           if(weight!=-1 ) {
             // add edge between bus stops with time = weight
             graph.addEdge(source, target, weight);
+            System.out.println("Time between "+source+" and "+target+" is "+weight+" mins");
           } 
         }
       }
@@ -133,7 +135,7 @@ public class JourneyPlannerController {
   }
 
   
-  public Path getJourneyPlan(BusStop from, BusStop to) {
+  public Path getJourneyPlan(BusStop from, BusStop to, Date when) {
     // get shortest path
     HashMap<BusStop, BusStop> path = 
                         PathFinder.<BusStop>getShortestPath(network, from, to);
@@ -142,7 +144,15 @@ public class JourneyPlannerController {
     LinkedList<BusStop> result = routeToLinkedList(path, to);
     
     // build path 
-    return new Path(result);
+    Path returnPath = new Path(result, when);
+    
+    while(!returnPath.hasService()) {
+      when = DateHelper.nextDayMidnight(when);
+      result = routeToLinkedList(path, to);
+      returnPath = new Path(result, when);
+    }
+    
+    return returnPath;
   }
   
   public ArrayList<BusStop> getBusStops() {

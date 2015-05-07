@@ -22,22 +22,22 @@ public class Path {
   private final LinkedList<BusStop> fullPath;
   private final LinkedList<BusChange> changes;
   
-  public Path(LinkedList<BusStop> fullPath) {
+  private boolean hasService = false;
+  
+  public Path(LinkedList<BusStop> fullPath, Date when) {
     this.fullPath = fullPath;
     changes = new LinkedList<>();
     
+    Service2 nearestService = null;
     
     Route currentRoute = chooseRoute(fullPath.peek(), fullPath.get(1));
-    System.out.println(fullPath.get(1));
-    System.out.println(currentRoute);
     
     BusChange change = new BusChange(currentRoute);
     // add starting bus station
     
     BusStop startBStop = fullPath.poll();
     
-    Date lastDate = new Date();
-    
+    Date lastDate = when;
     
     System.out.println("Start on "+startBStop+" Route:"+currentRoute.getRouteID());
     change.addBusStation(startBStop);
@@ -52,7 +52,19 @@ public class Path {
       if(next!=null && !next.hasRoute(currentRoute)) {
         change.addBusStation(current);
         // updating change times
-        change.setBusStopTimes(ServiceDB.getNearestService(currentRoute, startBStop, lastDate));
+        
+        System.out.println(lastDate);
+        change.setDate(lastDate);
+        
+        // find nearest service for this change
+        nearestService = ServiceDB.getNearestService(currentRoute, startBStop, lastDate);
+
+        if(nearestService==null) {
+          hasService = false;
+          break;
+        }
+        
+        change.setBusStopTimes(nearestService);
         
         // updating last date to the disembarkment time of the last service
         lastDate = change.getDisembarkTime();
@@ -74,9 +86,17 @@ public class Path {
       
       change.addBusStation(current);
     }
-    
+
     changes.add(change);
-    change.setBusStopTimes(ServiceDB.getNearestService(currentRoute, startBStop, lastDate));
+    change.setDate(lastDate);
+    
+    // find the nearest service for this change
+    nearestService = ServiceDB.getNearestService(currentRoute, startBStop, lastDate);
+    
+    if(nearestService!=null) {
+      change.setBusStopTimes(nearestService);
+      hasService = true;
+    }
   }
  
   
@@ -99,5 +119,9 @@ public class Path {
     
     
     return null;
+  }
+  
+  public boolean hasService() {
+    return hasService;
   }
 }

@@ -89,9 +89,11 @@ public class ServiceDB {
     return builder.toString();
   }
   
-  public static int getNearestServiceID(Route route, BusStop start, Date time) {
+  public static ArrayList<Integer> getNearestServiceID(Route route, BusStop start, Date time) {
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(time);
+    
+    ArrayList<Integer> serviceIds = new ArrayList<>();
     
     int minsAfterMidnight = calendar.get(Calendar.HOUR_OF_DAY)*60
                                                 +calendar.get(Calendar.MINUTE);
@@ -107,7 +109,7 @@ public class ServiceDB {
     String query = "SELECT * FROM bus_station_times bs, daily_timetable p "
             + "WHERE p.daily_timetable_id=bs.daily_timetable "
             + "AND p.route=? AND %s AND bs.time>? AND p.kind=? "
-            + "ORDER BY time ASC LIMIT 1";
+            + "ORDER BY time ASC";
     
     StringBuilder builder = new StringBuilder();
     
@@ -140,18 +142,22 @@ public class ServiceDB {
       // setting the day
       statement.setInt(3, kind);
       
-      ResultSet result = statement.executeQuery();
+
       
-      if(result.next()) {
-        return result.getInt("service");
+      ResultSet result = statement.executeQuery();
+
+      while(result.next()) {
+        serviceIds.add(result.getInt("service"));
       }
+      
+      return serviceIds;
       
     } catch (SQLException ex) {
       System.out.println(statement.toString());
       Logger.getLogger(ServiceDB.class.getName()).log(Level.SEVERE, null, ex);
     }
     
-    return 0; 
+    return null; 
   }
   
   private static void checkDelaysCancellations(Service2 service, Date time) {
@@ -206,10 +212,16 @@ public class ServiceDB {
       
       service = new Service2(route, serviceID);
       
+      int lastMinutes = 0;
       while(result.next()) {
         BusStop stop = BusStopInfo.getBusStopsById(result.getInt("timing_point"));
         int minutes = result.getInt("time");
         
+        if(minutes < lastMinutes) {
+          minutes += 1440;
+        }
+        
+        lastMinutes = minutes;
         service.addTimingPoint(stop, minutes);
       }
       
@@ -222,13 +234,30 @@ public class ServiceDB {
       Logger.getLogger(ServiceDB.class.getName()).log(Level.SEVERE, null, ex);
     }
     
-    return service;
+    return null;
   }
   
   public static Service2 getNearestService(Route route, BusStop start, Date time) {
-    int serviceID = getNearestServiceID(route, start, time);
+    ArrayList<Integer> nearestServicesIds = getNearestServiceID(route, start, time);
     
-    return getServiceById(route, serviceID);
+    ArrayList<Service2> nearestServices = new ArrayList<>();
+    
+    if(nearestServicesIds!=null) {
+      for(Integer serviceId : nearestServicesIds) {
+        nearestServices.add(getServiceById(route, serviceId));
+      }
+
+      Service2 nearestService = nearestServices.get(0);
+      
+      for(Service2 service : nearestServices) {
+        if(service.getTimes().get(0).before(nearestService.getTimes().get(0)))
+          nearestService = service;
+      }
+      
+      return nearestService;
+    }
+    
+    return null;
   }
   
   public static ArrayList<Service2> getServicesByRoute(Route route, int kind) {
@@ -287,8 +316,6 @@ public class ServiceDB {
       while(result.next()) {
         times.add(DateHelper.afterMidnighMinsToDate(result.getInt("time")));
       }
-      
-      System.out.println(statement.toString());
       
     } catch (SQLException ex) {
       Logger.getLogger(ServiceDB.class.getName()).log(Level.SEVERE, null, ex);
