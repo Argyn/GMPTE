@@ -129,6 +129,11 @@ public class database
   {
     return record_count(target, source, field1 + " = " + value_string(value1) + " And " + field2 + " = " + value_string(value2));
   }
+  
+  public int between_count(String target, String source, String field1, Object value1, String field2, Object value2)
+  {
+    return record_count(target, source, field1 + " > " + value_string(value1) + " And " + field2 + " < " + value_string(value2));
+  }
 
   public void select(String target, String source, String criteria, String order)
   {
