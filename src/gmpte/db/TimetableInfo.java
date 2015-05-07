@@ -172,6 +172,16 @@ public class TimetableInfo
       database.busDatabase.new_record("roster", new Object[][]{{"driver", roster.getDriver().getDriverID()}, {"bus", roster.getBus().getBusId()}, {"service", roster.getService().getServiceId()}, {"day", roster.getDay()}, {"timeWorked", roster.getServiceTime()}, {"date", roster.getDate()}});
   }
   
+  public static void addNewDelay(int serviceId, String cause, Date date, int delay, int delayPoint)
+  {
+    database.busDatabase.new_record("service_availability", new Object[][]{{"service", serviceId}, {"status", "DELAYED"}, {"reason", cause}, {"date", date}, {"delay_time", delay}, {"delay_point", delayPoint}});
+  }
+  
+  public static void addNewCancel(int serviceId, String cause, Date date)
+  {
+    database.busDatabase.new_record("service_availability", new Object[][]{{"service", serviceId}, {"status", "DELAYED"}, {"reason", cause}, {"date", date}, {"delay_time", 0}, {"delay_point", 0}});
+  }
+  
   public static void storeSchedule(Schedule schedule)
   {
     ArrayList<Roster> rosters;
