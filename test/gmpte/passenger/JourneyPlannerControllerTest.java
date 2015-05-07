@@ -73,31 +73,6 @@ public class JourneyPlannerControllerTest {
     // asser equal number of edges
     assertEquals(numberOfEdges, expNumberOfEdges);
   }
-  @Parameters
-   public static Collection<Object[]> generateData(){
-    
-    return Arrays.asList(new Object[][]{
-      {new BusStop(new Area(209, "Stockport"), "Bus Station"),
-        new BusStop(new Area(221, "Glossop"), "Henry Street"),
-        1},
-      {new BusStop(new Area(210, "Romiley"), "Train Station"),
-        new BusStop(new Area(212, "Marple"), "Offerton Fold"),
-        2},
-      {new BusStop(new Area(212, "Marple"), "Navigation Hotel"),
-        new BusStop(new Area(221, "Glossop"), "Grouse Inn"),
-        2},
-      {new BusStop(new Area(212, "Marple"), "Offerton Fold"),
-        new BusStop(new Area(212, "Marple"), "Back of Beyond"),
-        2},
-      {new BusStop(new Area(212, "Birch Vale"), "Grouse Hotel"),
-        new BusStop(new Area(209, "Stockport"), "Intermediate Road"),
-        2},
-      {new BusStop(new Area(210, "Romiley"), "Corcoran Drive"),
-        new BusStop(new Area(212, "Marple"), "Norfolk Arms"),
-        1},
-      
-    });
-  }
   /**
    * Test of getJourneyPlan method, of class JourneyPlannerController.
    */
