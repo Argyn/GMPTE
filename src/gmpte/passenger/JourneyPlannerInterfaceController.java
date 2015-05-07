@@ -221,7 +221,7 @@ public class JourneyPlannerInterfaceController implements Initializable, Control
         // do planning
         BusStop from = departureChoiceBox.getValue();
         BusStop to = destinationChoiceBox.getValue();
-        if(from!=null && to!=null) {
+        if(from!=null && to!=null && !from.equals(to)) {
           routeContainerVBox.setVisible(true);
           
           System.out.println("Planning the journey");

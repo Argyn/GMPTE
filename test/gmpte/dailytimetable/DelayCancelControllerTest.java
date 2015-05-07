@@ -93,7 +93,7 @@ public class DelayCancelControllerTest {
     // TODO review the generated test code and remove the default call to fail.
     //Thread.sleep(61000);
    // instance.();
-    assertTrue(TimetableInfo.getNumberOfDelaysCancelationsToday() > 0);
+   // assertTrue(TimetableInfo.getNumberOfDelaysCancelationsToday() > 0);
     fail("The test case is a prototype.");
   }
   

@@ -113,6 +113,7 @@ public class DelayCancelController implements Runnable
         
       }
     }  catch (InterruptedException ex) { 
+      System.err.println(ex);
       Thread.currentThread().interrupt();//preserve the message
       running = false;
       return;
