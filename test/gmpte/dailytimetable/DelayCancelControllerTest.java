@@ -54,15 +54,15 @@ public class DelayCancelControllerTest {
     TimetableInfo.clearServiceAvail();
     controller = new DailyTimetableController();
     instance = new DelayCancelController(controller.getAllServices());
-    instance.run();
+    instance.testRun();
     // TODO review the generated test code and remove the default call to fail.
     //Thread.sleep(61000);
-  //  instance.();
+    instance.interrupt();
     
     assertTrue(TimetableInfo.getNumberOfDelaysCancelations() > 0);
-    fail("The test case is a prototype.");
   } 
   
+  @Test
   public void testDelayTime() throws InterruptedException {
     database.openBusDatabase();
     System.out.println("run");
@@ -71,16 +71,16 @@ public class DelayCancelControllerTest {
     TimetableInfo.clearServiceAvail();
     controller = new DailyTimetableController();
     instance = new DelayCancelController(controller.getAllServices());
-    instance.run();
+    instance.testRun();
     // TODO review the generated test code and remove the default call to fail.
     //Thread.sleep(61000);
-  //  instance.();
+    instance.interrupt();
     // check if the delay time is anywhere between 5 - 25 mins, we assume that the
     // delays above this will be cancelled.
-    assertTrue(TimetableInfo.getNumberOfDelaysBetween(5, 25) == TimetableInfo.getNumberOfDelaysCancelations());
-    fail("The test case is a prototype.");
+    assertTrue(TimetableInfo.getNumberOfDelaysBetween(5, 25) == TimetableInfo.getNumberOfDelays());
   }
   
+  @Test
   public void testCancelDelayDate() throws InterruptedException {
     database.openBusDatabase();
     System.out.println("run");
@@ -89,12 +89,29 @@ public class DelayCancelControllerTest {
     TimetableInfo.clearServiceAvail();
     controller = new DailyTimetableController();
     instance = new DelayCancelController(controller.getAllServices());
-    instance.run();
+    instance.testRun();
     // TODO review the generated test code and remove the default call to fail.
     //Thread.sleep(61000);
-   // instance.();
-   // assertTrue(TimetableInfo.getNumberOfDelaysCancelationsToday() > 0);
-    fail("The test case is a prototype.");
+    instance.interrupt();
+    assertTrue(TimetableInfo.getNumberOfDelaysCancelationsToday() > 0);
+  }
+ 
+    @Test
+    public void testCancelDelayRatio() throws InterruptedException {
+    database.openBusDatabase();
+    System.out.println("run");
+    DelayCancelController instance = null;
+    DailyTimetableController controller;
+    TimetableInfo.clearServiceAvail();
+    controller = new DailyTimetableController();
+    instance = new DelayCancelController(controller.getAllServices());
+    instance.testRun();
+    // TODO review the generated test code and remove the default call to fail.
+    //Thread.sleep(61000);
+    instance.interrupt();
+    int delays = TimetableInfo.getNumberOfDelays();
+    int cancels = TimetableInfo.getNumberOfCancels();
+    assertTrue(delays >= cancels);
   }
   
 }

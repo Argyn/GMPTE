@@ -449,6 +449,21 @@ public class TimetableInfo
     return database.busDatabase.between_count("*", "service_availability", "delay_time", min, "delay_time", max);
   }
   
+  public static int getNumberOfDelaysCancelationsToday()
+  {
+    return database.busDatabase.record_count("*", "service_availability", "date", new Date());
+  }
+  
+  public static int getNumberOfDelays()
+  {
+    return database.busDatabase.record_count("*", "service_availability", "status", "DELAYED");
+  }
+  
+  public static int getNumberOfCancels()
+  {
+    return database.busDatabase.record_count("*", "service_availability", "status", "CANCELLED");
+  }
+  
   /**
    * Get all the services in a route.
    */
