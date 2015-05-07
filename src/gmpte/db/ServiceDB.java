@@ -242,7 +242,7 @@ public class ServiceDB {
     
     ArrayList<Service2> nearestServices = new ArrayList<>();
     
-    if(nearestServicesIds!=null) {
+    if(nearestServicesIds.size()>0) {
       for(Integer serviceId : nearestServicesIds) {
         nearestServices.add(getServiceById(route, serviceId));
       }
