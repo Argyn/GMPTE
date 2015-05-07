@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import java.util.Arrays;
+import java.util.Date;
 
 /**
  *
@@ -85,22 +86,22 @@ public class JourneyPlannerControllerTest {
     return Arrays.asList(new Object[][]{
       {new BusStop(new Area(209, "Stockport"), "Bus Station"),
         new BusStop(new Area(221, "Glossop"), "Henry Street"),
-        0},
+        1},
       {new BusStop(new Area(210, "Romiley"), "Train Station"),
         new BusStop(new Area(212, "Marple"), "Offerton Fold"),
-        1},
+        2},
       {new BusStop(new Area(212, "Marple"), "Navigation Hotel"),
         new BusStop(new Area(221, "Glossop"), "Grouse Inn"),
-        1},
+        2},
       {new BusStop(new Area(212, "Marple"), "Offerton Fold"),
         new BusStop(new Area(212, "Marple"), "Back of Beyond"),
-        1},
+        2},
       {new BusStop(new Area(212, "Birch Vale"), "Grouse Hotel"),
         new BusStop(new Area(209, "Stockport"), "Intermediate Road"),
-        1},
+        2},
       {new BusStop(new Area(210, "Romiley"), "Corcoran Drive"),
         new BusStop(new Area(212, "Marple"), "Norfolk Arms"),
-        0},
+        1},
       
     });
   }
@@ -111,9 +112,41 @@ public class JourneyPlannerControllerTest {
   public void testGetJourneyPlan() {
     System.out.println("getJourneyPlan");
     JourneyPlannerController instance = new JourneyPlannerController();
-    Path result = instance.getJourneyPlan(this.from, this.to);
-    assertEquals(result.getFullPath().size(), this.expRes);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The given journey is wrong.");
+    
+    BusStop from = new BusStop(new Area(209, "Stockport"), "Bus Station");
+    BusStop to = new BusStop(new Area(221, "Glossop"), "Henry Street");
+    System.out.println("Testing between " + from + " to " + to);
+    Path result = instance.getJourneyPlan(from, to, new Date());
+    assertEquals(result.getFullPath().size(), 1);
+    
+    from = new BusStop(new Area(210, "Romiley"), "Train Station");
+    to = new BusStop(new Area(212, "Marple"), "Offerton Fold");
+    System.out.println("Testing between " + from + " to " + to);
+    result = instance.getJourneyPlan(from, to, new Date());
+    assertEquals(result.getFullPath().size(), 2);
+    
+    from = new BusStop(new Area(212, "Marple"), "Navigation Hotel");
+    to = new BusStop(new Area(221, "Glossop"), "Grouse Inn");
+    System.out.println("Testing between " + from + " to " + to);
+    result = instance.getJourneyPlan(from, to, new Date());
+    assertEquals(result.getFullPath().size(), 1);
+    
+    from = new BusStop(new Area(212, "Marple"), "Offerton Fold");
+    to = new BusStop(new Area(212, "Marple"), "Back of Beyond");
+    System.out.println("Testing between " + from + " to " + to);
+    result = instance.getJourneyPlan(from, to, new Date());
+    assertEquals(result.getFullPath().size(), 2);
+    
+    from = new BusStop(new Area(216, "Birch Vale"), "Grouse Hotel");
+    to = new BusStop(new Area(209, "Stockport"), "Intermediate Road");
+    System.out.println("Testing between " + from + " to " + to);
+    result = instance.getJourneyPlan(from, to, new Date());
+    assertEquals(result.getFullPath().size(), 2);
+    
+    from = new BusStop(new Area(210, "Romiley"), "Corcoran Drive");
+    to = new BusStop(new Area(212, "Marple"), "Norfolk Arms");
+    System.out.println("Testing between " + from + " to " + to);
+    result = instance.getJourneyPlan(from, to, new Date());
+    assertEquals(result.getFullPath().size(), 1); 
   }
 }
