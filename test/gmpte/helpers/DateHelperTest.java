@@ -6,7 +6,12 @@
 
 package gmpte.helpers;
 
+import gmpte.GMPTEConstants;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -40,48 +45,18 @@ public class DateHelperTest {
   }
 
   /**
-   * Test of getKind method, of class DateHelper.
-   */
-  @Test
-  public void testGetKind() {
-    System.out.println("getKind");
-    Date time = null;
-    int expResult = 0;
-    int result = DateHelper.getKind(time);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
-
-  /**
    * Test of isValidDateString method, of class DateHelper.
    */
   @Test
   public void testIsValidDateString() {
     System.out.println("isValidDateString");
-    String stringDate = "";
-    String dateFormat = "";
-    boolean expResult = false;
+    String stringDate = "22:40:52";
+    String dateFormat = "HH:mm:ss";
+    boolean expResult = true;
     boolean result = DateHelper.isValidDateString(stringDate, dateFormat);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
-  /**
-   * Test of getDateFromString method, of class DateHelper.
-   */
-  @Test
-  public void testGetDateFromString() throws Exception {
-    System.out.println("getDateFromString");
-    String stringDate = "";
-    String dateFormat = "";
-    Date expResult = null;
-    Date result = DateHelper.getDateFromString(stringDate, dateFormat);
-    assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
-  }
 
   /**
    * Test of afterMidnighMinsToDate method, of class DateHelper.
@@ -89,12 +64,22 @@ public class DateHelperTest {
   @Test
   public void testAfterMidnighMinsToDate() {
     System.out.println("afterMidnighMinsToDate");
-    int mins = 0;
-    Date expResult = null;
+    int mins = 1200;
+    
+    // boarding time is number of minutes since midnigth
+    Calendar date = new GregorianCalendar();
+    // reset hour, minutes, seconds and millis
+    date.set(Calendar.HOUR_OF_DAY, 0);
+    date.set(Calendar.MINUTE, 0);
+    date.set(Calendar.SECOND, 0);
+    date.set(Calendar.MILLISECOND, 0);
+    
+    date.set(Calendar.MINUTE, mins);
+   
+    
+    Date expResult = date.getTime();
     Date result = DateHelper.afterMidnighMinsToDate(mins);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
@@ -103,13 +88,13 @@ public class DateHelperTest {
   @Test
   public void testFormatDateToString() {
     System.out.println("formatDateToString");
-    String format = "";
-    Date date = null;
-    String expResult = "";
-    String result = DateHelper.formatDateToString(format, date);
+
+    Date todayDate = new Date();
+    DateFormat format = new SimpleDateFormat(GMPTEConstants.DATE_FORMAT);
+    String expResult = format.format(todayDate);
+    
+    String result = DateHelper.formatDateToString(GMPTEConstants.DATE_FORMAT, todayDate);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
@@ -118,12 +103,10 @@ public class DateHelperTest {
   @Test
   public void testIsToday() {
     System.out.println("isToday");
-    Date date = null;
-    boolean expResult = false;
+    Date date = new Date();
+    boolean expResult = true;
     boolean result = DateHelper.isToday(date);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
 
   /**
@@ -132,12 +115,20 @@ public class DateHelperTest {
   @Test
   public void testNextDayMidnight() {
     System.out.println("nextDayMidnight");
-    Date now = null;
-    Date expResult = null;
+    Date now = new Date();
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(now);
+    
+    calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR)+1);
+    calendar.set(Calendar.HOUR_OF_DAY, 0);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    calendar.set(Calendar.MILLISECOND, 0);
+
+    Date expResult = calendar.getTime();
+   
     Date result = DateHelper.nextDayMidnight(now);
     assertEquals(expResult, result);
-    // TODO review the generated test code and remove the default call to fail.
-    fail("The test case is a prototype.");
   }
   
 }
