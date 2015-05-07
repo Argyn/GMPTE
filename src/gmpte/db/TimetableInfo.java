@@ -191,6 +191,11 @@ public class TimetableInfo
         storeNewRoster(iterator.next());
   }
   
+  public static void clearServiceAvail()
+  {
+    database.busDatabase.execute("DELETE FROM `service_availability`");
+  }
+  
   public static void getStartEndTimes(Service service)   throws SQLException
   {
     int[] timingPoints = getServiceTimingPoints(service.getServiceId());
@@ -433,7 +438,17 @@ public class TimetableInfo
     String source = database.join("service", "daily_timetable", "daily_timetable");
     return database.busDatabase.record_count("*", source, "daily_timetable.route", route, "daily_timetable.kind", kind.ordinal());
   }
-
+  
+  public static int getNumberOfDelaysCancelations()
+  {
+    return database.busDatabase.record_count("*", "service_availability", "");
+  }
+  
+  public static int getNumberOfDelaysBetween(int min, int max)
+  {
+    return database.busDatabase.between_count("*", "service_availability", "delay_time", min, "delay_time", max);
+  }
+  
   /**
    * Get all the services in a route.
    */
