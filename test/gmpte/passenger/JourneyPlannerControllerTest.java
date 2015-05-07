@@ -30,18 +30,11 @@ import java.util.Date;
  *
  * @author mbgm2rm2
  */
-@RunWith(Parameterized.class)
 public class JourneyPlannerControllerTest {
+
   
-  private BusStop from;
-  private BusStop to;
-  private int expRes;
-  
-  public JourneyPlannerControllerTest(BusStop from, BusStop to, int expRes){
+  public JourneyPlannerControllerTest(){
     database.openBusDatabase();
-    this.from = from;
-    this.to = to;
-    this.expRes = expRes;
   }
   
   @BeforeClass
