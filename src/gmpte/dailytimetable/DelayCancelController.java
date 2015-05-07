@@ -55,7 +55,7 @@ public class DelayCancelController implements Runnable
         {    
           StringBuilder builder = new StringBuilder();
           builder.append("The " + service.getId() + " service has been cancelled ");
-          builder.append("due to a " + causes.getRandomCause());
+          builder.append("due to a " + causes.getRandomCancel());
           builder.append(". We apologize for any inconvienience this causes.");
           String reason = builder.toString();
           System.out.println("canel " + service.getId());
@@ -78,7 +78,7 @@ public class DelayCancelController implements Runnable
           int delayPoint = random.nextInt(service.getBusStops().size() - minDelayPoint) + minDelayPoint;
           BusStop delayStop = service.getBusStops().get(delayPoint);
           builder.append("The " + service.getId() + " service is delayed by approximately ");
-          builder.append(delayTime + " minutes due to a " + causes.getRandomCause());
+          builder.append(delayTime + " minutes due to a " + causes.getRandomDelay());
           builder.append(", and will arrive  at " + service.getBusStops().get(delayPoint + 1).getName());
           builder.append(" at approximately " + service.getDelayTime());
           builder.append(". We apologize for the delay to your journey.");

@@ -16,14 +16,20 @@ import java.util.Random;
 public class Causes 
 {
   private ArrayList<String> causes;
+  private ArrayList<String> delays;
+  private ArrayList<String> cancels;
   public Causes()
   {
     causes = new ArrayList<>();
-    causes.add("a shortage of water for the windscreen wipers");
-    causes.add("a punctured tyre");
-    causes.add("a crash");
-    causes.add("heavy traffic");
-    causes.add("a street parade");
+    delays = new ArrayList<>();
+    cancels = new ArrayList<>();
+    delays.add("a shortage of water for the windscreen wipers");
+    delays.add("a punctured tyre");
+    delays.add("heavy traffic");
+    delays.add("a street parade");
+    cancels.add("a punctured tyre");
+    cancels.add("a crash");
+    cancels.add("a street parade");
   }
   public String getRandomCause()
   {
@@ -31,5 +37,21 @@ public class Causes
     int causeSize = causes.size();
     int index = random.nextInt(causeSize);
     return causes.get(index);
+  } // getRandomCause
+  
+  public String getRandomDelay()
+  {
+    Random random = new Random();
+    int causeSize = delays.size();
+    int index = random.nextInt(causeSize);
+    return delays.get(index);
+  } // getRandomCause
+    
+  public String getRandomCancel()
+  {
+    Random random = new Random();
+    int causeSize = cancels.size();
+    int index = random.nextInt(causeSize);
+    return cancels.get(index);
   } // getRandomCause
 }
