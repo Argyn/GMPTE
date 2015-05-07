@@ -11,7 +11,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.dailytimetable.DailyTimetableInterfaceController">
+<AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="800.0" prefWidth="1200.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gmpte.dailytimetable.DailyTimetableInterfaceController">
    <children>
        <AnchorPane fx:id="loadingIndicatorPane" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="200.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="200.0">
          <children>
@@ -28,7 +28,7 @@
                <children>
                   <HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="960.0">
                      <children>
-                        <HBox alignment="CENTER_LEFT" prefHeight="26.0" prefWidth="585.0">
+                        <HBox alignment="CENTER_LEFT" prefHeight="25.0" prefWidth="761.0">
                            <children>
                               <Label text="HH:mm">
                                  <styleClass>
@@ -56,7 +56,7 @@
                            </children></HBox>
                         <HBox alignment="CENTER_RIGHT" prefHeight="26.0" prefWidth="422.0">
                            <children>
-                              <Label prefHeight="23.0" prefWidth="148.0" styleClass="medium-label" text="Choose bus stop:" textFill="#c24c4c">
+                              <Label prefHeight="23.0" prefWidth="162.0" styleClass="medium-label" text="Choose bus stop:" textFill="#c24c4c">
                                  <font>
                                     <Font size="12.0" />
                                  </font></Label>
@@ -65,10 +65,10 @@
                         </HBox>
                      </children>
                   </HBox>
-                  <Accordion fx:id="servicesAccordion" prefHeight="553.0" prefWidth="960.0" />
-                  <HBox fx:id="marqueueMessagesBox" prefHeight="39.0" prefWidth="960.0">
+                  <Accordion fx:id="servicesAccordion" prefHeight="706.0" prefWidth="1160.0" />
+                  <HBox fx:id="marqueueMessagesBox" maxHeight="-Infinity" prefHeight="39.0" prefWidth="960.0">
                      <children>
-                        <Text fx:id="marqueueMessagesText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="1639.7294921875" HBox.hgrow="ALWAYS" />
+                        <Text fx:id="marqueueMessagesText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="176222.7294921875" HBox.hgrow="ALWAYS" />
                      </children>
                   </HBox>
                </children>

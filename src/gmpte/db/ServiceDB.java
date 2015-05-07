@@ -297,4 +297,39 @@ public class ServiceDB {
     return times;
   }
   
+  public static ArrayList<Service2> getAllServices(Date date) {
+    int kind = DateHelper.getKind(date);
+    
+    ArrayList<Service2> services = new ArrayList<>();
+    
+    String query = "SELECT DISTINCT bs.service, d.route FROM `bus_station_times` bs, "
+            + "daily_timetable d WHERE "
+            + "d.daily_timetable_id=bs.daily_timetable AND d.kind=?";
+    
+    PreparedStatement statement = null;
+    
+    try {
+      statement = DBHelper.prepareStatement(query);
+      
+      // setting the service
+      statement.setInt(1, kind);
+      
+      ResultSet result = statement.executeQuery();
+     
+      
+      while(result.next()) {
+        int serviceId = result.getInt("service");
+        int routeID = result.getInt("route");
+        
+        Route route = new Route(routeID);
+        services.add(getServiceById(route, serviceId));
+      }
+      
+    } catch (SQLException ex) {
+      Logger.getLogger(ServiceDB.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    
+    return services;
+  }
+  
 }

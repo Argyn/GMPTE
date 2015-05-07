@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 public class DelayCancelController implements Runnable 
 {
   private ArrayList<Service2> services; 
+  private ArrayList<Service2> currentServices;
+  
   public DelayCancelController (ArrayList<Service2> services)
   {
     this.services = services;  
@@ -36,14 +38,87 @@ public class DelayCancelController implements Runnable
       Random random = new Random();
       int minServiceIndex = 0;
       
-      while (true)
+      Date nowDate = null;
+      int randomWait = 0;
+      int size = 0;
+      int randomServiceIndex = 0;
+      
+      Date firstServiceTime = null;
+      Date lastServiceTime = null;
+      
+      while(true) {
+        randomWait = random.nextInt(60);
+        
+        //sleep
+        Thread.sleep(randomWait * 1000);
+        
+        nowDate = new Date();
+        
+        currentServices = new ArrayList<>();
+        for(Service2 service : services) {
+          size = service.getTimes().size();
+          firstServiceTime = service.getTimes().get(0);
+          lastServiceTime = service.getTimes().get(size-1);
+          
+          if(firstServiceTime.before(nowDate) && lastServiceTime.after(nowDate) 
+                            && !service.isDelayed() && !service.isCancelled()) {
+            currentServices.add(service);
+          }  
+        }
+        
+        // choosing random service to cancel
+        if(currentServices.size()==0)
+          continue;
+        
+        randomServiceIndex = random.nextInt(currentServices.size());
+        Service2 delayCancelService = currentServices.get(randomServiceIndex);
+        
+        if(random.nextInt(4)==0) {
+          StringBuilder builder = new StringBuilder();
+          builder.append("due to a " + causes.getRandomCancel());
+          builder.append(". We apologize for any inconvienience this causes.");
+          String reason = builder.toString();
+          System.out.println("canel " + delayCancelService.getId());
+          TimetableInfo.addNewCancel(delayCancelService.getId(), reason, nowDate);
+          
+          delayCancelService.setCancelled(reason);
+        } else {
+          BusStop delayStop = null;
+          int delayTime = random.nextInt(20) + 5;
+          
+          int index = 0;
+          for(Date delayPoint : delayCancelService.getTimes()) {
+            if(delayPoint.after(nowDate) && delayStop==null) {
+              delayStop = delayCancelService.getBusStops().get(index);
+              break;
+            }
+            index++;
+          }
+          
+          StringBuilder builder = new StringBuilder();
+          builder.append(delayTime + " minutes due to a " + causes.getRandomDelay());
+          builder.append(", and will arrive  at " + delayStop);
+          builder.append(" at approximately " + delayCancelService.getDelayTime());
+          builder.append(". We apologize for the delay to your journey.");
+          String reason = builder.toString();
+          System.out.println("delay " + delayCancelService.getId() + " of " + delayTime);
+          TimetableInfo.addNewDelay(delayCancelService.getId(), reason, nowDate, delayTime, delayStop.getIds().get(0));
+          
+          delayCancelService.setDelayedTime(delayTime, delayStop.getIds().get(0), reason);
+        }
+        
+        // sleep
+        
+      }
+      
+      /*while (true)
       { 
         Date date = new Date();
         int randomWait = random.nextInt(60);
         for (minServiceIndex = 0; minServiceIndex < services.size(); minServiceIndex++)
         {
           Service2 currentService = services.get(minServiceIndex);
-          if (currentService.getTimes().get(currentService.getTimes().size()).compareTo(date) == -1)
+          if (currentService.getTimes().get(currentService.getTimes().size()-1).compareTo(date) == -1)
           {
             break;
           }
@@ -54,7 +129,6 @@ public class DelayCancelController implements Runnable
         if (random.nextInt(100) < 33)
         {    
           StringBuilder builder = new StringBuilder();
-          builder.append("The " + service.getId() + " service has been cancelled ");
           builder.append("due to a " + causes.getRandomCancel());
           builder.append(". We apologize for any inconvienience this causes.");
           String reason = builder.toString();
@@ -75,9 +149,8 @@ public class DelayCancelController implements Runnable
             }
           }
           StringBuilder builder = new StringBuilder();
-          int delayPoint = random.nextInt(service.getBusStops().size() - minDelayPoint) + minDelayPoint;
+          int delayPoint = random.nextInt((service.getBusStops().size() - 1) - minDelayPoint) + minDelayPoint;
           BusStop delayStop = service.getBusStops().get(delayPoint);
-          builder.append("The " + service.getId() + " service is delayed by approximately ");
           builder.append(delayTime + " minutes due to a " + causes.getRandomDelay());
           builder.append(", and will arrive  at " + service.getBusStops().get(delayPoint + 1).getName());
           builder.append(" at approximately " + service.getDelayTime());
@@ -87,7 +160,8 @@ public class DelayCancelController implements Runnable
           TimetableInfo.addNewDelay(service.getId(), reason, date, delayTime, delayStop.getSequence());
         } // else
         Thread.sleep(randomWait * 1000);
-      }
+      }*/
+      
     } catch (InterruptedException ex) { /* do nothing */}
   }
 }

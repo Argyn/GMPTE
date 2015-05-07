@@ -34,6 +34,8 @@ public class DailyTimetableController {
   
   private ArrayList<Area> areas;
   
+  private ArrayList<Service2> allServicesToday;
+  
   private HashMap<Route, ArrayList<Service2>> routeServices;
   
   private HashMap<RouteBusStop, ArrayList<Date>> routeBusStopsTimes;
@@ -54,8 +56,11 @@ public class DailyTimetableController {
     // fetching all bus stops
     allBusStops = BusStopInfo.getAllBusStops(areas);
     
-    kind = DateHelper.getKind(new Date());
+    Date todayDate = new Date();
     
+    kind = DateHelper.getKind(todayDate);
+    
+    allServicesToday = ServiceDB.getAllServices(todayDate);
     // map routes and bus stops
     mapRoutesAndBusStops();
     
@@ -121,6 +126,10 @@ public class DailyTimetableController {
   
   public ArrayList<Service2> getCancelledServices() {
     return cancelledServices;
+  }
+  
+  public ArrayList<Service2> getAllServices() {
+    return allServicesToday;
   }
   
   public void refresh() {

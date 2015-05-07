@@ -179,7 +179,7 @@ public class TimetableInfo
   
   public static void addNewCancel(int serviceId, String cause, Date date)
   {
-    database.busDatabase.new_record("service_availability", new Object[][]{{"service", serviceId}, {"status", "DELAYED"}, {"reason", cause}, {"date", date}, {"delay_time", 0}, {"delay_point", 0}});
+    database.busDatabase.new_record("service_availability", new Object[][]{{"service", serviceId}, {"status", "CANCELLED"}, {"reason", cause}, {"date", date}, {"delay_time", 0}, {"delay_point", 0}});
   }
   
   public static void storeSchedule(Schedule schedule)

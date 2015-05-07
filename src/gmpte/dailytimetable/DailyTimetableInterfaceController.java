@@ -145,6 +145,9 @@ public class DailyTimetableInterfaceController implements Initializable, Control
         
         refreshData();
         
+        new Thread(new DelayCancelController(tController.getAllServices())).start();
+        
+        
       }
     });
    
@@ -156,7 +159,7 @@ public class DailyTimetableInterfaceController implements Initializable, Control
     final Task<Void> loadTask = new Task<Void>() {
       @Override
       protected Void call() throws Exception {
-        int seconds = 60;
+        int seconds = 50;
         while(seconds>0) {
           Thread.sleep(1000);
           seconds-=1;
@@ -488,7 +491,7 @@ public class DailyTimetableInterfaceController implements Initializable, Control
   
   private void recalculateTransition() {
     marqueueTransition.setToX(marqueueMessagesBox.getBoundsInLocal().getMaxX() * -1 - 100);
-    marqueueTransition.setFromX(marqueueMessagesBox.widthProperty().get() + 100);
+    marqueueTransition.setFromX(1200 + 100);
 
     double distance = marqueueMessagesBox.widthProperty().get() + 2 * marqueueMessagesText.getBoundsInLocal().getMaxX();
     marqueueTransition.setDuration(new Duration(distance / 0.1));
