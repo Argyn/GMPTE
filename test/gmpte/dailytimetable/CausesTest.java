@@ -53,7 +53,6 @@ public class CausesTest {
     expResult.add("a street parade");
     String result = instance.getRandomDelay();
     assertThat(expResult, hasItem(result));
-    fail("Random delay gives invalid delay reason.");
   }
 
   /**
@@ -70,7 +69,6 @@ public class CausesTest {
     String result = instance.getRandomCancel();
     assertThat(expResult, hasItem(result));
     // TODO review the generated test code and remove the default call to fail.
-    fail("Random cancel gives invalid cancel reason.");
   }
   
 }

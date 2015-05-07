@@ -77,6 +77,8 @@ public class DelayCancelControllerTest {
     instance.interrupt();
     // check if the delay time is anywhere between 5 - 25 mins, we assume that the
     // delays above this will be cancelled.
+    System.out.println(TimetableInfo.getNumberOfDelaysBetween(5, 25));
+    System.out.println(TimetableInfo.getNumberOfDelays());
     assertTrue(TimetableInfo.getNumberOfDelaysBetween(5, 25) == TimetableInfo.getNumberOfDelays());
   }
   
